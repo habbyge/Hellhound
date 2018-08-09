@@ -5,3 +5,4 @@ version1.1：劫持Activity生命周期，并向Intent中注入数据，在目�
 version1.2：支持高性能跨进程组件：共享内存，自此以后，Hellhound开始支持了跨进程。
 version1.3：劫持Fragment生命周期
 version1.4：劫持View控件点击事件
+version2.0：劫持业务层数据的技术方案
