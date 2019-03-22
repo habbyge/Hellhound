@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 
-apply plugin: 'com.lxyx.hellplugin'
+apply plugin: 'com.lxyx.hellplugin' // 插件
 
 android {
     compileSdkVersion 28
