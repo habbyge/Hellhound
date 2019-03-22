@@ -1,0 +1,64 @@
+//apply plugin: 'java-library'
+//apply plugin: 'com.android.library'
+
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+dependencies {
+    // gradle sdk
+    implementation gradleApi()
+    // groovy sdk
+    implementation localGroovy()
+
+    //Android编译的大部分gradle源码，比如上面讲到的TaskManager
+    implementation 'com.android.tools.build:gradle:3.3.2'
+
+    //这个依赖里其实主要存了transform的依赖，注意，这个依赖不同于上面的gradleApi()
+    implementation 'com.android.tools.build:gradle-api:3.1.4'
+
+    // 支持编译插件
+    implementation 'org.ow2.asm:asm:6.0'
+    implementation 'org.ow2.asm:asm-util:6.0'
+    implementation 'org.ow2.asm:asm-commons:6.0'
+}
+
+repositories {
+    mavenCentral()
+    google()
+}
+
+// 发布到本地maven库
+uploadArchives { // 上传插件
+    repositories { // 仓库
+        mavenDeployer { // maven发布者
+            repository(url: uri('../repo')) // 仓库目录
+            pom.groupId = 'com.tencent.plugins'
+            pom.artifactId = 'HellPlugin'
+            pom.version = '1.0.0'
+        }
+    }
+}
+
+//apply plugin: 'maven-publish'
+//
+//publishing {
+//    publications {
+//        mavenJava(MavenPublication) {
+//            groupId 'com.tencent.plugins'
+//            artifactId 'HellPlugin'
+//            version '1.0.0'
+//
+//            from components.java
+//
+//        }
+//    }
+//}
+//
+//publishing {
+//    repositories {
+//        maven {
+//            // change to point to your repo, e.g. http://my.org/repo
+//            url uri('~/AndroidStudio/AmsDemo_Plugin/repos')
+//        }
+//    }
+//}
