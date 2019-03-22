@@ -1,4 +1,4 @@
-package com.tencent.hellplugin
+package com.lxyx.hellplugin
 
 import com.android.build.api.transform.DirectoryInput
 import com.android.build.api.transform.Format

@@ -1,8 +1,10 @@
-package com.tencent.habbyge;
+package com.lxyx.habbyge;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
+import com.lxyx.habbyge.R;
 
 public class MainActivity extends AppCompatActivity {
 

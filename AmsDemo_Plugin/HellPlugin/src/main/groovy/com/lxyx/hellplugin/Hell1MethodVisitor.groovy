@@ -1,4 +1,4 @@
-package com.tencent.hellplugin
+package com.lxyx.hellplugin
 
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes

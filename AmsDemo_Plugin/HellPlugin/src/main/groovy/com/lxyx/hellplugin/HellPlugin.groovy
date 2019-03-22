@@ -1,4 +1,4 @@
-package com.tencent.hellplugin
+package com.lxyx.hellplugin
 
 import com.android.build.gradle.AppExtension
 import org.gradle.api.Plugin

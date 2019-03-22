@@ -1,4 +1,4 @@
-package com.tencent.hellplugin
+package com.lxyx.hellplugin
 
 import groovy.transform.PackageScope
 import org.objectweb.asm.ClassVisitor
@@ -54,7 +54,7 @@ class HellClassVisitor extends ClassVisitor implements Opcodes {
             }
         }
 
-        if ("com/tencent/habbyge/MainActivity".equals(className)) {
+        if ("com/lxyx/habbyge/MainActivity".equals(className)) {
             if ("onResume".equals(name) && "()V".equals(desc)) {
                 return new Hell1MethodVisitor(mv)
             }

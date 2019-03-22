@@ -1,4 +1,4 @@
-package com.tencent.hellplugin
+package com.lxyx.hellplugin
 
 import groovy.transform.PackageScope
 import org.objectweb.asm.MethodVisitor
@@ -33,13 +33,13 @@ class HellMethodVisitor extends MethodVisitor {
 
         // 注入一个单例调用的callback方法
 //        mv.visitMethodInsn(Opcodes.INVOKESTATIC,
-//                "com/tencent/habbyge/HellViewMonitor",
-//                "getInstance", "()Lcom/tencent/habbyge/HellViewMonitor;", false)
+//                "com/lxyx/habbyge/HellViewMonitor",
+//                "getInstance", "()Lcom/lxyx/habbyge/HellViewMonitor;", false)
 //        mv.visitLdcInsn(17)
 //        mv.visitLdcInsn("HABBYGE-MLAI, I love Mali")
 ////        mv.visitVarInsn(Opcodes.ALOAD, 1) // load view对象 到栈顶
 //        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-//                "com/tencent/habbyge/HellViewMonitor",
+//                "com/lxyx/habbyge/HellViewMonitor",
 //                "callListener",
 //                "(ILjava/lang/Object;)V",
 //                false)
@@ -51,7 +51,7 @@ class HellMethodVisitor extends MethodVisitor {
 ////        mv.visitLdcInsn("I love Mali")
 //        mv.visitVarInsn(Opcodes.ALOAD, 1) // load onClick的参数view对象到栈顶
 //        mv.visitMethodInsn(Opcodes.INVOKESTATIC,
-//                "com/tencent/habbyge/HellViewMonitor",
+//                "com/lxyx/habbyge/HellViewMonitor",
 //                "callListenerStatic",
 //                "(ILjava/lang/Object;)V",
 //                false)
@@ -66,7 +66,7 @@ class HellMethodVisitor extends MethodVisitor {
 //            mv.visitLdcInsn(1000)
 //            mv.visitLdcInsn("invoke-after")
 //            mv.visitMethodInsn(Opcodes.INVOKESTATIC,
-//                    "com/tencent/habbyge/TestAccessibilityCallback",
+//                    "com/lxyx/habbyge/TestAccessibilityCallback",
 //                    "justCallback", "(ILjava/lang/Object;)V",
 //                    false)
             log("I love my family, visit code Over !!!!")
@@ -106,9 +106,9 @@ class HellMethodVisitor extends MethodVisitor {
 
     private callback(boolean action, int eventType, Object params) {
         mv.visitMethodInsn(Opcodes.INVOKESTATIC,
-                "com/tencent/habbyge/HellViewMonitor",
+                "com/lxyx/habbyge/HellViewMonitor",
                 "getInstance",
-                "()Lcom/tencent/habbyge/HellViewMonitor;",
+                "()Lcom/lxyx/habbyge/HellViewMonitor;",
                 false)
 
         mv.visitVarInsn(Opcodes.ALOAD, 1) // 从局部变量表slot-1中取出View引用，入栈
@@ -117,13 +117,13 @@ class HellMethodVisitor extends MethodVisitor {
 
         if (action) { // 之前
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-                    "com/tencent/habbyge/HellViewMonitor",
+                    "com/lxyx/habbyge/HellViewMonitor",
                     "callListenerBefore", // todo
                     "(Landroid/view/View;ILjava/lang/Object;)V",
                     false)
         } else { // 之后
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-                    "com/tencent/habbyge/HellViewMonitor",
+                    "com/lxyx/habbyge/HellViewMonitor",
                     "callListenerAfter", // todo
                     "(Landroid/view/View;ILjava/lang/Object;)V",
                     false)

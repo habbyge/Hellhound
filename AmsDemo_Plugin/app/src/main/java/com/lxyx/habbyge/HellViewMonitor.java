@@ -1,4 +1,4 @@
-package com.tencent.habbyge;
+package com.lxyx.habbyge;
 
 import android.view.Gravity;
 import android.view.View;

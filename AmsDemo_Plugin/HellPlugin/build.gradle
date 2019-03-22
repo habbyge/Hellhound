@@ -32,7 +32,7 @@ uploadArchives { // 上传插件
     repositories { // 仓库
         mavenDeployer { // maven发布者
             repository(url: uri('../repo')) // 仓库目录
-            pom.groupId = 'com.tencent.plugins'
+            pom.groupId = 'com.lxyx.plugins'
             pom.artifactId = 'HellPlugin'
             pom.version = '1.0.0'
         }
@@ -44,7 +44,7 @@ uploadArchives { // 上传插件
 //publishing {
 //    publications {
 //        mavenJava(MavenPublication) {
-//            groupId 'com.tencent.plugins'
+//            groupId 'com.lxyx.plugins'
 //            artifactId 'HellPlugin'
 //            version '1.0.0'
 //

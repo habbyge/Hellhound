@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
-apply plugin: 'com.tencent.hellplugin'
+apply plugin: 'com.lxyx.hellplugin'
 
 android {
     compileSdkVersion 28
 
     defaultConfig {
-        applicationId "com.tencent.habbyge"
+        applicationId "com.lxyx.habbyge"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
