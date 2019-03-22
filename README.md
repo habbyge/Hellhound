@@ -12,12 +12,12 @@
 
 
 ## 2、版本计划
-### version1.0：劫持控件操作(点击、长按、滑动、拖动等)行为
-### version1.1：劫持Activity生命周期，并支持劫持和注入Activity跳转时Intent中传递的数据
-### version1.2：支持高性能跨进程组件：共享内存，自此以后，Hellhound开始支持了跨进程。
-### version1.3：劫持Fragment生命周期
-### version1.4：劫持通知栏行为
-### version2.0：劫持业务层数据的技术方案
+- version1.0：劫持控件操作(点击、长按、滑动、拖动等)行为
+- version1.1：劫持Activity生命周期，并支持劫持和注入Activity跳转时Intent中传递的数据
+- version1.2：支持高性能跨进程组件：共享内存，自此以后，Hellhound开始支持了跨进程。
+- version1.3：劫持Fragment生命周期
+- version1.4：劫持通知栏行为
+- version2.0：劫持业务层数据的技术方案
 
 ## 3、进度
 工作比较忙，目前进度还在version1.0中，目前已经完成了点击的插桩，后续尽快补上其他操作手势的插桩(虽然原理都一样)，和更合理完善的代码！
