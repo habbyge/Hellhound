@@ -118,13 +118,13 @@ class HellMethodVisitor extends MethodVisitor {
         if (action) { // 之前
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
                     "com/lxyx/habbyge/HellViewMonitor",
-                    "callListenerBefore", // todo
+                    "callListenerBefore",
                     "(Landroid/view/View;ILjava/lang/Object;)V",
                     false)
         } else { // 之后
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
                     "com/lxyx/habbyge/HellViewMonitor",
-                    "callListenerAfter", // todo
+                    "callListenerAfter",
                     "(Landroid/view/View;ILjava/lang/Object;)V",
                     false)
         }

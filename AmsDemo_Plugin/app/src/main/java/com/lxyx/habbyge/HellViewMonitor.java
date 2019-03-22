@@ -72,15 +72,15 @@ public final class HellViewMonitor {
 
 // TODO: 2019-03-22 *************************** 待验证 ******************************** Begin
             // TODO: 2019-03-21 这里从当前View开始，向上遍历，获取View树
-            View parentView = null;
-            ViewParent parent;
-            do {
-                parent = view.getParent();
-                if (parent instanceof ViewGroup) {
-                    parentView = (ViewGroup) parent;
-                    System.out.println("HABBYGE-MALI, parentView: " + parentView.getClass().getName());
-                }
-            } while (parentView != null); // todo 这里的条件还需要加入ViewRootImpl
+//            View parentView = null;
+//            ViewParent parent;
+//            do {
+//                parent = view.getParent();
+//                if (parent instanceof ViewGroup) {
+//                    parentView = (ViewGroup) parent;
+//                    System.out.println("HABBYGE-MALI, parentView: " + parentView.getClass().getName());
+//                }
+//            } while (parentView != null); // todo 这里的条件还需要加入ViewRootImpl
 // TODO: 2019-03-22 *************************** 待验证 ********************************  End
         }
 
