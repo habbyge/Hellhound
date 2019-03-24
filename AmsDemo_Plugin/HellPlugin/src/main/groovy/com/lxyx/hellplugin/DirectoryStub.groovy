@@ -2,35 +2,94 @@ package com.lxyx.hellplugin
 
 import com.android.build.api.transform.DirectoryInput
 import com.android.build.api.transform.Format
+import com.android.build.api.transform.Status
 import com.android.build.api.transform.TransformOutputProvider
-import com.android.utils.FileUtils
+import groovy.transform.PackageScope
+import org.apache.commons.io.FileUtils
 
 /**
  * Created by habbyge 2019/03/15.
  */
+@PackageScope
 class DirectoryStub {
 
     private DirectoryStub() {
     }
 
-    static void startStub(DirectoryInput directoryInput, TransformOutputProvider outputProvider) {
+    static void startStub(DirectoryInput directoryInput,
+            TransformOutputProvider output, boolean isIncremental) {
 
-        File dest = outputProvider.getContentLocation(
+        String inputDirPath = directoryInput.file.getAbsolutePath() // 一般是目录
+        println('DirectoryStub, startStub, inputDirPath: ' + inputDirPath)
+
+        File destDir = output.getContentLocation(
                 directoryInput.getName(),
                 directoryInput.getContentTypes(),
                 directoryInput.getScopes(),
                 Format.DIRECTORY)
+        String destDirPath = destDir.getAbsolutePath()
+        println('DirectoryStub, startStub, destDirPath: ' + destDirPath)
 
-        println('directoryInput.file: ' + directoryInput.file.getAbsolutePath())
-        println('directoryInput dest: ' + dest.getAbsolutePath())
+        if (isIncremental) { // 如果是增量编译
+            println('DirectoryStub, isIncremental TRUE') // 增量编译
 
-        ViewHook.hook(directoryInput.file)
+            Map<File, Status> fileStatusMap = directoryInput.getChangedFiles()
+            if (fileStatusMap == null) {
+                return
+            }
+            File inputFile
+            Status status
+            String destFilePath
+            for (Map.Entry<File, Status> entry : fileStatusMap.entrySet()) {
+                inputFile = entry.getKey()
+                status = entry.getValue()
 
-        println('HellTransform, ViewHook.hook() END')
+                destFilePath = inputFile.getAbsolutePath().replace(inputDirPath, destDirPath)
+                File destFile = new File(destFilePath)
 
-        // 将修改过的字节码copy到dest，就可以实现编译期间干预字节码的目的了：这个dest就是下一个Transform的输入
-        FileUtils.copyDirectory(directoryInput.getFile(), dest)
+                switch (status) {
+                case Status.NOTCHANGED:
+                    break
 
-        println('HellTransform, directoryInput copyDirectory END')
+                case Status.ADDED:
+                case Status.CHANGED:
+                    println('DirectoryStub, isIncremental: ADDED || CHANGED')
+                    doStubForFile(inputFile, destFile)
+                    break
+
+                case Status.REMOVED:
+                    println('DirectoryStub, isIncremental: REMOVED')
+                    if (destFile.exists()) {
+                        FileUtils.forceDelete(destDir)
+                    }
+                    break
+
+                default:
+                    break
+                }
+            }
+        } else { // 全量编译
+            println('DirectoryStub, isIncremental FALSE')
+            doStubForDir(directoryInput.file, destDir)
+        }
+    }
+
+    private static void doStubForDir(File inputDir, File destDir) {
+        println('doStubForDir, inputDir: ' + inputDir.path)
+        println('doStubForDir, destDir: ' + destDir.path)
+
+        ViewHook.hookDir(inputDir)
+
+        // 将修改过的字节码copy到dest，作为下一个Transform的输入
+        FileUtils.copyDirectory(inputDir, destDir)
+    }
+
+    private static void doStubForFile(File srcFile, File destFile) {
+        ViewHook.hookFile(srcFile)
+
+        // 将修改过的字节码copy到dest，作为下一个Transform的输入
+        FileUtils.copyFile(srcFile, destFile)
+
+        println('HellTransform, doStubForFile: END')
     }
 }

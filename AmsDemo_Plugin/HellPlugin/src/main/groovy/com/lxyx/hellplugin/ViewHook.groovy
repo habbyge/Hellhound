@@ -13,10 +13,10 @@ class ViewHook {
     }
 
     /**
-     * @param inputDir 这是一个目录
+     * @param inputDir 这是一个目录，把该目录中符合hook的类修改，并重写到这个文件中
      */
-    static boolean hook(File inputDir) {
-        if (inputDir == null || !inputDir.exists() || !inputDir.canRead()) {
+    static boolean hookDir(File inputDir) {
+        if (inputDir == null || !inputDir.exists() || !inputDir.canWrite()) {
             return false
         }
         if (inputDir.isDirectory()) {
@@ -31,6 +31,13 @@ class ViewHook {
         }
 
         return true
+    }
+
+    static boolean hookFile(File inputFile) {
+        if (inputFile == null || !inputFile.exists() || !inputFile.canWrite()) {
+            return false
+        }
+        doStub(inputFile.bytes, inputFile.getAbsolutePath())
     }
 
     private static boolean doStub(byte[] bytes, String filePath) {
@@ -49,7 +56,6 @@ class ViewHook {
 
         cr.accept(hellCV, 0)
 
-        // todo：这里只对被修改注入的class文件进行重写，这里需要修改，为改变的无需重写 ！！！！
         byte[] data = cw.toByteArray()
         File file = new File(filePath)
         FileOutputStream fos

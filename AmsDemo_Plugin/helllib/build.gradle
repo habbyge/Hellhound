@@ -1,12 +1,9 @@
-apply plugin: 'com.android.application'
-
-apply plugin: 'com.lxyx.hellplugin' // 插件
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 28
 
     defaultConfig {
-        applicationId "com.lxyx.habbyge"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
@@ -19,15 +16,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:appcompat-v7:28.0.0'
-
-    implementation project(':helllib')
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    implementation 'com.android.support:design:28.0.0'
 }

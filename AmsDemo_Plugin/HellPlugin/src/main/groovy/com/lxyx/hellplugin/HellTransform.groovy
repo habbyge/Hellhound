@@ -7,7 +7,6 @@ import org.gradle.api.Project
 
 /**
  * Created by habbyge 2019/03/15.
- * todo 现在还剩下一个问题，如何遍历到Android sdk中的class文件
  */
 @PackageScope
 class HellTransform extends Transform {
@@ -44,26 +43,34 @@ class HellTransform extends Transform {
 
         super.transform(transformInvocation)
 
-        //当前是否是增量编译
-//        boolean isIncremental = transformInvocation.isIncremental()
-        //消费型输入，可以从中获取jar包和class文件夹路径。需要输出给下一个任务
+        // 消费型输入： 获取jar、class路径。需要输出给下一个Transform
         Collection<TransformInput> inputs = transformInvocation.getInputs()
-        //引用型输入，无需输出。
-//        Collection<TransformInput> referencedInputs = transformInvocation.getReferencedInputs()
-        //OutputProvider管理输出路径，如果消费型输入为空，你会发现OutputProvider == null
+
+//        // 引用型输入：无需输出给下一个Transform。
+//        Collection<TransformInput> rInputs = transformInvocation.getReferencedInputs()
+
+        // OutputProvider是当前Transfrom的输出，亦是下一个Transform的输入：
+        // 负责把当前Transform输出给下一个Transform的输入，
         TransformOutputProvider outputProvider = transformInvocation.getOutputProvider()
+
+        // 支持增量编译
+        boolean isIncremental = transformInvocation.isIncremental()
+        if (!isIncremental) { // 非增量编译，删除旧的输出
+            outputProvider.deleteAll()
+        }
+
         for (TransformInput input : inputs) {
 
             // 普通文件夹
             for (DirectoryInput directoryInput : input.getDirectoryInputs()) {
-                DirectoryStub.startStub(directoryInput, outputProvider)
+                DirectoryStub.startStub(directoryInput, outputProvider, isIncremental)
             }
 
             // jar包
             Collection<JarInput> jarInputs = input.getJarInputs()
             println('jarInput: ' + jarInputs.size())
             for (JarInput jarInput : jarInputs) {
-                JarStub.startStub(jarInput, outputProvider)
+                JarStub.startStub(jarInput, outputProvider, isIncremental)
             }
         }
     }

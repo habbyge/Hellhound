@@ -1,1 +1,1 @@
-include ':app', ':HellPlugin'
+include ':app', ':HellPlugin', ':helllib'

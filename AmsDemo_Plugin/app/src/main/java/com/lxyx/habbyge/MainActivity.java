@@ -23,8 +23,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         System.out.println("MainActivity onResume-1");
-        System.out.println("MainActivity onResume-2");
     }
 }
