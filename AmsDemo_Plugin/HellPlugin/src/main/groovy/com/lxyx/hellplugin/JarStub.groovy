@@ -30,7 +30,7 @@ class JarStub {
             return // 过滤非jar文件
         }
 
-        println('JarStub startStub: ' + jarFilePath)
+//        println('JarStub startStub: ' + jarFilePath)
 
         // 重名名输出文件，因为可能同名，会覆盖
         def jarName = jarInput.name
@@ -44,8 +44,8 @@ class JarStub {
                 jarInput.getScopes(),
                 Format.JAR)
 
-        println('JarStub, startStub, jarInput dest: ' + destJar.getAbsolutePath())
-        println('JarStub, startStub, jarInput.file: ' + jarName)
+//        println('JarStub, startStub, jarInput dest: ' + destJar.getAbsolutePath())
+//        println('JarStub, startStub, jarInput.file: ' + jarName)
 
         Status status = jarInput.getStatus()
         if (isIncremental) {
@@ -89,7 +89,7 @@ class JarStub {
 
             // 插桩
             if ('android/support/v4/app/FragmentActivity.class' == jarEntryName) {
-                println('JarStub Legal: START')
+//                println('JarStub Legal: START')
 
                 jos.putNextEntry(zipEntry)
 
@@ -102,7 +102,7 @@ class JarStub {
                 byte[] codeBytes = classWriter.toByteArray()
                 jos.write(codeBytes)
 
-                println('JarStub Legal: END')
+//                println('JarStub Legal: END')
             } else {
                 jos.putNextEntry(zipEntry)
                 jos.write(IOUtils.toByteArray(zipEntryIs))
@@ -114,7 +114,7 @@ class JarStub {
         jos.close()
         jarFile.close()
 
-        println('JarStub jarFile.close()')
+//        println('JarStub jarFile.close()')
 
         // 将修改过的字节码copy到dest，就可以实现编译期间干预字节码的目的了
         FileUtils.copyFile(tmpJarFile, jarDest)

@@ -51,7 +51,7 @@ class HellJarClassVisitor extends ClassVisitor {
 
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions)
 
-//        // 在页面的生命周期方法中注入callback方法，用于监控页面生命周期
+        // 在页面的生命周期方法中注入callback方法，用于监控页面生命周期
 
         if (METHOD_onCreate_NAME.equals(name) && METHOD_onCreate_DESC.equals(desc)) {
             println('HellJarClassVisitor: visitMethod: onCreate')

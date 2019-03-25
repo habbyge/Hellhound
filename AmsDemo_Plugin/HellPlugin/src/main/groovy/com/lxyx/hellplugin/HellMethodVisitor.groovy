@@ -19,14 +19,14 @@ class HellMethodVisitor extends MethodVisitor {
         // 开始访问该method的Code属性
         super.visitCode()
 
-        println('HellMethodVisitor visitCode: START')
+//        println('HellMethodVisitor visitCode: START')
 
         // method运行之前插桩: 注入一个日志
         log("HABBYGE-MALI, I love my family, let us begin !!!!")
 
         callback(true, 17, "HABBYGE-MALI, callback before method !!!")
 
-        println('HellMethodVisitor visitCode: END')
+//        println('HellMethodVisitor visitCode: END')
     }
 
     @Override
@@ -37,21 +37,18 @@ class HellMethodVisitor extends MethodVisitor {
             callback(false, 19, "HABBYGE-MALI, callback after method !!!")
         }
 
-        super.visitInsn(opcode)
+        mv.visitInsn(opcode)
     }
 
     @Override
     void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
-        // todo 这里可以根据对应的类名、方法名、方法中的指令，来定位自己想要注入的唯一位置，来劫持代码.
-        //      这里以劫持调用startActivity/finish方法为例，获取Bundle参数，并注入callback
-
-        super.visitMethodInsn(opcode, owner, name, desc, itf)
+        mv.visitMethodInsn(opcode, owner, name, desc, itf)
     }
 
     @Override
     void visitEnd() {
-        println('HellMethodVisitor, visitEnd')
-        super.visitEnd()
+//        println('HellMethodVisitor, visitEnd')
+        mv.visitEnd()
     }
 
     private log(String message) {

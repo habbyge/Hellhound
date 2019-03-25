@@ -22,7 +22,7 @@ class HellClassVisitor extends ClassVisitor implements Opcodes {
             String signature, String superName,
             String[] interfaces) {
 
-        println('HellClassVisitor visit: ' + name + ', ' + superName)
+//        println('HellClassVisitor visit: ' + name + ', ' + superName)
         className = name
         interfaceArray = interfaces
 
@@ -34,7 +34,6 @@ class HellClassVisitor extends ClassVisitor implements Opcodes {
             String desc, String signature, Object value) {
 
         println('HellClassVisitor visitField: ' + name + ', ' + desc)
-
         return super.visitField(access, name, desc, signature, value)
     }*/
 
@@ -43,31 +42,20 @@ class HellClassVisitor extends ClassVisitor implements Opcodes {
             String desc, String signature, String[] exceptions) {
 
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions)
+        MethodVisitor hellMv = new HellHijackExecMethodVisitor(mv, className, interfaceArray)
 
         // 这里劫持工程代码中所有出现的onClick()方法，为后面的注入做准备
         if (interfaceArray != null && interfaceArray.length > 0) {
             if (interfaceArray.contains('android/view/View$OnClickListener')) {
                 if ("onClick" == name && "(Landroid/view/View;)V" == desc) {
                     println('HellClassVisitor visitMethod: inject ok: ' + className)
-                    return new HellMethodVisitor(mv)
+                    return new HellMethodVisitor(hellMv)
                 }
             }
         }
 
-        if ("com/lxyx/habbyge/MainActivity".equals(className)) {
-            if ("onResume".equals(name) && "()V".equals(desc)) {
-                return new Hell1MethodVisitor(mv)
-            }
-        }
-
-        println('HellClassVisitor, visitMethod: END ')
-
-        return mv
+        return hellMv
     }
-
-    /*private boolean isLegalClass(final String className) {
-        return curClassName != null && curClassName == className
-    }*/
 
     @Override
     void visitEnd() {

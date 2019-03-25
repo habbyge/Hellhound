@@ -2,6 +2,7 @@ package com.lxyx.helllib;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -166,30 +167,54 @@ public final class HellViewMonitor {
         }
     }
 
+    public void callbackStartActivity(String srcActivityName, Intent intent) {
+        mActivityListener.startActivity(srcActivityName, intent);
+    }
+
+    public void callbackFinish(String srcActivityName) {
+        mActivityListener.finish(srcActivityName);
+    }
+
     private final IHellOnActivityListener mActivityListener = new IHellOnActivityListener() {
         @Override
+        public void startActivity(String srcActivityName, Intent targetIntent) {
+            System.out.println("HABBYGE-MALI, mActivityListener, startActivity: "
+                    + srcActivityName);
+        }
+
+        @Override
+        public void finish(String srcActivityName) {
+            System.out.println("HABBYGE-MALI, mActivityListener, finish: " + srcActivityName);
+        }
+
+        @Override
         public void onCreate(Activity activity) {
-            System.out.println("HABBYGE-MALI, mActivityListener, onCreate");
+            System.out.println("HABBYGE-MALI, mActivityListener, onCreate: "
+                    + activity.getClass().getName());
         }
 
         @Override
         public void onResume(Activity activity) {
-            System.out.println("HABBYGE-MALI, mActivityListener, onResume");
+            System.out.println("HABBYGE-MALI, mActivityListener, onResume: "
+                    + activity.getClass().getName());
         }
 
         @Override
         public void onPause(Activity activity) {
-            System.out.println("HABBYGE-MALI, mActivityListener, onPause");
+            System.out.println("HABBYGE-MALI, mActivityListener, onPause: "
+                    + activity.getClass().getName());
         }
 
         @Override
         public void onStop(Activity activity) {
-            System.out.println("HABBYGE-MALI, mActivityListener, onStop");
+            System.out.println("HABBYGE-MALI, mActivityListener, onStop: "
+                    + activity.getClass().getName());
         }
 
         @Override
         public void onDestroy(Activity activity) {
-            System.out.println("HABBYGE-MALI, mActivityListener, onDestroy");
+            System.out.println("HABBYGE-MALI, mActivityListener, onDestroy: "
+                    + activity.getClass().getName()) ;
         }
     };
 }

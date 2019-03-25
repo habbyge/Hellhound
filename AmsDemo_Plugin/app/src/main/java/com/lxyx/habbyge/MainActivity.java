@@ -1,5 +1,6 @@
 package com.lxyx.habbyge;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -15,7 +16,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.textView1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("textView1 onClick");
+                System.out.println("HABBYGE-MALI, textView1 onClick");
+                startActivity(new Intent(MainActivity.this, TestActivity.class));
             }
         });
     }

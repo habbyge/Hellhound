@@ -46,6 +46,22 @@ class HellJarMethodVisitor extends MethodVisitor {
     }
 
     @Override
+    void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
+
+//        // 这里是调用方法的指令的切面，所以适合我们：
+//        // 这里可以根据对应的调用方法的指令(Opcode.INVOKEVIRTUAL/INVOKESTATIIC)、调用者owner、
+//        // 方法name/desc，来定位自己想要注入到的方法执行的前、后时机，这样就来劫持和注入成功了。
+//        // eg: 这里以劫持调用startActivity/finish方法为例，获取Bundle参数，并注入callback。
+//        if (opcode == Opcodes.INVOKEVIRTUAL) {
+//            if (name.equals("startActivity") && desc.equals("(Landroid/content/Intent;)V")) {
+//                println('HABBYGE-MALI, exec: startActivity, ' + owner)
+//            }
+//        }
+
+        super.visitMethodInsn(opcode, owner, name, desc, itf)
+    }
+
+    @Override
     void visitEnd() {
         super.visitEnd()
     }
