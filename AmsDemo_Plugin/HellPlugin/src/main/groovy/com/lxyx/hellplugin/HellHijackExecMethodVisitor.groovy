@@ -63,7 +63,8 @@ class HellHijackExecMethodVisitor extends MethodVisitor {
     }
 
     private void callbackStartActivity(String owner) {
-        // 由于是在startActivity()之前介入的，所以此时栈顶一定是startActivity()的参数Intent的引用，这个信息很重要
+        // 由于是在startActivity()之前介入的，所以此时栈顶一定是startActivity()
+        // 方法的参数Intent的引用，这个信息很重要：只有这样才能从栈顶获取Intent参数。
 
         // 赋值一份用于callback的参数，避免影响栈顶，从而影响startActivity()的执行
         mv.visitInsn(Opcodes.DUP)
@@ -77,8 +78,10 @@ class HellHijackExecMethodVisitor extends MethodVisitor {
         // 交换栈顶与次栈顶元素
         mv.visitInsn(Opcodes.SWAP)
         mv.visitLdcInsn(owner)
-        mv.visitInsn(Opcodes.SWAP) // 这样调用者以及参数顺序就对了
-//
+        // 再次交换栈顶与次栈顶元素
+        mv.visitInsn(Opcodes.SWAP)
+        // 这样调用者以及参数顺序就对了, ok!!!
+
         mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
                 'com/lxyx/helllib/HellViewMonitor',
                 'callbackStartActivity',

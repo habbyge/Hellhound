@@ -21,4 +21,4 @@
 
 ## 3、进度
 工作比较忙，目前进度还在version1.0中，目前已经整理并完成了控件点击和Activity生命周期的插桩，后续尽快补上其他操作手势的插桩(虽然原理都一样)，和更合理完善的代码！
-- 最新进度：Activity生命周期监控(遗留startActivity/finish方法的劫持和注入)、View监控点击的部分已完成
+- 最新进度：Activity生命周期监控、startActivity/finish方法监控、View监控点击的部分已完成，接下来是监控其他手势

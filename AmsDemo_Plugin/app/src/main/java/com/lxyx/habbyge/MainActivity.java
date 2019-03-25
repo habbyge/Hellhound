@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 System.out.println("HABBYGE-MALI, textView1 onClick");
                 Intent intent = new Intent(MainActivity.this, TestActivity.class);
-                int y = 100;
+                int y = 100; // 这些都是测试用的！！！
 //                System.out.println("y: " + y);
                 startActivity(intent);
             }
