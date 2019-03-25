@@ -17,7 +17,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 System.out.println("HABBYGE-MALI, textView1 onClick");
-                startActivity(new Intent(MainActivity.this, TestActivity.class));
+                Intent intent = new Intent(MainActivity.this, TestActivity.class);
+                int y = 100;
+//                System.out.println("y: " + y);
+                startActivity(intent);
             }
         });
     }

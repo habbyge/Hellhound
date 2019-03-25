@@ -63,26 +63,27 @@ class HellHijackExecMethodVisitor extends MethodVisitor {
     }
 
     private void callbackStartActivity(String owner) {
-//        mv.visitInsn(Opcodes.DUP)
-//        mv.visitInsn()
+        // 由于是在startActivity()之前介入的，所以此时栈顶一定是startActivity()的参数Intent的引用，这个信息很重要
+
+        // 赋值一份用于callback的参数，避免影响栈顶，从而影响startActivity()的执行
+        mv.visitInsn(Opcodes.DUP)
+
+        mv.visitMethodInsn(Opcodes.INVOKESTATIC,
+                'com/lxyx/helllib/HellViewMonitor',
+                'getInstance',
+                '()Lcom/lxyx/helllib/HellViewMonitor;',
+                false)
+
+        // 交换栈顶与次栈顶元素
+        mv.visitInsn(Opcodes.SWAP)
+        mv.visitLdcInsn(owner)
+        mv.visitInsn(Opcodes.SWAP) // 这样调用者以及参数顺序就对了
 //
-//        mv.visitMethodInsn(Opcodes.INVOKESTATIC,
-//                'com/lxyx/helllib/HellViewMonitor',
-//                'getInstance',
-//                '()Lcom/lxyx/helllib/HellViewMonitor;',
-//                false)
-//
-//        mv.visitLdcInsn(owner)
-//
-//        // todo 从slot-2中取出Intent引用，加载到栈中，这里有问题，这里的坑是，startActivity之前的参数Intent，
-//        // todo 实现的时机是不定的，所以不能通过获取局部变量表的位置获取，因为索引具有不确定性.
-//        mv.visitVarInsn(Opcodes.ALOAD, 2)
-//
-//        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-//                'com/lxyx/helllib/HellViewMonitor',
-//                'callbackStartActivity',
-//                "(Ljava/lang/String;Landroid/content/Intent;)V",
-//                false)
+        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                'com/lxyx/helllib/HellViewMonitor',
+                'callbackStartActivity',
+                "(Ljava/lang/String;Landroid/content/Intent;)V",
+                false)
     }
 
     private void callbackFinish(String owner) {
