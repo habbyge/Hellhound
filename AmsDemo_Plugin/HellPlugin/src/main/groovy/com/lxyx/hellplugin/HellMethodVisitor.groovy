@@ -61,9 +61,9 @@ class HellMethodVisitor extends MethodVisitor {
 
     private callback(boolean action, int eventType, Object params) {
         mv.visitMethodInsn(Opcodes.INVOKESTATIC,
-                "com/lxyx/helllib/HellViewMonitor",
+                "com/lxyx/helllib/HellMonitor",
                 "getInstance",
-                "()Lcom/lxyx/helllib/HellViewMonitor;",
+                "()Lcom/lxyx/helllib/HellMonitor;",
                 false)
 
         mv.visitVarInsn(Opcodes.ALOAD, 1) // 从局部变量表slot-1中取出View引用，入栈
@@ -72,13 +72,13 @@ class HellMethodVisitor extends MethodVisitor {
 
         if (action) { // 之前
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-                    "com/lxyx/helllib/HellViewMonitor",
+                    "com/lxyx/helllib/HellMonitor",
                     "callListenerBefore",
                     "(Landroid/view/View;ILjava/lang/Object;)V",
                     false)
         } else { // 之后
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-                    "com/lxyx/helllib/HellViewMonitor",
+                    "com/lxyx/helllib/HellMonitor",
                     "callListenerAfter",
                     "(Landroid/view/View;ILjava/lang/Object;)V",
                     false)

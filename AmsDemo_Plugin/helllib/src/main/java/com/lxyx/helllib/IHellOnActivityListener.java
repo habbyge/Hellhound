@@ -7,9 +7,11 @@ import android.content.Intent;
  * Created by habbyge 2019/03/24.
  */
 public interface IHellOnActivityListener {
-    void startActivity(String srcActivityName, Intent targetIntent);
+    void startActivity(Object srcActivity, String srcActivityName, Intent targetIntent);
 
-    void finish(String srcActivityName);
+    void finish(Activity srcActivity, String srcActivityName);
+
+    boolean moveTaskToBack(Activity srcActivity, String srcActivityName, boolean nonRoot);
 
     void onCreate(Activity activity);
 

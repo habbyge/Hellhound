@@ -12,23 +12,23 @@ import android.widget.Toast;
 /**
  * Created by habbyge 2019/3/6.
  */
-public final class HellViewMonitor {
-    private static final String TAG = "HellViewMonitor";
+public final class HellMonitor {
+    private static final String TAG = "HellMonitor";
 
-    private static HellViewMonitor sInstance;
+    private static HellMonitor sInstance;
 
-    public static HellViewMonitor getInstance() {
+    public static HellMonitor getInstance() {
         if (sInstance == null) {
-            synchronized (HellViewMonitor.class) {
+            synchronized (HellMonitor.class) {
                 if (sInstance == null) {
-                    sInstance = new HellViewMonitor();
+                    sInstance = new HellMonitor();
                 }
             }
         }
         return sInstance;
     }
 
-    private HellViewMonitor() {
+    private HellMonitor() {
     }
 
     public void callListenerBefore(View view, int eventType, Object params) {
@@ -167,24 +167,45 @@ public final class HellViewMonitor {
         }
     }
 
-    public void callbackStartActivity(String srcActivityName, Intent intent) {
-        mActivityListener.startActivity(srcActivityName, intent);
+    // TODO: 2019-03-27 测试方法
+    public static void callbackStartActivity(Object srcActivity, Intent intent) {
+        System.out.println("HABBYGE-MALI, callbackStartActivity()");
     }
 
-    public void callbackFinish(String srcActivityName) {
-        mActivityListener.finish(srcActivityName);
+    public void callbackStartActivity(Object srcActivity, String srcActivityName, Intent intent) {
+        mActivityListener.startActivity(srcActivity, srcActivityName, intent);
     }
 
+    public void callbackFinish(Activity srcActivity, String srcActivityName) {
+        mActivityListener.finish(srcActivity, srcActivityName);
+    }
+
+    public void callbackMoveTaskToBack(Activity srcActivity, String srcActivityName, boolean nonRoot) {
+        mActivityListener.moveTaskToBack(srcActivity, srcActivityName, nonRoot);
+    }
+
+    // 返回调用者对象、目标对象，这样就可以把用户页面行为串起来了。
     private final IHellOnActivityListener mActivityListener = new IHellOnActivityListener() {
         @Override
-        public void startActivity(String srcActivityName, Intent targetIntent) {
+        public void startActivity(Object srcActivity, String srcActivityName, Intent targetIntent) {
             System.out.println("HABBYGE-MALI, mActivityListener, startActivity: "
-                    + srcActivityName);
+                    + srcActivity.getClass().getName() + " | " + srcActivityName);
+
+            // 调用者可能是Activity或Context，所以这里县写成Object类型，根据需要自己转换
+            // 从 targetIntent 中可以获取跳转参数，包括：跳转目标Activity，此时就可以获取跳转源和跳转目标
         }
 
         @Override
-        public void finish(String srcActivityName) {
-            System.out.println("HABBYGE-MALI, mActivityListener, finish: " + srcActivityName);
+        public void finish(Activity srcActivity, String srcActivityName) {
+            System.out.println("HABBYGE-MALI, mActivityListener, finish: "
+                    + srcActivity.getClass().getName() + " | " + srcActivityName);
+        }
+
+        @Override
+        public boolean moveTaskToBack(Activity srcActivity, String srcActivityName, boolean nonRoot) {
+            System.out.println("HABBYGE-MALI, mActivityListener, moveTaskToBack: " +
+                    srcActivity.getClass().getName() + " | " + srcActivityName + " | " + nonRoot);
+            return false;
         }
 
         @Override

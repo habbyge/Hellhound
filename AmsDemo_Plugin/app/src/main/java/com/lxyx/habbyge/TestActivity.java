@@ -29,7 +29,7 @@ public class TestActivity extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        finish();
+        finish(); // 测试finish()注入
         return super.onKeyDown(keyCode, event);
     }
 }

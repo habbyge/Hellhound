@@ -54,6 +54,14 @@ class HellClassVisitor extends ClassVisitor implements Opcodes {
             }
         }
 
+        // TODO ListView item点击；
+
+        // TODO 长按
+
+        // TODO 拖动
+
+        // 其他行为类似，实际上最常用的是点击、列表item点击
+
         return hellMv
     }
 

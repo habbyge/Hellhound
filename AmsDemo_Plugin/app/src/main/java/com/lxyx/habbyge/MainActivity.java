@@ -20,7 +20,9 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, TestActivity.class);
                 int y = 100; // 这些都是测试用的！！！
 //                System.out.println("y: " + y);
-                startActivity(intent);
+                startActivity(intent); // 测试startActivity注入
+
+                MainActivity.this.moveTaskToBack(false); // 测试moveTaskToBack()注入
             }
         });
     }
