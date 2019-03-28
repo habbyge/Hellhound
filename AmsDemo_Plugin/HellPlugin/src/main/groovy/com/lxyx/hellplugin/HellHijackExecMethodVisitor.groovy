@@ -70,8 +70,9 @@ class HellHijackExecMethodVisitor extends MethodVisitor {
 
     // void callbackStartActivity(Object srcActivity, String srcActivityName, Intent intent)
     private void callbackStartActivity(String owner) {
-        // 由于是在startActivity()之前介入的，所以此时操作数栈顶一定是startActivity()
-        // 方法的参数Intent的引用，这个信息很重要：只有这样才能从栈顶获取Intent参数。
+        // 由于是在startActivity()之前介入的，所以此时操作数栈顶一定是startActivity()的调用者对象引用和
+        // 该方法的参数Intent的引用，这个信息很重要：只有这样才能从操作数栈中获取次栈顶调用者对象的引用和栈
+        // 顶Intent参数。这是整个callback执行的现场.
 
         // 复制一份栈顶前两个元素，这里是startActivity()方法的调用者Activity或Context引用 和 要启动的Intent引用。
         // 用于callback的参数，避免影响栈顶，从而影响startActivity()的执行，一定要dup，如下：
