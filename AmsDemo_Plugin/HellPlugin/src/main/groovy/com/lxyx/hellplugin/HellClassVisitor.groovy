@@ -46,19 +46,20 @@ class HellClassVisitor extends ClassVisitor implements Opcodes {
 
         // 这里劫持工程代码中所有出现的onClick()方法，为后面的注入做准备
         if (interfaceArray != null && interfaceArray.length > 0) {
-            if (interfaceArray.contains('android/view/View$OnClickListener')) {
-                if ("onClick" == name && "(Landroid/view/View;)V" == desc) {
-                    println('HellClassVisitor visitMethod: inject ok: ' + className)
-                    return new HellMethodVisitor(hellMv)
+            if (interfaceArray.contains('android/view/View$OnClickListener')) { // 类名
+                if ('onClick' == name && '(Landroid/view/View;)V' == desc) {
+                    println('HellClassVisitor OnClickListener: inject ok: ' + className)
+                    return new HellMethodVisitor(hellMv, HellMethodVisitor.CLICK)
                 }
+            } else if (interfaceArray.contains('android/view/View$OnLongClickListener')) { // 类名
+                if ('onLongClick' == name && '(Landroid/view/View;)Z' == desc) {
+                    println('HellClassVisitor OnLongClickListener: inject ok: ' + className)
+                    return new HellMethodVisitor(hellMv, HellMethodVisitor.LONG_CLICK)
+                }
+            } else {
+                // TODO 有待增加的是：ListView item点击
             }
         }
-
-        // TODO ListView item点击；
-
-        // TODO 长按
-
-        // TODO 拖动
 
         // 其他行为类似，实际上最常用的是点击、列表item点击
 
@@ -69,6 +70,5 @@ class HellClassVisitor extends ClassVisitor implements Opcodes {
     void visitEnd() {
         /*println('HellClassVisitor, visitEnd !!!')*/
         super.visitEnd()
-
     }
 }

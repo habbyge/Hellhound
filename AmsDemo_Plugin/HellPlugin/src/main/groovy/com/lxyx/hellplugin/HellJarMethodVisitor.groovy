@@ -40,6 +40,9 @@ class HellJarMethodVisitor extends MethodVisitor {
             } else if ("onDestroy".equals(mMethodName) && "()V".equals(mMethodDesc)) {
                 eventType = 4
             }
+
+            // TODO: 2019-03-28 有待完成，继续劫持其他Activity方法 ！！！
+
             callback(eventType)
         }
         super.visitInsn(opcode)

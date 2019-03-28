@@ -87,7 +87,9 @@ class JarStub {
             ZipEntry zipEntry = new ZipEntry(jarEntryName) // 实际上JarFile是一个Zip压缩文件
             InputStream zipEntryIs = jarFile.getInputStream(zipEntry)
 
-            // 插桩
+            // 插桩：对于android.jar，是介入不了的，只能介入外部的jar包，所以这里介入的是v4/v7包。
+            // 在实际项目中，一般我们都会采用v4/v7包中的Activity、Fragment等页面，以及ViewPager等
+            // 控件来写项目。
             if ('android/support/v4/app/FragmentActivity.class' == jarEntryName) {
 //                println('JarStub Legal: START')
 

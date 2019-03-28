@@ -110,7 +110,8 @@ class HellHijackExecMethodVisitor extends MethodVisitor {
         // 总结一下:
         // 其实方法调用，就是构造操作数栈中的调用顺序，调用者先入栈，再按照形参顺序入栈，之后invoke方法即可。
         // 需要小心的是，控制栈的dup指令系列、pop、swap指令等，实时脑补或写出来现场操作数栈情况，有助于写
-        // jvm指令。
+        // jvm指令，另外一个小技巧是，如果对某些指令实在拿不准或忘记了，可以使用"ASM Bytecode Viewer" 插
+        // 件来协助。
         // 另外，一定记住、记住、记住，学习文档尽量看英文原版的，我就是看了某个博客，误导我，导致DUP指令理解
         // 错误，浪费了点时间；后来我去读oracle的官网doc的Chapter-6，才知道，正确的意思，例如：
         // dup_x2: Duplicate the top operand stack value and insert two or three values down.
@@ -148,7 +149,7 @@ class HellHijackExecMethodVisitor extends MethodVisitor {
                 '()Lcom/lxyx/helllib/HellMonitor;',
                 false) // 此时栈顶前3个元素是：调用者对象Activity引用->boolean参数->HellMonitor单例引用
         // 此时栈顶前3个元素是：HellMonitor单例引用->调用者对象Activity引用->boolean参数->HellMonitor单例引用
-        mv.visitInsn(Opcodes.DUP_X2)
+        mv.visitInsn(Opcodes.DUP_X2) // 复制栈顶，并向下插入3个位置
         // pop处栈顶: 多余的元素，此时栈是：HellMonitor单例引用->调用者对象Activity引用->boolean参数
         mv.visitInsn(Opcodes.POP)
         mv.visitLdcInsn(owner)

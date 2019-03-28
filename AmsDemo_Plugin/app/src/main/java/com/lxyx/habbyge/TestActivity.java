@@ -25,6 +25,14 @@ public class TestActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        fab.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                System.out.println("HABBYGE-MALI, TestActivity, onLongClick");
+                return true;
+            }
+        });
     }
 
     @Override

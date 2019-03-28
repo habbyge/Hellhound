@@ -31,12 +31,12 @@ public final class HellMonitor {
     private HellMonitor() {
     }
 
-    public void callListenerBefore(View view, int eventType, Object params) {
-        mListener.onClickBefore(view, eventType, params);
+    public void callListenerBefore(int clickType, View view) {
+        mListener.onClickBefore(clickType, view);
     }
 
-    public void callListenerAfter(View view, int eventType, Object params) {
-        mListener.onClickAfter(view, eventType, params);
+    public void callListenerAfter(int clickType, View view) {
+        mListener.onClickAfter(clickType, view);
     }
 
 //    public static void callListenerStatic(View view, int eventType, Object params) {
@@ -44,9 +44,8 @@ public final class HellMonitor {
 //    }
 
     private final IHellOnClickListener mListener = new IHellOnClickListener() {
-
         @Override
-        public void onClickBefore(View view, int eventType, Object params) {
+        public void onClickBefore(int clickType, View view) {
             if (view == null) {
                 return;
             }
@@ -57,17 +56,8 @@ public final class HellMonitor {
             System.out.println(TAG + ", view = " + viewName);
             showTextSb.append(viewName);
 
-            System.out.println(TAG + ", eventType = " + eventType);
-            showTextSb.append("|").append(eventType);
-
-            if (params != null) {
-                System.out.println(TAG + ", params = " + params);
-                showTextSb.append("|").append(params);
-            }
-
-//            Toast toast = Toast.makeText(view.getContext(), showTextSb.toString(), Toast.LENGTH_LONG);
-//            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 0);
-//            toast.show();
+            System.out.println(TAG + ", clickType = " + clickType);
+            showTextSb.append("|").append(clickType);
 
             view.setBackgroundResource(android.R.color.holo_green_dark);
 
@@ -82,7 +72,7 @@ public final class HellMonitor {
         }
 
         @Override
-        public void onClickAfter(View view, int eventType, Object params) {
+        public void onClickAfter(int clickType, View view) {
             if (view == null) {
                 return;
             }
@@ -93,13 +83,8 @@ public final class HellMonitor {
             System.out.println(TAG + ", view = " + viewName);
             showTextSb.append(viewName);
 
-            System.out.println(TAG + ", eventType = " + eventType);
-            showTextSb.append("|").append(eventType);
-
-            if (params != null) {
-                System.out.println(TAG + ", params = " + params);
-                showTextSb.append("|").append(params);
-            }
+            System.out.println(TAG + ", clickType = " + clickType);
+            showTextSb.append("|").append(clickType);
 
             Toast toast = Toast.makeText(view.getContext(), showTextSb.toString(), Toast.LENGTH_LONG);
             toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_VERTICAL, 0, 0);
@@ -132,14 +117,18 @@ public final class HellMonitor {
         }
         String viewId = view.getClass().getSimpleName();
         ViewParent viewParent;
+        ViewGroup parent;
+        int viewIndex;
         while ((viewParent = view.getParent()) != null
                 && !viewRootClass.isInstance(viewParent)
                 && !decorViewClass.isInstance(viewParent)) {
 
-            //noinspection StringConcatenationInLoop
-            viewId += "|" + viewParent.getClass().getSimpleName();
+            parent = (ViewGroup) viewParent;
+            viewIndex = parent.indexOfChild(view);
+            // noinspection StringConcatenationInLoop
+            viewId += "|" + parent.getClass().getSimpleName() + "[" + viewIndex + "]";
 
-            view = (ViewGroup) viewParent;
+            view = parent; // next
         }
         return viewId;
     }
@@ -167,7 +156,6 @@ public final class HellMonitor {
         }
     }
 
-    // TODO: 2019-03-27 测试方法
     public static void callbackStartActivity(Object srcActivity, Intent intent) {
         System.out.println("HABBYGE-MALI, callbackStartActivity()");
     }
