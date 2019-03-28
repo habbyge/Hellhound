@@ -74,7 +74,7 @@ class HellMethodVisitor extends MethodVisitor {
      * @param beforeOrAfter before or after method execute
      * @param View the view on clicked
      */
-    private callback(int clickType, boolean beforeOrAfter) { // todo 这里继续，修改这个callback方法体
+    private callback(int clickType, boolean beforeOrAfter) {
         mv.visitMethodInsn(Opcodes.INVOKESTATIC,
                 "com/lxyx/helllib/HellMonitor",
                 "getInstance",
