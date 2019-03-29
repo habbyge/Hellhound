@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 /**
@@ -31,16 +32,16 @@ public final class HellMonitor {
     private HellMonitor() {
     }
 
-    public void callListenerBefore(int clickType, View view) {
+    public void callClickListenerBefore(int clickType, View view) {
         mListener.onClickBefore(clickType, view);
     }
 
-    public void callListenerAfter(int clickType, View view) {
+    public void callClickListenerAfter(int clickType, View view) {
         mListener.onClickAfter(clickType, view);
     }
 
 //    public static void callListenerStatic(View view, int eventType, Object params) {
-//        getInstance().callListenerBefore(view, eventType, params);
+//        getInstance().callClickListenerBefore(view, eventType, params);
 //    }
 
     private final IHellOnClickListener mListener = new IHellOnClickListener() {
@@ -93,6 +94,35 @@ public final class HellMonitor {
 //            view.setBackgroundResource(android.R.color.holo_blue_bright);
 
             System.out.println("HABBYGE-MALI, onClickAfter: " + showTextSb.toString());
+        }
+    };
+
+    public void callbackItemClickBefore(AdapterView<?> parent, View view, int position, long id) {
+        itemListener.onItemClickBefore(parent, view, position, id);
+    }
+    public void callbackItemClickAfter(AdapterView<?> parent, View view, int position, long id) {
+        itemListener.onItemClickAfter(parent, view, position, id);
+    }
+
+    private final IHellOnItemClickListener itemListener = new IHellOnItemClickListener() {
+        @Override
+        public void onItemClickBefore(AdapterView<?> parent, View view, int position, long id) {
+            // 这里从当前View开始，向上遍历，获取View树
+            String viewId = getViewId(view);
+            if (viewId == null || viewId.isEmpty()) {
+                return;
+            }
+            System.out.println("HABBYGE-MALI, onItemClickBefore, itemListener: " + viewId);
+        }
+
+        @Override
+        public void onItemClickAfter(AdapterView<?> parent, View view, int position, long id) {
+            // 这里从当前View开始，向上遍历，获取View树
+            String viewId = getViewId(view);
+            if (viewId == null || viewId.isEmpty()) {
+                return;
+            }
+            System.out.println("HABBYGE-MALI, onItemClickAfter, itemListener: " + viewId);
         }
     };
 

@@ -41,7 +41,7 @@ class HellJarMethodVisitor extends MethodVisitor {
                 eventType = 4
             }
 
-            // TODO: 2019-03-28 有待完成，继续劫持其他Activity方法 ！！！
+            // TODO: 2019-03-28 有待完成，继续劫持其他Activity方法，配合Fragment行为监控，避免事件重复和遗漏
 
             callback(eventType)
         }

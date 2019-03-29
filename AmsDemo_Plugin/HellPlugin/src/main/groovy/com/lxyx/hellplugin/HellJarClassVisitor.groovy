@@ -51,7 +51,8 @@ class HellJarClassVisitor extends ClassVisitor {
 
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions)
 
-        // 在页面的生命周期方法中注入callback方法，用于监控页面生命周期
+        // 在页面的生命周期方法中注入callback方法，用于监控页面生命周期，与startActivity、finish、
+        // moveTaskToBack三个方法组成Activity完整执行链路
 
         if (METHOD_onCreate_NAME.equals(name) && METHOD_onCreate_DESC.equals(desc)) {
             println('HellJarClassVisitor: visitMethod: onCreate')
@@ -74,9 +75,10 @@ class HellJarClassVisitor extends ClassVisitor {
             return new HellJarMethodVisitor(mv, name, desc)
         }
 
-        // TODO: 2019-03-28 有待完成 ！！！！
+        // TODO: 2019-03-28 Fragment监控，有待完成 ！！！！
         //  新增v4包中Fragment生命周期的劫持和插桩，通常Fragment会与ViewPager之类
         //  的控件一起使用，所以，这里也把ViewPager也劫持插桩了。
+        //  监控启动fragment方法、关闭fragment方法、fragment生命周期方法，组成整条fragment的执行链路
 
         return mv
     }

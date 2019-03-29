@@ -8,6 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 
+/**
+ * Created by habbyge 2019/3/5.
+ */
 public class TestActivity extends AppCompatActivity {
 
     @Override
@@ -22,7 +25,8 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                        .setAction("Action", null)
+                        .show();
             }
         });
 

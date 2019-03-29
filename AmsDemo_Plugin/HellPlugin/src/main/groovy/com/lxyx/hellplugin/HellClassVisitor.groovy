@@ -42,28 +42,41 @@ class HellClassVisitor extends ClassVisitor implements Opcodes {
             String desc, String signature, String[] exceptions) {
 
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions)
-        MethodVisitor hellMv = new HellHijackExecMethodVisitor(mv, className, interfaceArray)
+        MethodVisitor activityExecMv = new HellActivityExecMethodVisitor(mv, className, interfaceArray)
 
         // 这里劫持工程代码中所有出现的onClick()方法，为后面的注入做准备
         if (interfaceArray != null && interfaceArray.length > 0) {
-            if (interfaceArray.contains('android/view/View$OnClickListener')) { // 类名
+            // 点击
+            if (interfaceArray.contains('android/view/View$OnClickListener')) {
                 if ('onClick' == name && '(Landroid/view/View;)V' == desc) {
                     println('HellClassVisitor OnClickListener: inject ok: ' + className)
-                    return new HellMethodVisitor(hellMv, HellMethodVisitor.CLICK)
+                    return new HellClickMethodVisitor(activityExecMv, HellClickMethodVisitor.CLICK)
                 }
-            } else if (interfaceArray.contains('android/view/View$OnLongClickListener')) { // 类名
+            }
+
+            // 长按
+            if (interfaceArray.contains('android/view/View$OnLongClickListener')) {
                 if ('onLongClick' == name && '(Landroid/view/View;)Z' == desc) {
                     println('HellClassVisitor OnLongClickListener: inject ok: ' + className)
-                    return new HellMethodVisitor(hellMv, HellMethodVisitor.LONG_CLICK)
+                    return new HellClickMethodVisitor(activityExecMv, HellClickMethodVisitor.LONG_CLICK)
                 }
-            } else {
-                // TODO 有待增加的是：ListView item点击
+            }
+
+            // ListView中Item点击
+            if (interfaceArray.contains('android/widget/AdapterView$OnItemClickListener')) {
+                // void onItemClick(AdapterView<?> parent, View view, int position, long id);
+                if ('onItemClick'.equals(name) &&
+                        '(Landroid/widget/AdapterView;Landroid/view/View;IJ)V'.equals(desc)) {
+                    println('HellClassVisitor onItemClick: inject ok: ' + className)
+                    return new HellClickMethodVisitor(activityExecMv,
+                            HellClickMethodVisitor.LISTVIEW_ITEM_CLICK)
+                }
             }
         }
 
         // 其他行为类似，实际上最常用的是点击、列表item点击
 
-        return hellMv
+        return activityExecMv
     }
 
     @Override
