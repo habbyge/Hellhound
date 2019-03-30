@@ -4,6 +4,7 @@ import com.android.build.api.transform.Format
 import com.android.build.api.transform.JarInput
 import com.android.build.api.transform.Status
 import com.android.build.api.transform.TransformOutputProvider
+import com.lxyx.hellplugin.activity.HellActivityClassVisitor
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
@@ -96,7 +97,7 @@ class JarStub {
                 ClassReader classReader = new ClassReader(IOUtils.toByteArray(zipEntryIs))
                 ClassWriter classWriter = new ClassWriter(classReader,
                         ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS)
-                ClassVisitor classVisitor = new HellFragmentActivityClassVisitor(classWriter)
+                ClassVisitor classVisitor = new HellActivityClassVisitor(classWriter)
                 classReader.accept(classVisitor, 0)
 
                 byte[] codeBytes = classWriter.toByteArray()

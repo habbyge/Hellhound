@@ -1,21 +1,14 @@
-package com.lxyx.hellplugin
+package com.lxyx.hellplugin.view
 
-import groovy.transform.PackageScope
+import com.lxyx.hellplugin.common.HellConstant
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 
 /**
  * Created by habbyge 2019/3/5.
  */
-@PackageScope
 class HellClickMethodVisitor extends MethodVisitor {
-
-    // 以单击、长按为例，其他的手势，以及自定义手势都可以按照这个思路，进行劫持并插桩
-    static final int CLICK = 0
-    static final int LONG_CLICK = 1
-    static final int LISTVIEW_ITEM_CLICK = 2
-
-    private int type = CLICK
+    private int type = HellConstant.CLICK
 
     HellClickMethodVisitor(MethodVisitor mv, int type) {
         super(Opcodes.ASM5, mv)
@@ -83,7 +76,8 @@ class HellClickMethodVisitor extends MethodVisitor {
                 "()Lcom/lxyx/helllib/HellMonitor;",
                 false) // 单例调用者
 
-        if (clickType == CLICK || clickType == LONG_CLICK) { // view click or long click
+        // view click or long click
+        if (clickType == HellConstant.CLICK || clickType == HellConstant.LONG_CLICK) {
             mv.visitLdcInsn(clickType)
             mv.visitVarInsn(Opcodes.ALOAD, 1) // 从局部变量表slot-1中取出View引用，入栈
 
@@ -102,7 +96,7 @@ class HellClickMethodVisitor extends MethodVisitor {
                         '(ILandroid/view/View;)V',
                         false)
             }
-        } else if (clickType == LISTVIEW_ITEM_CLICK) { // listview item click
+        } else if (clickType == HellConstant.LISTVIEW_ITEM_CLICK) { // listview item click
             // void onItemClick(AdapterView<?> parent, View view, int position, long id);
             // callbackItemClickBefore
             // callbackItemClickAfter

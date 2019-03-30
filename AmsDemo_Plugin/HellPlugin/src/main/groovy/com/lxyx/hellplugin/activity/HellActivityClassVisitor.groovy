@@ -1,6 +1,6 @@
-package com.lxyx.hellplugin
+package com.lxyx.hellplugin.activity
 
-import groovy.transform.PackageScope
+
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
@@ -8,8 +8,7 @@ import org.objectweb.asm.Opcodes
 /**
  * Created by habbyge 2019/03/15.
  */
-@PackageScope
-class HellFragmentActivityClassVisitor extends ClassVisitor {
+class HellActivityClassVisitor extends ClassVisitor {
     private String className
     private String superName
     private String[] interfaceArray
@@ -32,7 +31,7 @@ class HellFragmentActivityClassVisitor extends ClassVisitor {
     private static final String METHOD_onDestroy_NAME = 'onDestroy'
     private static final String METHOD_onDestroy_DESC = '()V'
 
-    HellFragmentActivityClassVisitor(ClassVisitor cv) {
+    HellActivityClassVisitor(ClassVisitor cv) {
         super(Opcodes.ASM5, cv)
     }
 
@@ -58,28 +57,28 @@ class HellFragmentActivityClassVisitor extends ClassVisitor {
         // moveTaskToBack三个方法组成Activity完整执行链路
 
         if (METHOD_onCreate_NAME.equals(name) && METHOD_onCreate_DESC.equals(desc)) {
-            println('HellFragmentActivityClassVisitor: visitMethod: onCreate')
-            return new HellJarMethodVisitor(mv, name, desc)
+            println('HellActivityClassVisitor: visitMethod: onCreate')
+            return new HellActivityMethodVisitor(mv, name, desc)
         }
         if (METHOD_onNewIntent_NAME.equals(name) && METHOD_onNewIntent_DESC.equals(desc)) {
-            println('HellFragmentActivityClassVisitor: visitMethod: onNewIntent')
-            return new HellJarMethodVisitor(mv, name, desc)
+            println('HellActivityClassVisitor: visitMethod: onNewIntent')
+            return new HellActivityMethodVisitor(mv, name, desc)
         }
         if (METHOD_onResume_NAME.equals(name) && METHOD_onResume_DESC.equals(desc)) {
-            println('HellFragmentActivityClassVisitor: visitMethod: onResume')
-            return new HellJarMethodVisitor(mv, name, desc)
+            println('HellActivityClassVisitor: visitMethod: onResume')
+            return new HellActivityMethodVisitor(mv, name, desc)
         }
         if (METHOD_onPause_NAME.equals(name) && METHOD_onPause_DESC.equals(desc)) {
-            println('HellFragmentActivityClassVisitor: visitMethod: onPause')
-            return new HellJarMethodVisitor(mv, name, desc)
+            println('HellActivityClassVisitor: visitMethod: onPause')
+            return new HellActivityMethodVisitor(mv, name, desc)
         }
         if (METHOD_onStop_NAME.equals(name) && METHOD_onStop_DESC.equals(desc)) {
-            println('HellFragmentActivityClassVisitor: visitMethod: onStop')
-            return new HellJarMethodVisitor(mv, name, desc)
+            println('HellActivityClassVisitor: visitMethod: onStop')
+            return new HellActivityMethodVisitor(mv, name, desc)
         }
         if (METHOD_onDestroy_NAME.equals(name) && METHOD_onDestroy_DESC.equals(desc)) {
-            println('HellFragmentActivityClassVisitor: visitMethod: onDestroy')
-            return new HellJarMethodVisitor(mv, name, desc)
+            println('HellActivityClassVisitor: visitMethod: onDestroy')
+            return new HellActivityMethodVisitor(mv, name, desc)
         }
 
         // TODO: 2019-03-28 Fragment监控，有待完成 ！！！！

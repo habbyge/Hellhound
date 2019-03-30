@@ -1,5 +1,8 @@
 package com.lxyx.hellplugin
 
+import com.lxyx.hellplugin.activity.HellActivityExecMethodVisitor
+import com.lxyx.hellplugin.common.HellConstant
+import com.lxyx.hellplugin.view.HellClickMethodVisitor
 import groovy.transform.PackageScope
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
@@ -9,11 +12,11 @@ import org.objectweb.asm.Opcodes
  * Created by habbyge 2019/3/5.
  */
 @PackageScope
-class HellClassVisitor extends ClassVisitor implements Opcodes {
+class HellDirectoryClassVisitor extends ClassVisitor implements Opcodes {
     private String className
     private String[] interfaceArray
 
-    HellClassVisitor(final int api, final ClassVisitor cv) {
+    HellDirectoryClassVisitor(final int api, final ClassVisitor cv) {
         super(api, cv)
     }
 
@@ -22,7 +25,7 @@ class HellClassVisitor extends ClassVisitor implements Opcodes {
             String signature, String superName,
             String[] interfaces) {
 
-//        println('HellClassVisitor visit: ' + name + ', ' + superName)
+//        println('HellDirectoryClassVisitor visit: ' + name + ', ' + superName)
         className = name
         interfaceArray = interfaces
 
@@ -33,7 +36,7 @@ class HellClassVisitor extends ClassVisitor implements Opcodes {
     FieldVisitor visitField(int access, String name,
             String desc, String signature, Object value) {
 
-        println('HellClassVisitor visitField: ' + name + ', ' + desc)
+        println('HellDirectoryClassVisitor visitField: ' + name + ', ' + desc)
         return super.visitField(access, name, desc, signature, value)
     }*/
 
@@ -49,16 +52,16 @@ class HellClassVisitor extends ClassVisitor implements Opcodes {
             // 点击
             if (interfaceArray.contains('android/view/View$OnClickListener')) {
                 if ('onClick' == name && '(Landroid/view/View;)V' == desc) {
-                    println('HellClassVisitor OnClickListener: inject ok: ' + className)
-                    return new HellClickMethodVisitor(activityExecMv, HellClickMethodVisitor.CLICK)
+                    println('HellDirectoryClassVisitor OnClickListener: inject ok: ' + className)
+                    return new HellClickMethodVisitor(activityExecMv, HellConstant.CLICK)
                 }
             }
 
             // 长按
             if (interfaceArray.contains('android/view/View$OnLongClickListener')) {
                 if ('onLongClick' == name && '(Landroid/view/View;)Z' == desc) {
-                    println('HellClassVisitor OnLongClickListener: inject ok: ' + className)
-                    return new HellClickMethodVisitor(activityExecMv, HellClickMethodVisitor.LONG_CLICK)
+                    println('HellDirectoryClassVisitor OnLongClickListener: inject ok: ' + className)
+                    return new HellClickMethodVisitor(activityExecMv, HellConstant.LONG_CLICK)
                 }
             }
 
@@ -67,9 +70,8 @@ class HellClassVisitor extends ClassVisitor implements Opcodes {
                 // void onItemClick(AdapterView<?> parent, View view, int position, long id);
                 if ('onItemClick'.equals(name) &&
                         '(Landroid/widget/AdapterView;Landroid/view/View;IJ)V'.equals(desc)) {
-                    println('HellClassVisitor onItemClick: inject ok: ' + className)
-                    return new HellClickMethodVisitor(activityExecMv,
-                            HellClickMethodVisitor.LISTVIEW_ITEM_CLICK)
+                    println('HellDirectoryClassVisitor onItemClick: inject ok: ' + className)
+                    return new HellClickMethodVisitor(activityExecMv, HellConstant.LISTVIEW_ITEM_CLICK)
                 }
             }
         }
@@ -81,7 +83,7 @@ class HellClassVisitor extends ClassVisitor implements Opcodes {
 
     @Override
     void visitEnd() {
-        /*println('HellClassVisitor, visitEnd !!!')*/
+        /*println('HellDirectoryClassVisitor, visitEnd !!!')*/
         super.visitEnd()
     }
 }

@@ -1,13 +1,11 @@
-package com.lxyx.hellplugin
+package com.lxyx.hellplugin.activity
 
-import groovy.transform.PackageScope
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 
 /**
  * Created by habbyge 2019/3/15.
  */
-@PackageScope
 class HellActivityExecMethodVisitor extends MethodVisitor {
     private String mClassName
     private String[] mInterfaces

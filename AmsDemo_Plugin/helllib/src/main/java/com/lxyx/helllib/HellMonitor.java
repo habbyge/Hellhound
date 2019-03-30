@@ -168,19 +168,19 @@ public final class HellMonitor {
      */
     public void callActivityListener(Activity activity, int eventType) {
         switch (eventType) {
-        case 0:
+        case HellConstant.ACTIVITY_EVENT_OnCreate:
             mActivityListener.onCreate(activity);
             break;
-        case 2:
+        case HellConstant.ACTIVITY_EVENT_OnResume:
             mActivityListener.onResume(activity);
             break;
-        case 3:
+        case HellConstant.ACTIVITY_EVENT_OnPause:
             mActivityListener.onPause(activity);
             break;
-        case 4:
+        case HellConstant.ACTIVITY_EVENT_OnStop:
             mActivityListener.onStop(activity);
             break;
-        case 5:
+        case HellConstant.ACTIVITY_EVENT_OnDestroy:
             mActivityListener.onDestroy(activity);
             break;
         }

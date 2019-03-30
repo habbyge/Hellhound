@@ -1,20 +1,18 @@
-package com.lxyx.hellplugin
+package com.lxyx.hellplugin.activity
 
 import com.lxyx.hellplugin.common.HellConstant
-import groovy.transform.PackageScope
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 
 /**
  * Created by habbyge 2019/03/24.
  */
-@PackageScope
-class HellJarMethodVisitor extends MethodVisitor {
+class HellActivityMethodVisitor extends MethodVisitor {
 
     private String mMethodName
     private String mMethodDesc
 
-    HellJarMethodVisitor(MethodVisitor mv, String methodName, String methodDesc) {
+    HellActivityMethodVisitor(MethodVisitor mv, String methodName, String methodDesc) {
         super(Opcodes.ASM5, mv)
 
         mMethodName = methodName
@@ -29,19 +27,19 @@ class HellJarMethodVisitor extends MethodVisitor {
     @Override
     void visitInsn(int opcode) {
         if (Opcodes.RETURN == opcode) {
-            int eventType = -1
+            int eventType = HellConstant.ACTIVITY_EVENT_INVALIDATE
             if ("onCreate".equals(mMethodName) && "(Landroid/os/Bundle;)V".equals(mMethodDesc)) {
-                eventType = 0
+                eventType = HellConstant.ACTIVITY_EVENT_OnCreate
             } else if ('onNewIntent'.equals(mMethodName) && '(Landroid/os/Bundle;)V'.equals(mMethodDesc)) {
                 eventType = HellConstant.ACTIVITY_EVENT_OnNewIntent
             } else if ("onResume".equals(mMethodName) && "()V".equals(mMethodDesc)) {
-                eventType = 2
+                eventType = HellConstant.ACTIVITY_EVENT_OnResume
             } else if ("onPause".equals(mMethodName) && "()V".equals(mMethodDesc)) {
-                eventType = 3
+                eventType = HellConstant.ACTIVITY_EVENT_OnPause
             } else if ("onStop".equals(mMethodName) && "()V".equals(mMethodDesc)) {
-                eventType = 4
+                eventType = HellConstant.ACTIVITY_EVENT_OnStop
             } else if ("onDestroy".equals(mMethodName) && "()V".equals(mMethodDesc)) {
-                eventType = 5
+                eventType = HellConstant.ACTIVITY_EVENT_OnDestroy
             }
 
             // TODO: 2019-03-28 有待完成，继续劫持其他Activity方法，配合Fragment行为监控，避免事件重复和遗漏

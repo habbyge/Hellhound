@@ -35,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
                 int y = 100; // 这些都是测试用的，随便添加的无用代码！！！
                 /*System.out.println("y: " + y);*/
                 startActivity(intent); // 测试startActivity注入
-
-                MainActivity.this.moveTaskToBack(false); // 测试moveTaskToBack()注入
             }
         });
 
@@ -45,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
+        setIntent(intent);
         super.onNewIntent(intent);
     }
 

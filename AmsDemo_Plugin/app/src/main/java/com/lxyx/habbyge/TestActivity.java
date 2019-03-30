@@ -11,7 +11,7 @@ import android.view.View;
 /**
  * Created by habbyge 2019/3/5.
  */
-public class TestActivity extends AppCompatActivity {
+public final class TestActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,20 +20,27 @@ public class TestActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TestActivity.this.moveTaskToBack(true); // 测试moveTaskToBack()注入
+            }
+        });
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(TestActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 测试onNewIntent()注入
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); // 测试onNewIntent()注入
                 startActivity(intent); // 测试startActivity方法前注入
             }
         });
 
         fab.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                System.out.println("HABBYGE-MALI, TestActivity, onLongClick");
+            public boolean onLongClick(View v) { // 测试长按的注入
+                System.out.println("HABBYGE-MALI, TestActivity, onLongClick"); // 测试长按方法注入
                 return true;
             }
         });
