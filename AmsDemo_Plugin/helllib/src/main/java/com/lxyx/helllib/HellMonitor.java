@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 /**
@@ -31,16 +32,16 @@ public final class HellMonitor {
     private HellMonitor() {
     }
 
-    public void callListenerBefore(int clickType, View view) {
+    public void callClickListenerBefore(int clickType, View view) {
         mListener.onClickBefore(clickType, view);
     }
 
-    public void callListenerAfter(int clickType, View view) {
+    public void callClickListenerAfter(int clickType, View view) {
         mListener.onClickAfter(clickType, view);
     }
 
 //    public static void callListenerStatic(View view, int eventType, Object params) {
-//        getInstance().callListenerBefore(view, eventType, params);
+//        getInstance().callClickListenerBefore(view, eventType, params);
 //    }
 
     private final IHellOnClickListener mListener = new IHellOnClickListener() {
@@ -96,6 +97,35 @@ public final class HellMonitor {
         }
     };
 
+    public void callbackItemClickBefore(AdapterView<?> parent, View view, int position, long id) {
+        itemListener.onItemClickBefore(parent, view, position, id);
+    }
+    public void callbackItemClickAfter(AdapterView<?> parent, View view, int position, long id) {
+        itemListener.onItemClickAfter(parent, view, position, id);
+    }
+
+    private final IHellOnItemClickListener itemListener = new IHellOnItemClickListener() {
+        @Override
+        public void onItemClickBefore(AdapterView<?> parent, View view, int position, long id) {
+            // 这里从当前View开始，向上遍历，获取View树
+            String viewId = getViewId(view);
+            if (viewId == null || viewId.isEmpty()) {
+                return;
+            }
+            System.out.println("HABBYGE-MALI, onItemClickBefore, itemListener: " + viewId);
+        }
+
+        @Override
+        public void onItemClickAfter(AdapterView<?> parent, View view, int position, long id) {
+            // 这里从当前View开始，向上遍历，获取View树
+            String viewId = getViewId(view);
+            if (viewId == null || viewId.isEmpty()) {
+                return;
+            }
+            System.out.println("HABBYGE-MALI, onItemClickAfter, itemListener: " + viewId);
+        }
+    };
+
     /**
      * @return 返回的数据格式是：
      *      所属于的Activity:viewPaths(以|分割，每个控件包括控件类名和在其父类的位置，
@@ -138,22 +168,26 @@ public final class HellMonitor {
      */
     public void callActivityListener(Activity activity, int eventType) {
         switch (eventType) {
-        case 0:
+        case HellConstant.ACTIVITY_EVENT_OnCreate:
             mActivityListener.onCreate(activity);
             break;
-        case 1:
+        case HellConstant.ACTIVITY_EVENT_OnResume:
             mActivityListener.onResume(activity);
             break;
-        case 2:
+        case HellConstant.ACTIVITY_EVENT_OnPause:
             mActivityListener.onPause(activity);
             break;
-        case 3:
+        case HellConstant.ACTIVITY_EVENT_OnStop:
             mActivityListener.onStop(activity);
             break;
-        case 4:
+        case HellConstant.ACTIVITY_EVENT_OnDestroy:
             mActivityListener.onDestroy(activity);
             break;
         }
+    }
+
+    public void callbackActivityOnNewIntentListener(Activity activity, Intent intent) {
+        mActivityListener.onNewIntent(activity, intent);
     }
 
     public static void callbackStartActivity(Object srcActivity, Intent intent) {
@@ -200,6 +234,13 @@ public final class HellMonitor {
         public void onCreate(Activity activity) {
             System.out.println("HABBYGE-MALI, mActivityListener, onCreate: "
                     + activity.getClass().getName());
+        }
+
+        @Override
+        public void onNewIntent(Activity activity, Intent intent) {
+            System.out.println("HABBYGE-MALI, mActivityListener, onNewIntent: "
+                    + activity.getClass().getName());
+            // 可以从Intent中取出想要的参数
         }
 
         @Override

@@ -1,33 +1,23 @@
-package com.lxyx.hellplugin
+package com.lxyx.hellplugin.activity
 
-import groovy.transform.PackageScope
-import org.objectweb.asm.Label
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 
-@PackageScope
-class HellHijackExecMethodVisitor extends MethodVisitor {
+/**
+ * Created by habbyge 2019/3/15.
+ */
+class HellActivityExecMethodVisitor extends MethodVisitor {
     private String mClassName
     private String[] mInterfaces
 
-    HellHijackExecMethodVisitor(MethodVisitor mv, String className, String[] interfaces) {
+    HellActivityExecMethodVisitor(MethodVisitor mv, String className, String[] interfaces) {
         super(Opcodes.ASM5, mv)
         mClassName = className
         mInterfaces = interfaces
     }
 
     @Override
-    void visitLocalVariable(String name, String desc,
-            String signature, Label start, Label end, int index) {
-
-//        println('habbyge-mali, visitLocalVariable: ' + name + "_" + desc + "_" + index)
-
-        super.visitLocalVariable(name, desc, signature, start, end, index)
-    }
-
-    @Override
     void visitCode() {
-//        println('HellHijackExecMethodVisitor, visitCode: ' + mClassName)
         super.visitCode()
     }
 
@@ -75,7 +65,8 @@ class HellHijackExecMethodVisitor extends MethodVisitor {
         // 顶Intent参数。这是整个callback执行的现场.
 
         // 复制一份栈顶前两个元素，这里是startActivity()方法的调用者Activity或Context引用 和 要启动的Intent引用。
-        // 用于callback的参数，避免影响栈顶，从而影响startActivity()的执行，一定要dup，如下：
+        // 用于callback的参数，避免影响原有的栈顶(这样就不影响原有方法调用)，从而影响startActivity()的执行，所以一
+        // 定要dup，然后编排自己的操作数栈，如下：
 
         mv.visitInsn(Opcodes.DUP2) // 复制栈顶两个元素：调用者(Activity/Context)引用->Intent参数
 
