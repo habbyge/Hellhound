@@ -171,19 +171,23 @@ public final class HellMonitor {
         case 0:
             mActivityListener.onCreate(activity);
             break;
-        case 1:
+        case 2:
             mActivityListener.onResume(activity);
             break;
-        case 2:
+        case 3:
             mActivityListener.onPause(activity);
             break;
-        case 3:
+        case 4:
             mActivityListener.onStop(activity);
             break;
-        case 4:
+        case 5:
             mActivityListener.onDestroy(activity);
             break;
         }
+    }
+
+    public void callbackActivityOnNewIntentListener(Activity activity, Intent intent) {
+        mActivityListener.onNewIntent(activity, intent);
     }
 
     public static void callbackStartActivity(Object srcActivity, Intent intent) {
@@ -230,6 +234,13 @@ public final class HellMonitor {
         public void onCreate(Activity activity) {
             System.out.println("HABBYGE-MALI, mActivityListener, onCreate: "
                     + activity.getClass().getName());
+        }
+
+        @Override
+        public void onNewIntent(Activity activity, Intent intent) {
+            System.out.println("HABBYGE-MALI, mActivityListener, onNewIntent: "
+                    + activity.getClass().getName());
+            // 可以从Intent中取出想要的参数
         }
 
         @Override

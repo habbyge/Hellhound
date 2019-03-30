@@ -91,20 +91,19 @@ class JarStub {
             // 在实际项目中，一般我们都会采用v4/v7包中的Activity、Fragment等页面，以及ViewPager等
             // 控件来写项目。
             if ('android/support/v4/app/FragmentActivity.class' == jarEntryName) {
-//                println('JarStub Legal: START')
-
                 jos.putNextEntry(zipEntry)
 
                 ClassReader classReader = new ClassReader(IOUtils.toByteArray(zipEntryIs))
                 ClassWriter classWriter = new ClassWriter(classReader,
                         ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS)
-                ClassVisitor classVisitor = new HellJarClassVisitor(classWriter)
+                ClassVisitor classVisitor = new HellFragmentActivityClassVisitor(classWriter)
                 classReader.accept(classVisitor, 0)
 
                 byte[] codeBytes = classWriter.toByteArray()
                 jos.write(codeBytes)
-
-//                println('JarStub Legal: END')
+//            } else if () {
+// todo 这里继续，增加fragment的监控过滤，需要注意的是，要跟Activity事件互斥，不能既callback Activity，
+// todo 同时又callback Fragment。
             } else {
                 jos.putNextEntry(zipEntry)
                 jos.write(IOUtils.toByteArray(zipEntryIs))

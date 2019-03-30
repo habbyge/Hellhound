@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("HABBYGE-MALI, textView1 onClick");
                 Intent intent = new Intent(MainActivity.this, TestActivity.class);
                 int y = 100; // 这些都是测试用的，随便添加的无用代码！！！
-//                System.out.println("y: " + y);
+                /*System.out.println("y: " + y);*/
                 startActivity(intent); // 测试startActivity注入
 
                 MainActivity.this.moveTaskToBack(false); // 测试moveTaskToBack()注入
@@ -41,6 +41,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         initListView();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
     }
 
     @Override

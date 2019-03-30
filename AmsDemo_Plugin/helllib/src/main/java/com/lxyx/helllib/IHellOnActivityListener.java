@@ -15,6 +15,8 @@ public interface IHellOnActivityListener {
 
     void onCreate(Activity activity);
 
+    void onNewIntent(Activity activity, Intent intent);
+
     void onResume(Activity activity);
 
     void onPause(Activity activity);

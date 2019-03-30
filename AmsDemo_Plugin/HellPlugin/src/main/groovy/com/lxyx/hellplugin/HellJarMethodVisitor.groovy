@@ -1,5 +1,6 @@
 package com.lxyx.hellplugin
 
+import com.lxyx.hellplugin.common.HellConstant
 import groovy.transform.PackageScope
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
@@ -31,14 +32,16 @@ class HellJarMethodVisitor extends MethodVisitor {
             int eventType = -1
             if ("onCreate".equals(mMethodName) && "(Landroid/os/Bundle;)V".equals(mMethodDesc)) {
                 eventType = 0
+            } else if ('onNewIntent'.equals(mMethodName) && '(Landroid/os/Bundle;)V'.equals(mMethodDesc)) {
+                eventType = HellConstant.ACTIVITY_EVENT_OnNewIntent
             } else if ("onResume".equals(mMethodName) && "()V".equals(mMethodDesc)) {
-                eventType = 1
-            } else if ("onPause".equals(mMethodName) && "()V".equals(mMethodDesc)) {
                 eventType = 2
-            } else if ("onStop".equals(mMethodName) && "()V".equals(mMethodDesc)) {
+            } else if ("onPause".equals(mMethodName) && "()V".equals(mMethodDesc)) {
                 eventType = 3
-            } else if ("onDestroy".equals(mMethodName) && "()V".equals(mMethodDesc)) {
+            } else if ("onStop".equals(mMethodName) && "()V".equals(mMethodDesc)) {
                 eventType = 4
+            } else if ("onDestroy".equals(mMethodName) && "()V".equals(mMethodDesc)) {
+                eventType = 5
             }
 
             // TODO: 2019-03-28 有待完成，继续劫持其他Activity方法，配合Fragment行为监控，避免事件重复和遗漏
@@ -64,7 +67,7 @@ class HellJarMethodVisitor extends MethodVisitor {
      */
     private void callback(int eventType) {
         if (eventType < 0) {
-            return
+            return // 非法
         }
 
         mv.visitMethodInsn(Opcodes.INVOKESTATIC,
@@ -73,11 +76,22 @@ class HellJarMethodVisitor extends MethodVisitor {
                 "()Lcom/lxyx/helllib/HellMonitor;",
                 false) // 调用者入栈
         mv.visitVarInsn(Opcodes.ALOAD, 0) // 加载this指针，即当前Activity引用 入栈
-        mv.visitLdcInsn(eventType) // 事件类型入栈
-        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, // 调用callback方法
-                "com/lxyx/helllib/HellMonitor",
-                "callActivityListener",
-                "(Landroid/app/Activity;I)V",
-                false)
+
+        if (eventType == HellConstant.ACTIVITY_EVENT_OnNewIntent) { // onNewIntent
+            // void callbackActivityOnNewIntentListener(Activity activity, Intent intent)
+            mv.visitVarInsn(Opcodes.ALOAD, 1) // 从局部变量表中slot-1位置加载Intent参数到栈顶
+            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                    "com/lxyx/helllib/HellMonitor",
+                    "callbackActivityOnNewIntentListener",
+                    "(Landroid/app/Activity;Landroid/content/Intent;)V",
+                    false)
+        } else {
+            mv.visitLdcInsn(eventType) // 事件类型入栈
+            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, // 调用callback方法
+                    "com/lxyx/helllib/HellMonitor",
+                    "callActivityListener",
+                    "(Landroid/app/Activity;I)V",
+                    false)
+        }
     }
 }

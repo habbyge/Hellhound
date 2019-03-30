@@ -9,13 +9,16 @@ import org.objectweb.asm.Opcodes
  * Created by habbyge 2019/03/15.
  */
 @PackageScope
-class HellJarClassVisitor extends ClassVisitor {
+class HellFragmentActivityClassVisitor extends ClassVisitor {
     private String className
     private String superName
     private String[] interfaceArray
 
     private static final String METHOD_onCreate_NAME = 'onCreate'
     private static final String METHOD_onCreate_DESC = '(Landroid/os/Bundle;)V'
+
+    private static final String METHOD_onNewIntent_NAME = 'onNewIntent'
+    private static final String METHOD_onNewIntent_DESC = '(Landroid/content/Intent;)V'
 
     private static final String METHOD_onResume_NAME = 'onResume'
     private static final String METHOD_onResume_DESC = '()V'
@@ -29,7 +32,7 @@ class HellJarClassVisitor extends ClassVisitor {
     private static final String METHOD_onDestroy_NAME = 'onDestroy'
     private static final String METHOD_onDestroy_DESC = '()V'
 
-    HellJarClassVisitor(ClassVisitor cv) {
+    HellFragmentActivityClassVisitor(ClassVisitor cv) {
         super(Opcodes.ASM5, cv)
     }
 
@@ -46,8 +49,8 @@ class HellJarClassVisitor extends ClassVisitor {
     }
 
     @Override
-    MethodVisitor visitMethod(int access, String name,
-            String desc, String signature, String[] exceptions) {
+    MethodVisitor visitMethod(int access, String name, String desc,
+            String signature, String[] exceptions) {
 
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions)
 
@@ -55,23 +58,27 @@ class HellJarClassVisitor extends ClassVisitor {
         // moveTaskToBack三个方法组成Activity完整执行链路
 
         if (METHOD_onCreate_NAME.equals(name) && METHOD_onCreate_DESC.equals(desc)) {
-            println('HellJarClassVisitor: visitMethod: onCreate')
+            println('HellFragmentActivityClassVisitor: visitMethod: onCreate')
+            return new HellJarMethodVisitor(mv, name, desc)
+        }
+        if (METHOD_onNewIntent_NAME.equals(name) && METHOD_onNewIntent_DESC.equals(desc)) {
+            println('HellFragmentActivityClassVisitor: visitMethod: onNewIntent')
             return new HellJarMethodVisitor(mv, name, desc)
         }
         if (METHOD_onResume_NAME.equals(name) && METHOD_onResume_DESC.equals(desc)) {
-            println('HellJarClassVisitor: visitMethod: onResume')
+            println('HellFragmentActivityClassVisitor: visitMethod: onResume')
             return new HellJarMethodVisitor(mv, name, desc)
         }
         if (METHOD_onPause_NAME.equals(name) && METHOD_onPause_DESC.equals(desc)) {
-            println('HellJarClassVisitor: visitMethod: onPause')
+            println('HellFragmentActivityClassVisitor: visitMethod: onPause')
             return new HellJarMethodVisitor(mv, name, desc)
         }
         if (METHOD_onStop_NAME.equals(name) && METHOD_onStop_DESC.equals(desc)) {
-            println('HellJarClassVisitor: visitMethod: onStop')
+            println('HellFragmentActivityClassVisitor: visitMethod: onStop')
             return new HellJarMethodVisitor(mv, name, desc)
         }
         if (METHOD_onDestroy_NAME.equals(name) && METHOD_onDestroy_DESC.equals(desc)) {
-            println('HellJarClassVisitor: visitMethod: onDestroy')
+            println('HellFragmentActivityClassVisitor: visitMethod: onDestroy')
             return new HellJarMethodVisitor(mv, name, desc)
         }
 
