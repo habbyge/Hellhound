@@ -7,10 +7,10 @@ import org.objectweb.asm.Opcodes
 /**
  * Created by habbyge 2019/3/5.
  */
-class HellClickMethodVisitor extends MethodVisitor {
+class HelViewMethodVisitor extends MethodVisitor {
     private int type = HellConstant.CLICK
 
-    HellClickMethodVisitor(MethodVisitor mv, int type) {
+    HelViewMethodVisitor(MethodVisitor mv, int type) {
         super(Opcodes.ASM5, mv)
         this.type = type
     }
@@ -20,14 +20,14 @@ class HellClickMethodVisitor extends MethodVisitor {
         // 开始访问该method的Code属性
         super.visitCode()
 
-//        println('HellClickMethodVisitor visitCode: START')
+//        println('HelViewMethodVisitor visitCode: START')
 
         // method运行之前插桩: 注入一个日志
         log("HABBYGE-MALI, stub before click: $type")
 
         callback(type, true) // 方法执行前，callback
 
-//        println('HellClickMethodVisitor visitCode: END')
+//        println('HelViewMethodVisitor visitCode: END')
     }
 
     @Override
@@ -49,7 +49,7 @@ class HellClickMethodVisitor extends MethodVisitor {
 
     @Override
     void visitEnd() {
-//        println('HellClickMethodVisitor, visitEnd')
+//        println('HelViewMethodVisitor, visitEnd')
         mv.visitEnd()
     }
 

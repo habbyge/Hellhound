@@ -5,6 +5,7 @@ import com.android.build.api.transform.JarInput
 import com.android.build.api.transform.Status
 import com.android.build.api.transform.TransformOutputProvider
 import com.lxyx.hellplugin.activity.HellActivityClassVisitor
+import com.lxyx.hellplugin.fragment.HellFragmentClassVisitor
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
@@ -102,9 +103,18 @@ class JarStub {
 
                 byte[] codeBytes = classWriter.toByteArray()
                 jos.write(codeBytes)
-//            } else if () {
-// todo 这里继续，增加fragment的监控过滤，需要注意的是，要跟Activity事件互斥，不能既callback Activity，
-// todo 同时又callback Fragment。
+            } else if ('Landroid/support/v4/app/Fragment.class' == jarEntryName) {
+                // todo Fragment监控，需要注意的是，要跟Activity事件互斥，
+                // todo 不能既callback Activity，同时又callback Fragment。
+
+                ClassReader classReader = new ClassReader(IOUtils.toByteArray(zipEntryIs))
+                ClassWriter classWriter = new ClassWriter(classReader,
+                        ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS)
+                ClassVisitor classVisitor = new HellFragmentClassVisitor(classWriter)
+                classReader.accept(classVisitor, 0)
+
+                byte[] codeBytes = classWriter.toByteArray()
+                jos.write(codeBytes)
             } else {
                 jos.putNextEntry(zipEntry)
                 jos.write(IOUtils.toByteArray(zipEntryIs))

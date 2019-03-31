@@ -56,27 +56,27 @@ class HellActivityClassVisitor extends ClassVisitor {
         // 在页面的生命周期方法中注入callback方法，用于监控页面生命周期，与startActivity、finish、
         // moveTaskToBack三个方法组成Activity完整执行链路
 
-        if (METHOD_onCreate_NAME.equals(name) && METHOD_onCreate_DESC.equals(desc)) {
+        if (METHOD_onCreate_NAME == name && METHOD_onCreate_DESC == desc) {
             println('HellActivityClassVisitor: visitMethod: onCreate')
             return new HellActivityMethodVisitor(mv, name, desc)
         }
-        if (METHOD_onNewIntent_NAME.equals(name) && METHOD_onNewIntent_DESC.equals(desc)) {
+        if (METHOD_onNewIntent_NAME == name && METHOD_onNewIntent_DESC == desc) {
             println('HellActivityClassVisitor: visitMethod: onNewIntent')
             return new HellActivityMethodVisitor(mv, name, desc)
         }
-        if (METHOD_onResume_NAME.equals(name) && METHOD_onResume_DESC.equals(desc)) {
+        if (METHOD_onResume_NAME == name && METHOD_onResume_DESC == desc) {
             println('HellActivityClassVisitor: visitMethod: onResume')
             return new HellActivityMethodVisitor(mv, name, desc)
         }
-        if (METHOD_onPause_NAME.equals(name) && METHOD_onPause_DESC.equals(desc)) {
+        if (METHOD_onPause_NAME == name && METHOD_onPause_DESC == desc) {
             println('HellActivityClassVisitor: visitMethod: onPause')
             return new HellActivityMethodVisitor(mv, name, desc)
         }
-        if (METHOD_onStop_NAME.equals(name) && METHOD_onStop_DESC.equals(desc)) {
+        if (METHOD_onStop_NAME == name && METHOD_onStop_DESC == desc) {
             println('HellActivityClassVisitor: visitMethod: onStop')
             return new HellActivityMethodVisitor(mv, name, desc)
         }
-        if (METHOD_onDestroy_NAME.equals(name) && METHOD_onDestroy_DESC.equals(desc)) {
+        if (METHOD_onDestroy_NAME == name && METHOD_onDestroy_DESC == desc) {
             println('HellActivityClassVisitor: visitMethod: onDestroy')
             return new HellActivityMethodVisitor(mv, name, desc)
         }

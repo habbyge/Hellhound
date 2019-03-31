@@ -2,7 +2,7 @@ package com.lxyx.hellplugin
 
 import com.lxyx.hellplugin.activity.HellActivityExecMethodVisitor
 import com.lxyx.hellplugin.common.HellConstant
-import com.lxyx.hellplugin.view.HellClickMethodVisitor
+import com.lxyx.hellplugin.view.HelViewMethodVisitor
 import groovy.transform.PackageScope
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
@@ -53,7 +53,7 @@ class HellDirectoryClassVisitor extends ClassVisitor implements Opcodes {
             if (interfaceArray.contains('android/view/View$OnClickListener')) {
                 if ('onClick' == name && '(Landroid/view/View;)V' == desc) {
                     println('HellDirectoryClassVisitor OnClickListener: inject ok: ' + className)
-                    return new HellClickMethodVisitor(activityExecMv, HellConstant.CLICK)
+                    return new HelViewMethodVisitor(activityExecMv, HellConstant.CLICK)
                 }
             }
 
@@ -61,17 +61,17 @@ class HellDirectoryClassVisitor extends ClassVisitor implements Opcodes {
             if (interfaceArray.contains('android/view/View$OnLongClickListener')) {
                 if ('onLongClick' == name && '(Landroid/view/View;)Z' == desc) {
                     println('HellDirectoryClassVisitor OnLongClickListener: inject ok: ' + className)
-                    return new HellClickMethodVisitor(activityExecMv, HellConstant.LONG_CLICK)
+                    return new HelViewMethodVisitor(activityExecMv, HellConstant.LONG_CLICK)
                 }
             }
 
             // ListView中Item点击
             if (interfaceArray.contains('android/widget/AdapterView$OnItemClickListener')) {
                 // void onItemClick(AdapterView<?> parent, View view, int position, long id);
-                if ('onItemClick'.equals(name) &&
-                        '(Landroid/widget/AdapterView;Landroid/view/View;IJ)V'.equals(desc)) {
+                if ('onItemClick' == name &&
+                        '(Landroid/widget/AdapterView;Landroid/view/View;IJ)V' == desc) {
                     println('HellDirectoryClassVisitor onItemClick: inject ok: ' + className)
-                    return new HellClickMethodVisitor(activityExecMv, HellConstant.LISTVIEW_ITEM_CLICK)
+                    return new HelViewMethodVisitor(activityExecMv, HellConstant.LISTVIEW_ITEM_CLICK)
                 }
             }
         }
