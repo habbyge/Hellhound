@@ -44,7 +44,7 @@ class HellActivityMethodVisitor extends MethodVisitor {
 
             // TODO: 2019-03-28 有待完成，继续劫持其他Activity方法，配合Fragment行为监控，避免事件重复和遗漏
 
-            callback(eventType)
+            injectCallback(eventType)
         }
         super.visitInsn(opcode)
     }
@@ -63,7 +63,7 @@ class HellActivityMethodVisitor extends MethodVisitor {
     /**
      * 注入callback方法
      */
-    private void callback(int eventType) {
+    private void injectCallback(int eventType) {
         if (eventType < 0) {
             return // 非法
         }
@@ -73,7 +73,7 @@ class HellActivityMethodVisitor extends MethodVisitor {
                 "getInstance",
                 "()Lcom/lxyx/helllib/HellMonitor;",
                 false) // 调用者入栈
-        mv.visitVarInsn(Opcodes.ALOAD, 0) // 加载this指针，即当前Activity引用 入栈
+        mv.visitVarInsn(Opcodes.ALOAD, 0) // 从局部变量表slot-0位置，加载this指针，即当前Activity引用 入栈
 
         if (eventType == HellConstant.ACTIVITY_EVENT_OnNewIntent) { // onNewIntent
             // void callbackActivityOnNewIntentListener(Activity activity, Intent intent)

@@ -3,6 +3,9 @@ package com.lxyx.habbyge;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +23,7 @@ import java.util.List;
  * Created by habbyge 2019/3/5.
  */
 public class MainActivity extends AppCompatActivity {
+//    private boolean mShowFragment1Now = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,28 @@ public class MainActivity extends AppCompatActivity {
                 int y = 100; // 这些都是测试用的，随便添加的无用代码！！！
                 /*System.out.println("y: " + y);*/
                 startActivity(intent); // 测试startActivity注入
+            }
+        });
+
+        findViewById(R.id.textView2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fm = MainActivity.this.getSupportFragmentManager();
+                if (fm == null) {
+                    return;
+                }
+                FragmentTransaction transaction = fm.beginTransaction();
+                Fragment fragment;
+//                if (mShowFragment1Now) {
+//                    mShowFragment1Now = false;
+//                    fragment = new Test2Fragment();
+//                    transaction.replace(R.id.right_fragment, fragment);
+//                } else {
+//                    mShowFragment1Now = true;
+                    fragment = new Test2Fragment();
+                    transaction.replace(R.id.right_fragment, fragment);
+//                }
+                transaction.commit();
             }
         });
 

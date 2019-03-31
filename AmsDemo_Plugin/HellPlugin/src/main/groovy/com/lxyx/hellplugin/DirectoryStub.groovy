@@ -125,8 +125,6 @@ class DirectoryStub {
     }
 
     private static boolean doStub(byte[] bytes, String filePath) {
-//        println("habbyge-mali, doStub: $filePath")
-
         ClassReader cr
         try {
             cr = new ClassReader(bytes)
@@ -154,8 +152,6 @@ class DirectoryStub {
         } catch (IOException e) {
             e.printStackTrace()
         }
-
-//        println('habbyge-mali, doHookFile END')
 
         return true
     }

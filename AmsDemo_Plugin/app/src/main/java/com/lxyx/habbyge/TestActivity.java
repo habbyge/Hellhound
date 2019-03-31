@@ -32,7 +32,7 @@ public final class TestActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(TestActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); // 测试onNewIntent()注入
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 测试onNewIntent()注入
                 startActivity(intent); // 测试startActivity方法前注入
             }
         });

@@ -34,14 +34,14 @@ class HellActivityExecMethodVisitor extends MethodVisitor {
             if ('startActivity' == name && '(Landroid/content/Intent;)V' == desc) {
                 // src: owner; dest: intent
                 println('HABBYGE-MALI, exec: startActivity, ' + owner)
-                callbackStartActivity(owner)
+                injectCallbackStartActivity(owner)
             } else if ('finish' == name && '()V' == desc) {
                 // src: owner
                 println('HABBYGE-MALI, exec: finish, ' + owner)
-                callbackFinish(owner)
+                injectCallbackFinish(owner)
             } else if ('moveTaskToBack' == name && '(Z)Z' == desc) {
                 println('HABBYGE-MALI, exec: moveTaskToBack, ' + owner)
-                callbackMoveTaskToBack(owner)
+                injectCallbackMoveTaskToBack(owner)
             }
         }
         super.visitMethodInsn(opcode, owner, name, desc, itf)
@@ -58,7 +58,7 @@ class HellActivityExecMethodVisitor extends MethodVisitor {
     }
 
     // void callbackStartActivity(Object srcActivity, String srcActivityName, Intent intent)
-    private void callbackStartActivity(String owner) {
+    private void injectCallbackStartActivity(String owner) {
         // 由于是在startActivity()之前介入的，所以此时操作数栈顶一定是startActivity()的调用者对象引用和
         // 该方法的参数Intent的引用，这个信息很重要：只有这样才能从操作数栈中获取次栈顶调用者对象的引用和栈
         // 顶Intent参数。这是整个callback执行的现场.
@@ -110,7 +110,7 @@ class HellActivityExecMethodVisitor extends MethodVisitor {
     }
 
     // void callbackFinish(Activity srcActivity, String srcActivityName)
-    private void callbackFinish(String owner) {
+    private void injectCallbackFinish(String owner) {
         mv.visitInsn(Opcodes.DUP) // 复制
         mv.visitMethodInsn(Opcodes.INVOKESTATIC,
                 'com/lxyx/helllib/HellMonitor',
@@ -129,7 +129,7 @@ class HellActivityExecMethodVisitor extends MethodVisitor {
     }
 
     // void callbackMoveTaskToBack(Activity srcActivity, String srcActivityName, boolean nonRoot)
-    private void callbackMoveTaskToBack(String owner) {
+    private void injectCallbackMoveTaskToBack(String owner) {
 
         // 复制栈顶两个元素：该方法的调用者Activity引用->boolean参数
         mv.visitInsn(Opcodes.DUP2)

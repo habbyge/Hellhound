@@ -25,7 +25,6 @@ class HellDirectoryClassVisitor extends ClassVisitor implements Opcodes {
             String signature, String superName,
             String[] interfaces) {
 
-//        println('HellDirectoryClassVisitor visit: ' + name + ', ' + superName)
         className = name
         interfaceArray = interfaces
 
@@ -83,7 +82,6 @@ class HellDirectoryClassVisitor extends ClassVisitor implements Opcodes {
 
     @Override
     void visitEnd() {
-        /*println('HellDirectoryClassVisitor, visitEnd !!!')*/
         super.visitEnd()
     }
 }

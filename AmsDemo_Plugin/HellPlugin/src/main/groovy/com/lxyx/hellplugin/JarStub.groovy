@@ -32,8 +32,6 @@ class JarStub {
             return // 过滤非jar文件
         }
 
-//        println('JarStub startStub: ' + jarFilePath)
-
         // 重名名输出文件，因为可能同名，会覆盖
         def jarName = jarInput.name
         def md5Name = DigestUtils.md5(jarFilePath)
@@ -45,9 +43,6 @@ class JarStub {
                 jarInput.getContentTypes(),
                 jarInput.getScopes(),
                 Format.JAR)
-
-//        println('JarStub, startStub, jarInput dest: ' + destJar.getAbsolutePath())
-//        println('JarStub, startStub, jarInput.file: ' + jarName)
 
         Status status = jarInput.getStatus()
         if (isIncremental) {
@@ -79,7 +74,10 @@ class JarStub {
         if (tmpJarFile.exists()) {
             tmpJarFile.delete()
         }
-        JarOutputStream jos = new JarOutputStream(new FileOutputStream(tmpJarFile))
+
+        // todo 这里必须得用 BufferedOutputStream
+        FileOutputStream fos = new FileOutputStream(tmpJarFile)
+        JarOutputStream jos = new JarOutputStream(new BufferedOutputStream(fos))
 
         JarFile jarFile = new JarFile(srcFile) // JarFile
         Enumeration<JarEntry> enumeration = jarFile.entries()
@@ -93,6 +91,8 @@ class JarStub {
             // 在实际项目中，一般我们都会采用v4/v7包中的Activity、Fragment等页面，以及ViewPager等
             // 控件来写项目。
             if ('android/support/v4/app/FragmentActivity.class' == jarEntryName) {
+                println('JarStub, jarEntryName: ' + jarEntryName)
+
                 jos.putNextEntry(zipEntry)
 
                 ClassReader classReader = new ClassReader(IOUtils.toByteArray(zipEntryIs))
@@ -103,9 +103,12 @@ class JarStub {
 
                 byte[] codeBytes = classWriter.toByteArray()
                 jos.write(codeBytes)
-            } else if ('Landroid/support/v4/app/Fragment.class' == jarEntryName) {
-                // todo Fragment监控，需要注意的是，要跟Activity事件互斥，
-                // todo 不能既callback Activity，同时又callback Fragment。
+            } else if ('android/support/v4/app/Fragment.class' == jarEntryName) {
+                // TODO Fragment监控，需要注意的是，要跟Activity事件互斥，
+                // TODO 不能既callback Activity，同时又callback Fragment。
+                println('JarStub, jarEntryName: ' + jarEntryName)
+
+                jos.putNextEntry(zipEntry)
 
                 ClassReader classReader = new ClassReader(IOUtils.toByteArray(zipEntryIs))
                 ClassWriter classWriter = new ClassWriter(classReader,
@@ -115,6 +118,7 @@ class JarStub {
 
                 byte[] codeBytes = classWriter.toByteArray()
                 jos.write(codeBytes)
+//            } else if () { // todo 这里增加start/finish fragment方法的劫持
             } else {
                 jos.putNextEntry(zipEntry)
                 jos.write(IOUtils.toByteArray(zipEntryIs))
@@ -125,8 +129,6 @@ class JarStub {
 
         jos.close()
         jarFile.close()
-
-//        println('JarStub jarFile.close()')
 
         // 将修改过的字节码copy到dest，就可以实现编译期间干预字节码的目的了
         FileUtils.copyFile(tmpJarFile, jarDest)

@@ -25,7 +25,7 @@ class HelViewMethodVisitor extends MethodVisitor {
         // method运行之前插桩: 注入一个日志
         log("HABBYGE-MALI, stub before click: $type")
 
-        callback(type, true) // 方法执行前，callback
+        injectCallback(type, true) // 方法执行前，callback
 
 //        println('HelViewMethodVisitor visitCode: END')
     }
@@ -36,7 +36,7 @@ class HelViewMethodVisitor extends MethodVisitor {
         if (opcode == Opcodes.RETURN || opcode == Opcodes.IRETURN) {
             // void onClick() return || boolean onLongClick() return || void onItemClick()
             log("HABBYGE-MALI, stub after click: $type")
-            callback(type, false) // 方法执行后，callback
+            injectCallback(type, false) // 方法执行后，callback
         }
 
         mv.visitInsn(opcode)
@@ -68,7 +68,7 @@ class HelViewMethodVisitor extends MethodVisitor {
      * @param beforeOrAfter before or after method execute
      * @param View the view on clicked
      */
-    private callback(int clickType, boolean beforeOrAfter) {
+    private injectCallback(int clickType, boolean beforeOrAfter) {
 
         mv.visitMethodInsn(Opcodes.INVOKESTATIC,
                 "com/lxyx/helllib/HellMonitor",

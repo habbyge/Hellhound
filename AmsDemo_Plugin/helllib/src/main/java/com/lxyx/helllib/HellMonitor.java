@@ -3,6 +3,8 @@ package com.lxyx.helllib;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +34,9 @@ public final class HellMonitor {
     private HellMonitor() {
     }
 
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ View操作相关 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     public void callClickListenerBefore(int clickType, View view) {
         mListener.onClickBefore(clickType, view);
     }
@@ -39,10 +44,6 @@ public final class HellMonitor {
     public void callClickListenerAfter(int clickType, View view) {
         mListener.onClickAfter(clickType, view);
     }
-
-//    public static void callListenerStatic(View view, int eventType, Object params) {
-//        getInstance().callClickListenerBefore(view, eventType, params);
-//    }
 
     private final IHellOnClickListener mListener = new IHellOnClickListener() {
         @Override
@@ -163,6 +164,9 @@ public final class HellMonitor {
         return viewId;
     }
 
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Activity相关 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     /**
      * @param eventType 这里太懒，事件编号分别对应：create-0,resume-1,pause-2,stop-3,destroy-4
      */
@@ -267,4 +271,17 @@ public final class HellMonitor {
                     + activity.getClass().getName()) ;
         }
     };
+
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Fragment相关 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    void callbackFragment(Fragment fragment, int eventType, Bundle savedInstanceState) {
+        System.out.println("HABBYGE-MALI, callbackFragment: " +
+                fragment.getClass().getName() + " | " + eventType);
+    }
+
+    void callbackFragment(Fragment fragment, int eventType) {
+        System.out.println("HABBYGE-MALI, callbackFragment: " +
+                fragment.getClass().getName() + " | " + eventType);
+    }
 }
