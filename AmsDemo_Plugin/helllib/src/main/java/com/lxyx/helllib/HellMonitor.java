@@ -236,39 +236,33 @@ public final class HellMonitor {
 
         @Override
         public void onCreate(Activity activity) {
-            System.out.println("HABBYGE-MALI, mActivityListener, onCreate: "
-                    + activity.getClass().getName());
+            System.out.println("HABBYGE-MALI, Activity, onCreate: " + activity.getClass().getName());
         }
 
         @Override
         public void onNewIntent(Activity activity, Intent intent) {
-            System.out.println("HABBYGE-MALI, mActivityListener, onNewIntent: "
-                    + activity.getClass().getName());
+            System.out.println("HABBYGE-MALI, Activity, onNewIntent: " + activity.getClass().getName());
             // 可以从Intent中取出想要的参数
         }
 
         @Override
         public void onResume(Activity activity) {
-            System.out.println("HABBYGE-MALI, mActivityListener, onResume: "
-                    + activity.getClass().getName());
+            System.out.println("HABBYGE-MALI, Activity, onResume: " + activity.getClass().getName());
         }
 
         @Override
         public void onPause(Activity activity) {
-            System.out.println("HABBYGE-MALI, mActivityListener, onPause: "
-                    + activity.getClass().getName());
+            System.out.println("HABBYGE-MALI, Activity, onPause: " + activity.getClass().getName());
         }
 
         @Override
         public void onStop(Activity activity) {
-            System.out.println("HABBYGE-MALI, mActivityListener, onStop: "
-                    + activity.getClass().getName());
+            System.out.println("HABBYGE-MALI, Activity, onStop: " + activity.getClass().getName());
         }
 
         @Override
         public void onDestroy(Activity activity) {
-            System.out.println("HABBYGE-MALI, mActivityListener, onDestroy: "
-                    + activity.getClass().getName()) ;
+            System.out.println("HABBYGE-MALI, Activity, onDestroy: " + activity.getClass().getName()) ;
         }
     };
 

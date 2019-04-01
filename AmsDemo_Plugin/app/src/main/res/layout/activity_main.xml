@@ -21,7 +21,7 @@
         android:textSize="32sp" />
 
     <fragment
-        android:id="@+id/right_fragment"
+        android:id="@+id/fragment"
         android:name="com.lxyx.habbyge.Test0Fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

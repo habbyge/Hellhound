@@ -93,8 +93,6 @@ class JarStub {
             if ('android/support/v4/app/FragmentActivity.class' == jarEntryName) {
                 println('JarStub, jarEntryName: ' + jarEntryName)
 
-                jos.putNextEntry(zipEntry)
-
                 ClassReader classReader = new ClassReader(IOUtils.toByteArray(zipEntryIs))
                 ClassWriter classWriter = new ClassWriter(classReader,
                         ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS)
@@ -102,13 +100,12 @@ class JarStub {
                 classReader.accept(classVisitor, 0)
 
                 byte[] codeBytes = classWriter.toByteArray()
+                jos.putNextEntry(zipEntry)
                 jos.write(codeBytes)
             } else if ('android/support/v4/app/Fragment.class' == jarEntryName) {
                 // TODO Fragment监控，需要注意的是，要跟Activity事件互斥，
                 // TODO 不能既callback Activity，同时又callback Fragment。
                 println('JarStub, jarEntryName: ' + jarEntryName)
-
-                jos.putNextEntry(zipEntry)
 
                 ClassReader classReader = new ClassReader(IOUtils.toByteArray(zipEntryIs))
                 ClassWriter classWriter = new ClassWriter(classReader,
@@ -117,6 +114,7 @@ class JarStub {
                 classReader.accept(classVisitor, 0)
 
                 byte[] codeBytes = classWriter.toByteArray()
+                jos.putNextEntry(zipEntry)
                 jos.write(codeBytes)
 //            } else if () { // todo 这里增加start/finish fragment方法的劫持
             } else {

@@ -12,8 +12,9 @@ import org.objectweb.asm.Opcodes
  * Created by habbyge 2019/3/5.
  */
 @PackageScope
-class HellDirectoryClassVisitor extends ClassVisitor implements Opcodes {
+class HellDirectoryClassVisitor extends ClassVisitor {
     private String className
+    private String superClassName
     private String[] interfaceArray
 
     HellDirectoryClassVisitor(final int api, final ClassVisitor cv) {
@@ -26,9 +27,15 @@ class HellDirectoryClassVisitor extends ClassVisitor implements Opcodes {
             String[] interfaces) {
 
         className = name
+        superClassName = superName
         interfaceArray = interfaces
 
-        super.visit(version, access, name, signature, superName, interfaces)
+        // todo ~~~~~~~~~~~~~~~~~~~~ 这是方案2：修改super类 ~~~~~~~~~~~~~~~~~~~~~~~
+        if (superClassName == 'com.lxyx.') {
+            superClassName = ''
+        }
+
+        super.visit(version, access, name, signature, superClassName, interfaces)
     }
 
     /*@Override
@@ -82,6 +89,39 @@ class HellDirectoryClassVisitor extends ClassVisitor implements Opcodes {
 
     @Override
     void visitEnd() {
+        // todo ~~~~~~~~~~~~~~~~~~~~~~~ 这是方案1：类文件尾部插入方法 ~~~~~~~~~~~~~~~~~~~~~~~
+        //  在一个class文件的结尾插入方法，完整方案应该是：输入若干需要监控的方法name+desc+class名，
+        //  然后查看当前合法类中是否存在该方法，不存在则在class末尾最后插入该方法，存在的话，直接注入插桩。
+        injectOnStopMethod()
+
         super.visitEnd()
+    }
+
+    /**
+     * 在这个class中，注入一个onStop()方法
+     */
+    private void injectOnStopMethod() {
+        println('injectOnStopMethod, superClassName = ' + superClassName)
+
+        if ('android/support/v7/app/AppCompatActivity' == superClassName) {
+            println('injectOnStopMethod start')
+
+            MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC, 'onStop', '()V', null, null)
+            mv.visitCode()
+
+            // 调用父类onStop ()V方法
+            // ALOAD 0
+            // INVOKESPECIAL android/support/v7/app/AppCompatActivity.onResume ()V
+            mv.visitVarInsn(Opcodes.ALOAD, 0) // 当前指针对象引用
+            mv.visitMethodInsn(Opcodes.INVOKESPECIAL, // 调用父类方法，使用invokespecial指令
+                    'android/support/v7/app/AppCompatActivity',
+                    'onStop', '()V', false)
+
+            mv.visitMaxs(1, 1)
+            mv.visitInsn(Opcodes.RETURN)
+            mv.visitEnd()
+
+            println('injectOnStopMethod End')
+        }
     }
 }

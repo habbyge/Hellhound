@@ -54,11 +54,11 @@ public class MainActivity extends AppCompatActivity {
 //                if (mShowFragment1Now) {
 //                    mShowFragment1Now = false;
 //                    fragment = new Test2Fragment();
-//                    transaction.replace(R.id.right_fragment, fragment);
+//                    transaction.replace(R.id.fragment, fragment);
 //                } else {
 //                    mShowFragment1Now = true;
                     fragment = new Test2Fragment();
-                    transaction.replace(R.id.right_fragment, fragment);
+                    transaction.replace(R.id.fragment, fragment);
 //                }
                 transaction.commit();
             }
