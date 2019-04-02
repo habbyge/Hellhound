@@ -1,9 +1,9 @@
-package com.lxyx.hellplugin
+package com.lxyx.hellplugin.dir
 
-import com.lxyx.hellplugin.activity.HellActivityExecMethodVisitor
-import com.lxyx.hellplugin.activity.HellActivityMethodVisitor
+import com.lxyx.hellplugin.dir.activity.HellActivityExecMethodVisitor
+import com.lxyx.hellplugin.dir.activity.HellActivityMethodVisitor
 import com.lxyx.hellplugin.common.HellConstant
-import com.lxyx.hellplugin.view.HelViewMethodVisitor
+import com.lxyx.hellplugin.dir.view.HelViewMethodVisitor
 import groovy.transform.PackageScope
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
@@ -24,7 +24,6 @@ import org.objectweb.asm.Opcodes
  * 2、继承v4包中的activity和fragment，无需1中方案，直接扫描jar中class文件：FragmentActivity和Fragment，在
  * 对应的目标方法中注入插桩即可。
  */
-@PackageScope
 class HellDirectoryClassVisitor extends ClassVisitor {
     private String className
     private String superClassName

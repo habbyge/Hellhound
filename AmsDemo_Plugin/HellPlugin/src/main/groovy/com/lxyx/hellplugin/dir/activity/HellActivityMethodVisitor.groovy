@@ -1,4 +1,4 @@
-package com.lxyx.hellplugin.activity
+package com.lxyx.hellplugin.dir.activity
 
 import org.objectweb.asm.MethodVisitor
 

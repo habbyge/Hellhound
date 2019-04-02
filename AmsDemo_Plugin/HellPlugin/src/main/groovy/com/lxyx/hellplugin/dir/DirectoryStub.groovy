@@ -1,19 +1,16 @@
-package com.lxyx.hellplugin
+package com.lxyx.hellplugin.dir
 
 import com.android.build.api.transform.DirectoryInput
 import com.android.build.api.transform.Format
 import com.android.build.api.transform.Status
 import com.android.build.api.transform.TransformOutputProvider
-import groovy.transform.PackageScope
 import org.apache.commons.io.FileUtils
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
-import org.objectweb.asm.Opcodes
 
 /**
  * Created by habbyge 2019/03/15.
  */
-@PackageScope
 class DirectoryStub {
 
     private DirectoryStub() {

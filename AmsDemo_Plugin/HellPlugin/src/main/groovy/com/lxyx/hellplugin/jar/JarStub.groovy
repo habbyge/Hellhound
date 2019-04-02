@@ -1,11 +1,11 @@
-package com.lxyx.hellplugin
+package com.lxyx.hellplugin.jar
 
 import com.android.build.api.transform.Format
 import com.android.build.api.transform.JarInput
 import com.android.build.api.transform.Status
 import com.android.build.api.transform.TransformOutputProvider
-import com.lxyx.hellplugin.activity.HellActivityClassVisitor
-import com.lxyx.hellplugin.fragment.HellFragmentClassVisitor
+import com.lxyx.hellplugin.jar.activity.HellActivityClassVisitor
+import com.lxyx.hellplugin.jar.fragment.HellFragmentClassVisitor
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils

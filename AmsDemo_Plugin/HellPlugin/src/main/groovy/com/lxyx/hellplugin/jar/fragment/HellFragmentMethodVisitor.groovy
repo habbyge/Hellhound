@@ -1,4 +1,4 @@
-package com.lxyx.hellplugin.fragment
+package com.lxyx.hellplugin.jar.fragment
 
 import com.lxyx.hellplugin.common.HellConstant
 import org.objectweb.asm.MethodVisitor

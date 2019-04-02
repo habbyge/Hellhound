@@ -1,4 +1,4 @@
-package com.lxyx.hellplugin.view
+package com.lxyx.hellplugin.dir.view
 
 import com.lxyx.hellplugin.common.HellConstant
 import org.objectweb.asm.MethodVisitor

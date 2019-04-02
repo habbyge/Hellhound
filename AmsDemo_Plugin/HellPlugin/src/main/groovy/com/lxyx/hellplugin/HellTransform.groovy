@@ -2,6 +2,8 @@ package com.lxyx.hellplugin
 
 import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
+import com.lxyx.hellplugin.dir.DirectoryStub
+import com.lxyx.hellplugin.jar.JarStub
 import groovy.transform.PackageScope
 import org.gradle.api.Project
 
@@ -66,7 +68,7 @@ class HellTransform extends Transform {
                 DirectoryStub.startStub(directoryInput, outputProvider, isIncremental)
             }
 
-            // jar包 todo 暂时先关闭
+            // jar包
             Collection<JarInput> jarInputs = input.getJarInputs()
             println('jarInput: ' + jarInputs.size())
             for (JarInput jarInput : jarInputs) {
