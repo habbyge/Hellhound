@@ -69,7 +69,6 @@ final class HellFragmentMethodVisitor extends MethodVisitor {
         // 事件类型入栈
         mv.visitLdcInsn(mEventType)
 
-        // todo，这里继续，先关闭，debug代码 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         switch (mEventType) {
         case HellConstant.FRAGMENT_EVENT_OnCreate: // 0
             // void callbackFragment(Fragment fragment, int eventType, Bundle savedInstanceState)
@@ -80,19 +79,21 @@ final class HellFragmentMethodVisitor extends MethodVisitor {
                     "callbackFragment",
                     "(Landroid/support/v4/app/Fragment;ILandroid/os/Bundle;)V",
                     false)
+            println('HellFragmentMethodVisitor, OnCreate')
             break
-//
-//        case HellConstant.FRAGMENT_EVENT_OnResume:      // 1
-//        case HellConstant.FRAGMENT_EVENT_OnPause:       // 2
-//        case HellConstant.FRAGMENT_EVENT_OnStop:        // 3
-//        case HellConstant.FRAGMENT_EVENT_OnDestroy:     // 4
-//            // void callbackFragment(Fragment fragment, int eventType)
-//            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-//                    "com/lxyx/helllib/HellMonitor",
-//                    "callbackFragment",
-//                    "(Landroid/support/v4/app/Fragment;I)V", false)
-//            break
-//
+
+        case HellConstant.FRAGMENT_EVENT_OnResume:      // 1
+        case HellConstant.FRAGMENT_EVENT_OnPause:       // 2
+        case HellConstant.FRAGMENT_EVENT_OnStop:        // 3
+        case HellConstant.FRAGMENT_EVENT_OnDestroy:     // 4
+            // void callbackFragment(Fragment fragment, int eventType)
+            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                    "com/lxyx/helllib/HellMonitor",
+                    "callbackFragment",
+                    "(Landroid/support/v4/app/Fragment;I)V",
+                    false)
+            break
+
         default:
             break
         }
