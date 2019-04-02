@@ -48,7 +48,7 @@ final class HellFragmentClassVisitor extends ClassVisitor {
 
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions)
         if (eventType != HellConstant.FRAGMENT_EVENT_INVALIDATE) {
-            return new HellFragmentMethodVisitor(mv, eventType)
+            return new HellFragmentMethodVisitor(mv, mClassName, eventType)
         } else {
             return mv
         }

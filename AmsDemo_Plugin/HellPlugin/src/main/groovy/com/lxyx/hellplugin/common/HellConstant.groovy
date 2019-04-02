@@ -1,5 +1,4 @@
-package com.lxyx.hellplugin.common;
-
+package com.lxyx.hellplugin.common
 /**
  * Created by habbyge on 2019/03/30.
  *
@@ -31,4 +30,38 @@ final class HellConstant {
     public static final int CLICK = 0
     public static final int LONG_CLICK = 1
     public static final int LISTVIEW_ITEM_CLICK = 2
+
+//    class HellPageMethodConstant {
+//        String className = null
+//        String methodName = null
+//        String methodDesc = null
+//
+//        HellPageMethodConstant() {
+//        }
+//
+//        HellPageMethodConstant(String className, String methodName, String methodDesc) {
+//            this.className = className
+//            this.methodName = methodName
+//            this.methodDesc = methodDesc
+//        }
+//    }
+//    public static final Map<HellPageMethodConstant, Boolean> gPageMethodState = new HashMap<>()
+//    static {
+//        gPageMethodState.add(new HellPageMethodConstant(
+//                'android/app/Activity', 'onCreate', '(Landroid/os/Bundle;)V'),
+//                false)
+//
+//        gPageMethodState.add(
+//                new HellPageMethodConstant('android/app/Activity', 'onResume', '()V'),
+//                false)
+//        gPageMethodState.add(
+//                new HellPageMethodConstant('android/app/Activity', 'onPause', '()V'),
+//                false)
+//        gPageMethodState.add(
+//                new HellPageMethodConstant('android/app/Activity', 'onStop', '()V'),
+//                false)
+//        gPageMethodState.add(
+//                new HellPageMethodConstant('android/app/Activity', 'onDestroy', '()V'),
+//                false)
+//    }
 }

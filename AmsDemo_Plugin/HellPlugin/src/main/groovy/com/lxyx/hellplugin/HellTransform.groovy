@@ -66,7 +66,7 @@ class HellTransform extends Transform {
                 DirectoryStub.startStub(directoryInput, outputProvider, isIncremental)
             }
 
-            // jar包
+            // jar包 todo 暂时先关闭
             Collection<JarInput> jarInputs = input.getJarInputs()
             println('jarInput: ' + jarInputs.size())
             for (JarInput jarInput : jarInputs) {

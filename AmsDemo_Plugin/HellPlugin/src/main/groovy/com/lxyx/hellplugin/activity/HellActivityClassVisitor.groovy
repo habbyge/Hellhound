@@ -33,6 +33,7 @@ class HellActivityClassVisitor extends ClassVisitor {
 
     HellActivityClassVisitor(ClassVisitor cv) {
         super(Opcodes.ASM5, cv)
+        println("HellActivityClassVisitor <init>")
     }
 
     @Override
@@ -44,12 +45,16 @@ class HellActivityClassVisitor extends ClassVisitor {
         this.superName = superName
         this.interfaceArray = interfaces
 
+        println("HellActivityClassVisitor visit")
+
         super.visit(version, access, name, signature, superName, interfaces)
     }
 
     @Override
     MethodVisitor visitMethod(int access, String name, String desc,
             String signature, String[] exceptions) {
+
+        println("HellActivityClassVisitor visitMethod")
 
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions)
 
@@ -58,27 +63,27 @@ class HellActivityClassVisitor extends ClassVisitor {
 
         if (METHOD_onCreate_NAME == name && METHOD_onCreate_DESC == desc) {
             println('HellActivityClassVisitor: visitMethod: onCreate')
-            return new HellActivityMethodVisitor(mv, name, desc)
+            return new HellFragmentActivityMethodVisitor(mv, name, desc)
         }
         if (METHOD_onNewIntent_NAME == name && METHOD_onNewIntent_DESC == desc) {
             println('HellActivityClassVisitor: visitMethod: onNewIntent')
-            return new HellActivityMethodVisitor(mv, name, desc)
+            return new HellFragmentActivityMethodVisitor(mv, name, desc)
         }
         if (METHOD_onResume_NAME == name && METHOD_onResume_DESC == desc) {
             println('HellActivityClassVisitor: visitMethod: onResume')
-            return new HellActivityMethodVisitor(mv, name, desc)
+            return new HellFragmentActivityMethodVisitor(mv, name, desc)
         }
         if (METHOD_onPause_NAME == name && METHOD_onPause_DESC == desc) {
             println('HellActivityClassVisitor: visitMethod: onPause')
-            return new HellActivityMethodVisitor(mv, name, desc)
+            return new HellFragmentActivityMethodVisitor(mv, name, desc)
         }
         if (METHOD_onStop_NAME == name && METHOD_onStop_DESC == desc) {
             println('HellActivityClassVisitor: visitMethod: onStop')
-            return new HellActivityMethodVisitor(mv, name, desc)
+            return new HellFragmentActivityMethodVisitor(mv, name, desc)
         }
         if (METHOD_onDestroy_NAME == name && METHOD_onDestroy_DESC == desc) {
             println('HellActivityClassVisitor: visitMethod: onDestroy')
-            return new HellActivityMethodVisitor(mv, name, desc)
+            return new HellFragmentActivityMethodVisitor(mv, name, desc)
         }
 
         // TODO: 2019-03-28 Fragment监控，有待完成 ！！！！

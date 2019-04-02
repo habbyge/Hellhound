@@ -1,5 +1,6 @@
 package com.lxyx.hellplugin.fragment
 
+import com.lxyx.hellplugin.common.HellConstant
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 
@@ -24,13 +25,14 @@ import org.objectweb.asm.Opcodes
 // 编译期生成一个HellBaseActivity，扫描所有继承Activity的子类，替换Activity为HellBaseActivity.
 // todo ？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
 final class HellFragmentMethodVisitor extends MethodVisitor {
+    private String mClassName
     private final int mEventType
 
-    HellFragmentMethodVisitor(MethodVisitor mv, int eventType) {
+    HellFragmentMethodVisitor(MethodVisitor mv, String className, int eventType) {
         super(Opcodes.ASM5, mv)
-
+        mClassName = className
         mEventType = eventType
-        println('HellFragmentMethodVisitor, mEventType: ' + eventType)
+        println('HellFragmentMethodVisitor <init>: ' + mClassName + ' | ' + eventType)
     }
 
     @Override
@@ -68,17 +70,17 @@ final class HellFragmentMethodVisitor extends MethodVisitor {
         mv.visitLdcInsn(mEventType)
 
         // todo，这里继续，先关闭，debug代码 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//        switch (mEventType) {
-//        case HellConstant.FRAGMENT_EVENT_OnCreate: // 0
-//            // void callbackFragment(Fragment fragment, int eventType, Bundle savedInstanceState)
-//            mv.visitVarInsn(Opcodes.ALOAD, 1) // 从局部变量表slot-1位置，加载onCreate形参Bundle到栈顶
-//
-//            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-//                    "com/lxyx/helllib/HellMonitor",
-//                    "callbackFragment",
-//                    "(Landroid/support/v4/app/Fragment;ILandroid/os/Bundle;)V",
-//                    false)
-//            break
+        switch (mEventType) {
+        case HellConstant.FRAGMENT_EVENT_OnCreate: // 0
+            // void callbackFragment(Fragment fragment, int eventType, Bundle savedInstanceState)
+            mv.visitVarInsn(Opcodes.ALOAD, 1) // 从局部变量表slot-1位置，加载onCreate形参Bundle到栈顶
+
+            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                    "com/lxyx/helllib/HellMonitor",
+                    "callbackFragment",
+                    "(Landroid/support/v4/app/Fragment;ILandroid/os/Bundle;)V",
+                    false)
+            break
 //
 //        case HellConstant.FRAGMENT_EVENT_OnResume:      // 1
 //        case HellConstant.FRAGMENT_EVENT_OnPause:       // 2
@@ -91,8 +93,8 @@ final class HellFragmentMethodVisitor extends MethodVisitor {
 //                    "(Landroid/support/v4/app/Fragment;I)V", false)
 //            break
 //
-//        default:
-//            break
-//        }
+        default:
+            break
+        }
     }
 }

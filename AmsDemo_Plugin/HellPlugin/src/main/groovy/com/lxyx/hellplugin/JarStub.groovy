@@ -75,7 +75,6 @@ class JarStub {
             tmpJarFile.delete()
         }
 
-        // todo 这里必须得用 BufferedOutputStream
         FileOutputStream fos = new FileOutputStream(tmpJarFile)
         JarOutputStream jos = new JarOutputStream(new BufferedOutputStream(fos))
 
@@ -91,7 +90,7 @@ class JarStub {
             // 在实际项目中，一般我们都会采用v4/v7包中的Activity、Fragment等页面，以及ViewPager等
             // 控件来写项目。
             if ('android/support/v4/app/FragmentActivity.class' == jarEntryName) {
-                println('JarStub, jarEntryName: ' + jarEntryName)
+                println('JarStub, jarEntryName: FragmentActivity')
 
                 ClassReader classReader = new ClassReader(IOUtils.toByteArray(zipEntryIs))
                 ClassWriter classWriter = new ClassWriter(classReader,
@@ -104,14 +103,14 @@ class JarStub {
                 jos.write(codeBytes)
             } else if ('android/support/v4/app/Fragment.class' == jarEntryName) {
                 // TODO Fragment监控，需要注意的是，要跟Activity事件互斥，
-                // TODO 不能既callback Activity，同时又callback Fragment。
-                println('JarStub, jarEntryName: ' + jarEntryName)
+                // 不能既callback Activity，同时又callback Fragment。
+                println('JarStub, jarEntryName: android/support/v4/app/Fragment.class')
 
                 ClassReader classReader = new ClassReader(IOUtils.toByteArray(zipEntryIs))
                 ClassWriter classWriter = new ClassWriter(classReader,
                         ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS)
-                ClassVisitor classVisitor = new HellFragmentClassVisitor(classWriter)
-                classReader.accept(classVisitor, 0)
+                ClassVisitor fragmentClassVisitor = new HellFragmentClassVisitor(classWriter)
+                classReader.accept(fragmentClassVisitor, 0)
 
                 byte[] codeBytes = classWriter.toByteArray()
                 jos.putNextEntry(zipEntry)
