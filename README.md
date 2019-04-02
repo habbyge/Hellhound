@@ -22,3 +22,10 @@
 ## 3、进度
 工作比较忙，目前进度在version1.2中。
 - 最新进度：Activity生命周期监控、startActivity/finish/moveTaskToBack方法监控，并抓取调用者、目标对象，以及Intent等传递的参数数据，回调出来，从而可以形成页面链路；View监控点击的部分已完成，接下来是监控其他手势。
+
+## 4、部分技术细节
+注入页面行为函数的策略：
+### 4.1、继承android.app.Activity的页面，下同fragment，无法字节码注入，可以从另外一个角度解决：扫描当前Project的工程目录文件(注意不是jar文件)，然后有两个具体方案：
+- 方案1、扫描当前业务Activity，父类是直接继承android.app.Activity，遍历是否存在需要注入的方法，如果已经存在，则直接在目标方法中注入插桩；反之，在ClassVistor.visitEnd()中，也就是整个class文件中插入缺失的目标方法，同时注入插桩，选取在class文件结尾注入的原因是，不改变原先代码行号。
+- 方案2：自己实现一个BaseActivity，继承android.app.Activity，override目标方法，然后扫描Project的目录，替换系统Activity为自己生成的BaseActivity即可。
+### 4.2、继承v4包中的activity和fragment，无需1中方案，直接扫描jar中class文件：FragmentActivity和Fragment，在对应的目标方法中注入插桩即可。
