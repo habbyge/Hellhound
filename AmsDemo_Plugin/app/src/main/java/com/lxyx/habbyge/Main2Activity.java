@@ -24,4 +24,9 @@ public class Main2Activity extends Activity {
             }
         });
     }
+
+    /*@Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+    }*/
 }

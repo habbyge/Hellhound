@@ -1,6 +1,6 @@
 package com.lxyx.hellplugin.dir.activity
 
-import com.android.utils.Pair
+import com.lxyx.hellplugin.common.HellConstant
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
@@ -14,39 +14,53 @@ class HellActivityStubMethod {
     }
 
     /**
-     * 注入方法
-     */
-    static void injectMethod(ClassVisitor cv, List<Pair<String, String>> nameDescList) {
-        if (nameDescList == null || nameDescList.isEmpty()) {
-            return
-        }
-
-        for (Pair<String, String> pair : nameDescList) {
-            if (pair == null) {
-                continue
-            }
-            doInjectMethod(cv, pair.first, pair.second)
-        }
-    }
-
-    /**
      * 在这个class中，注入一个onStop()方法
      */
-    static void doInjectMethod(ClassVisitor cv, String name, String desc) {
-        println('injectOnStopMethod start')
-
+    static void injectMethod(ClassVisitor cv, String name, String desc, int eventType) {
         MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC, name, desc, null, null)
         mv.visitCode()
 
         // 调用父类方法: super.name/desc
         mv.visitVarInsn(Opcodes.ALOAD, 0) // 当前指针对象引用this
-        // 调用父类方法，使用invokespecial指令
-        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, 'android/app/Activity', name, desc, false)
 
-//        mv.visitMaxs(1, 1) 已经设置ClassVisitor为自动计算帧栈大小、局部变量表大小了，这里无需手工设置.
-        mv.visitInsn(Opcodes.RETURN)
+        // 注入callback
+        if (eventType == HellConstant.ACTIVITY_EVENT_OnNewIntent) { // public void onNewIntent(Intent var1)
+            mv.visitVarInsn(Opcodes.ALOAD, 1) // 参数Intent从局部变量表slot-1中取出入栈
+            // 调用父类方法，使用invokespecial指令
+            mv.visitMethodInsn(Opcodes.INVOKESPECIAL, 'android/app/Activity', name, desc, false)
+
+            mv.visitMethodInsn(Opcodes.INVOKESTATIC,
+                    'com/lxyx/helllib/HellMonitor',
+                    'getInstance',
+                    '()Lcom/lxyx/helllib/HellMonitor;',
+                    false)
+            mv.visitVarInsn(Opcodes.ALOAD, 0) // 当前Activity引用入栈
+            mv.visitVarInsn(Opcodes.ALOAD, 1) // 从局部变量表中slot-1位置加载Intent参数到栈顶
+            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                    "com/lxyx/helllib/HellMonitor",
+                    "callbackActivityOnNewIntentListener",
+                    "(Landroid/app/Activity;Landroid/content/Intent;)V",
+                    false)
+        } else {
+            // 调用父类方法，使用invokespecial指令
+            mv.visitMethodInsn(Opcodes.INVOKESPECIAL, 'android/app/Activity', name, desc, false)
+            mv.visitMethodInsn(Opcodes.INVOKESTATIC,
+                    'com/lxyx/helllib/HellMonitor',
+                    'getInstance',
+                    '()Lcom/lxyx/helllib/HellMonitor;',
+                    false)
+            mv.visitVarInsn(Opcodes.ALOAD, 0) // 当前Activity引用入栈
+            mv.visitLdcInsn(eventType) // 事件类型: onCreate/onResume/onPause...
+            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                    "com/lxyx/helllib/HellMonitor",
+                    'callActivityListener',
+                    '(Landroid/app/Activity;I)V',
+                    false)
+        }
+
+        // 已经设置ClassVisitor为自动计算帧栈大小、局部变量表大小了，这里无需手工设置.
+        /*mv.visitMaxs(1, 1)*/
+        mv.visitInsn(Opcodes.RETURN) // return
         mv.visitEnd()
-
-        println('injectOnStopMethod End')
     }
 }

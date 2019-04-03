@@ -28,21 +28,19 @@ class HellFragmentActivityMethodVisitor extends MethodVisitor {
     void visitInsn(int opcode) {
         if (Opcodes.RETURN == opcode) {
             int eventType = HellConstant.ACTIVITY_EVENT_INVALIDATE
-            if ("onCreate".equals(mMethodName) && "(Landroid/os/Bundle;)V".equals(mMethodDesc)) {
+            if ("onCreate" == mMethodName && "(Landroid/os/Bundle;)V" == mMethodDesc) {
                 eventType = HellConstant.ACTIVITY_EVENT_OnCreate
-            } else if ('onNewIntent'.equals(mMethodName) && '(Landroid/os/Bundle;)V'.equals(mMethodDesc)) {
+            } else if ('onNewIntent' == mMethodName && '(Landroid/os/Bundle;)V' == mMethodDesc) {
                 eventType = HellConstant.ACTIVITY_EVENT_OnNewIntent
-            } else if ("onResume".equals(mMethodName) && "()V".equals(mMethodDesc)) {
+            } else if ("onResume" == mMethodName && "()V" == mMethodDesc) {
                 eventType = HellConstant.ACTIVITY_EVENT_OnResume
-            } else if ("onPause".equals(mMethodName) && "()V".equals(mMethodDesc)) {
+            } else if ("onPause" == mMethodName && "()V" == mMethodDesc) {
                 eventType = HellConstant.ACTIVITY_EVENT_OnPause
-            } else if ("onStop".equals(mMethodName) && "()V".equals(mMethodDesc)) {
+            } else if ("onStop" == mMethodName && "()V" == mMethodDesc) {
                 eventType = HellConstant.ACTIVITY_EVENT_OnStop
-            } else if ("onDestroy".equals(mMethodName) && "()V".equals(mMethodDesc)) {
+            } else if ("onDestroy" == mMethodName && "()V" == mMethodDesc) {
                 eventType = HellConstant.ACTIVITY_EVENT_OnDestroy
             }
-
-            // TODO: 2019-03-28 有待完成，继续劫持其他Activity方法，配合Fragment行为监控，避免事件重复和遗漏
 
             injectCallback(eventType)
         }

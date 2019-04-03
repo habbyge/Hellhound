@@ -1,5 +1,6 @@
 package com.lxyx.hellplugin.dir.activity
 
+import com.lxyx.hellplugin.common.HellConstant
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 
@@ -28,6 +29,42 @@ class HellActivityMethodVisitor extends MethodVisitor {
     @Override
     void visitCode() {
         super.visitCode()
+
+        // 在需目标方法中注入callback方法，实现监控
+        mv.visitMethodInsn(Opcodes.INVOKESTATIC, 'com/lxyx/helllib/HellMonitor',
+                'getInstance', '()Lcom/lxyx/helllib/HellMonitor;', false)
+        mv.visitVarInsn(Opcodes.ALOAD, 0) // 当前Activity引用入栈
+
+        int eventType = HellConstant.ACTIVITY_EVENT_INVALIDATE
+        if ('onCreate' == mMethodName && '(Landroid/os/Bundle;)V' == mMethodDesc) {
+            eventType = HellConstant.ACTIVITY_EVENT_OnCreate
+        } else if ('onNewIntent' == mMethodName && '(Landroid/content/Intent;)V' == mMethodDesc) {
+            eventType = HellConstant.ACTIVITY_EVENT_OnNewIntent
+        } else if ('onResume' == mMethodName && '()V' == mMethodDesc) {
+            eventType = HellConstant.ACTIVITY_EVENT_OnResume
+        } else if ('onPause' == mMethodName && '()V' == mMethodDesc) {
+            eventType = HellConstant.ACTIVITY_EVENT_OnPause
+        } else if ('onStop' == mMethodName && '()V' == mMethodDesc) {
+            eventType = HellConstant.ACTIVITY_EVENT_OnStop
+        } else if ('onDestroy' == mMethodName && '()V' == mMethodDesc) {
+            eventType = HellConstant.ACTIVITY_EVENT_OnDestroy
+        }
+
+        if (eventType == HellConstant.ACTIVITY_EVENT_OnNewIntent) {
+            mv.visitVarInsn(Opcodes.ALOAD, 1) // 从局部变量表中slot-1位置加载Intent参数到栈顶
+            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                    "com/lxyx/helllib/HellMonitor",
+                    "callbackActivityOnNewIntentListener",
+                    "(Landroid/app/Activity;Landroid/content/Intent;)V",
+                    false)
+        } else {
+            mv.visitLdcInsn(eventType) // 事件类型: onCreate/onResume/onPause...
+            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                    "com/lxyx/helllib/HellMonitor",
+                    'callActivityListener',
+                    '(Landroid/app/Activity;I)V',
+                    false)
+        }
     }
 
     @Override

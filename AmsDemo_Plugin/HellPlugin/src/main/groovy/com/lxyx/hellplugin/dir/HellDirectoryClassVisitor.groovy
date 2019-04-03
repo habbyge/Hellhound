@@ -81,6 +81,11 @@ class HellDirectoryClassVisitor extends ClassVisitor {
                 activityEmthodMv = new HellActivityMethodVisitor(mv, className, 'onCreate', '(Landroid/os/Bundle;)V')
                 // 这里设置状态，表示有了类中已经ovveride这个方法
                 HellPageMethodConstant.setMethodState(className, 'onCreate', '(Landroid/os/Bundle;)V', true)
+            } else if ('onNewIntent' == name && '(Landroid/content/Intent;)V' == desc) {
+                activityEmthodMv = new HellActivityMethodVisitor(mv, className,
+                        'onNewIntent', '(Landroid/content/Intent;)V')
+                // 这里设置状态，表示有了类中已经ovveride这个方法
+                HellPageMethodConstant.setMethodState(className, 'onNewIntent', '(Landroid/content/Intent;)V', true)
             } else if ('onResume' == name && '()V' == desc) {
                 activityEmthodMv = new HellActivityMethodVisitor(mv, className, 'onResume', '()V')
                 // 这里设置状态，表示有了类中已经ovveride这个方法
@@ -98,7 +103,7 @@ class HellDirectoryClassVisitor extends ClassVisitor {
                 // 这里设置状态，表示有了类中已经ovveride这个方法
                 HellPageMethodConstant.setMethodState(className, 'onDestroy', '()V', true)
             }
-            // todo 剩余的，没有override的目标方法，则需要在class文件的末尾注入在当前类中，之后再注入插桩
+            // 剩余的，没有override的目标方法，则需要在class文件的末尾注入在当前类中，之后再注入插桩，具体位置在visitEnd()中注入
         }
 
         MethodVisitor activityExecMv = new HellActivityExecMethodVisitor(
@@ -141,29 +146,52 @@ class HellDirectoryClassVisitor extends ClassVisitor {
 
     @Override
     void visitEnd() {
-        // todo ~~~~~~~~~~~~~~~~~~~~~~~ 这是方案1：类文件尾部插入方法 ~~~~~~~~~~~~~~~~~~~~~~~
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~ 这是方案1：类文件尾部插入方法(不改变原代码行号) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  在一个class文件的结尾插入方法，完整方案应该是：输入若干需要监控的方法name+desc+class名，
         //  然后查看当前合法类中是否存在该方法，不存在则在class末尾最后插入该方法，存在的话，直接注入插桩。
         if ('android/app/Activity' == superClassName) {
             println('HellDirectoryClassVisitor, visitEnd: ' + className)
-            boolean existOnCreate = HellPageMethodConstant.getMethodState( // todo 这里继续 ！！！！！！！
+            boolean existOnCreate = HellPageMethodConstant.getMethodState(
                     className, 'onCreate', '(Landroid/os/Bundle;)V')
             if (!existOnCreate) {
-                HellActivityStubMethod.doInjectMethod(cv, 'onCreate', '(Landroid/os/Bundle;)V')
+                HellActivityStubMethod.injectMethod(cv,
+                        'onCreate', '(Landroid/os/Bundle;)V',
+                        HellConstant.ACTIVITY_EVENT_OnCreate)
                 HellPageMethodConstant.setMethodState(className, 'onCreate', '(Landroid/os/Bundle;)V', true)
+            }
+
+            // todo ！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+            boolean existOnNewIntent = HellPageMethodConstant.getMethodState(className,
+                    'onNewIntent', '(Landroid/content/Intent;)V')
+            if (!existOnNewIntent) {
+                HellActivityStubMethod.injectMethod(cv,
+                        'onNewIntent', '(Landroid/content/Intent;)V',
+                        HellConstant.ACTIVITY_EVENT_OnNewIntent)
+                HellPageMethodConstant.setMethodState(className, 'onNewIntent', '(Landroid/content/Intent;)V', true)
             }
 
             boolean existOnResume = HellPageMethodConstant.getMethodState(className, 'onResume', '()V')
             if (!existOnResume) {
-                HellActivityStubMethod.doInjectMethod(cv, 'onResume', '()V')
+                HellActivityStubMethod.injectMethod(cv, 'onResume', '()V', HellConstant.ACTIVITY_EVENT_OnResume)
                 HellPageMethodConstant.setMethodState(className, 'onResume', '()V', true)
             }
 
-            // todo 这里继续 !!!!
             boolean existOnPause = HellPageMethodConstant.getMethodState(className, 'onPause', '()V')
             if (!existOnPause) {
-                HellActivityStubMethod.doInjectMethod(cv, 'onPause', '()V')
+                HellActivityStubMethod.injectMethod(cv, 'onPause', '()V', HellConstant.ACTIVITY_EVENT_OnPause)
                 HellPageMethodConstant.setMethodState(className, 'onPause', '()V', true)
+            }
+
+            boolean existOnStop = HellPageMethodConstant.getMethodState(className, 'onStop', '()V')
+            if (!existOnStop) {
+                HellActivityStubMethod.injectMethod(cv, 'onStop', '()V', HellConstant.ACTIVITY_EVENT_OnStop)
+                HellPageMethodConstant.setMethodState(className, 'onStop', '()V', true)
+            }
+
+            boolean existOnDestroy = HellPageMethodConstant.getMethodState(className, 'onDestroy', '()V')
+            if (!existOnDestroy) {
+                HellActivityStubMethod.injectMethod(cv, 'onDestroy', '()V', HellConstant.ACTIVITY_EVENT_OnDestroy)
+                HellPageMethodConstant.setMethodState(className, 'onDestroy', '()V', true)
             }
         }
 
