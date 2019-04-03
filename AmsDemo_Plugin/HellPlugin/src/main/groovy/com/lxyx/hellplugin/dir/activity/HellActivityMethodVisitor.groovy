@@ -1,6 +1,7 @@
 package com.lxyx.hellplugin.dir.activity
 
 import org.objectweb.asm.MethodVisitor
+import org.objectweb.asm.Opcodes
 
 /**
  * Created by habbyge 2019/4/2.
@@ -15,16 +16,13 @@ class HellActivityMethodVisitor extends MethodVisitor {
     private String mMethodName
     private String mMethodDesc
 
-    HellActivityMethodVisitor(int api, String className, String methodName, String methodDesc) {
-        super(api)
+    HellActivityMethodVisitor(MethodVisitor mv, String className, String methodName, String methodDesc) {
+        super(Opcodes.ASM5, mv)
         mClassName = className
         mMethodName = methodName
         mMethodDesc = methodDesc
 
-        println('HellActivityMethodVisitor: '
-                + mClassName + " | "
-                + mMethodName + " | "
-                + mMethodDesc)
+        println('HellActivityMethodVisitor: ' + mClassName + " | " + mMethodName + " | " + mMethodDesc)
     }
 
     @Override

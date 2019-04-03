@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main); // TODO: 2019-04-03 这是啥？？？？
+        setContentView(R.layout.activity_main);
 
         findViewById(R.id.textView1).setOnClickListener(new View.OnClickListener() {
             @Override

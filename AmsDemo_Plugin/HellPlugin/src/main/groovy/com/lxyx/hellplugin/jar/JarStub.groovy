@@ -92,30 +92,27 @@ class JarStub {
             if ('android/support/v4/app/FragmentActivity.class' == jarEntryName) {
                 println('JarStub, jarEntryName: FragmentActivity')
 
-                ClassReader classReader = new ClassReader(IOUtils.toByteArray(zipEntryIs))
-                ClassWriter classWriter = new ClassWriter(classReader,
-                        ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS)
-                ClassVisitor classVisitor = new HellActivityClassVisitor(classWriter)
-                classReader.accept(classVisitor, 0)
+                ClassReader cr = new ClassReader(IOUtils.toByteArray(zipEntryIs))
+                ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS)
+                ClassVisitor classVisitor = new HellActivityClassVisitor(cw)
+                cr.accept(classVisitor, 0)
 
-                byte[] codeBytes = classWriter.toByteArray()
+                byte[] codeBytes = cw.toByteArray()
                 jos.putNextEntry(zipEntry)
                 jos.write(codeBytes)
             } else if ('android/support/v4/app/Fragment.class' == jarEntryName) {
-                // TODO Fragment监控，需要注意的是，要跟Activity事件互斥，
-                // 不能既callback Activity，同时又callback Fragment。
+                // Fragment监控，需要注意的是，要跟Activity事件互斥，业务层需要自己做互斥.
                 println('JarStub, jarEntryName: android/support/v4/app/Fragment.class')
 
-                ClassReader classReader = new ClassReader(IOUtils.toByteArray(zipEntryIs))
-                ClassWriter classWriter = new ClassWriter(classReader,
-                        ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS)
-                ClassVisitor fragmentClassVisitor = new HellFragmentClassVisitor(classWriter)
-                classReader.accept(fragmentClassVisitor, 0)
+                ClassReader cr = new ClassReader(IOUtils.toByteArray(zipEntryIs))
+                ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS)
+                ClassVisitor fragmentClassVisitor = new HellFragmentClassVisitor(cw)
+                cr.accept(fragmentClassVisitor, 0)
 
-                byte[] codeBytes = classWriter.toByteArray()
+                byte[] codeBytes = cw.toByteArray()
                 jos.putNextEntry(zipEntry)
                 jos.write(codeBytes)
-//            } else if () { // todo 这里增加start/finish fragment方法的劫持
+//            } else if () { // todo 这里增加类似start/finish fragment方法的劫持
             } else {
                 jos.putNextEntry(zipEntry)
                 jos.write(IOUtils.toByteArray(zipEntryIs))

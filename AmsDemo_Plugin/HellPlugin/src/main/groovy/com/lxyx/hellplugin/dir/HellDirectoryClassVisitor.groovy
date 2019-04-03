@@ -1,10 +1,11 @@
 package com.lxyx.hellplugin.dir
 
+import com.lxyx.hellplugin.common.HellPageMethodConstant
 import com.lxyx.hellplugin.dir.activity.HellActivityExecMethodVisitor
 import com.lxyx.hellplugin.dir.activity.HellActivityMethodVisitor
 import com.lxyx.hellplugin.common.HellConstant
+import com.lxyx.hellplugin.dir.activity.HellActivityStubMethod
 import com.lxyx.hellplugin.dir.view.HelViewMethodVisitor
-import groovy.transform.PackageScope
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
@@ -23,6 +24,31 @@ import org.objectweb.asm.Opcodes
  * 替换系统Activity为自己生成的BaseActivity即可。
  * 2、继承v4包中的activity和fragment，无需1中方案，直接扫描jar中class文件：FragmentActivity和Fragment，在
  * 对应的目标方法中注入插桩即可。
+ *
+ * // todo 攻破的技术难点：？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
+ * // bug：v4包中的Fragment注入callback失败 ！！！！尝试注入android.app.Activity是否也是这种crash栈？？？？？
+ * //      来推断是不是v4包中的Fragment不能注入？？？？？？？？？
+ * //
+ * // 解决这个棘手问题：监控页面生命周期(Activity/Fragment)时，我们不能对android.jar中
+ * // 的代码进行注入插桩，且继承这些类的页面类(XxxActivity/XxxFragment)，很大可能也不会override所有我们需
+ * // 要注入插桩的方法，因此，如果要解决这个问题，我的想法是：
+ * //
+ * // 【想法1】
+ * // 还是只扫描工程中的类文件(继承或实现android.app.Activity/androiod.app.Fragment)，
+ * // 如果遇到没有override的方法，我们在该类文件的最后，写入这些需要方法，并注入插桩。这样的好处是：既不影响原始
+ * // 代码的行号，而且可以监控想要的方法。
+ * //
+ * // 【想法2】
+ * // 编译期生成一个HellBaseActivity，扫描所有继承Activity的子类，替换Activity为HellBaseActivity.
+ * // todo ？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
+ *
+ * // todo ？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
+ * // debug调试 Gradle Plugin步骤:
+ * 1、【run】->【Edit configures】，针对自己的需要调试的plugin，新建remote调试选项，起个名字+选择对应需要调试的plugin
+ * 2、在Terminal中输入命令：./gradlew assembleDebug -Dorg.gradle.daemon=false -Dorg.gradle.debug=true, 然后
+ *    会等待attach对应的plugin，选择【run】->【Edit configures】中对应需要debug的remote选项中的plugin，ok即可。
+ * 注意: debug之前，最好./gradlew clean一次工程，因为增量编译的话，可能会跳过一些编译过程，导致brakpoint不能执行到.
+ * // todo ？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
  */
 class HellDirectoryClassVisitor extends ClassVisitor {
     private String className
@@ -34,53 +60,44 @@ class HellDirectoryClassVisitor extends ClassVisitor {
     }
 
     @Override
-    void visit(int version, int access, String name,
-            String signature, String superName,
-            String[] interfaces) {
-
+    void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         className = name
         superClassName = superName
         interfaceArray = interfaces
-6
-        // todo ~~~~~~~~~~~~~~~~~~~~ 这是方案2：修改super类 ~~~~~~~~~~~~~~~~~~~~~~~
-        if (superClassName == 'com.lxyx.') {
-            superClassName = ''
-        }
 
         super.visit(version, access, name, signature, superClassName, interfaces)
     }
 
-    /*@Override
-    FieldVisitor visitField(int access, String name,
-            String desc, String signature, Object value) {
-
-        println('HellDirectoryClassVisitor visitField: ' + name + ', ' + desc)
-        return super.visitField(access, name, desc, signature, value)
-    }*/
-
     @Override
-    MethodVisitor visitMethod(int access, String name,
-            String desc, String signature, String[] exceptions) {
-
+    MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions)
 
         MethodVisitor activityEmthodMv = null
         if ('android/app/Activity' == superClassName) {
             println('HellDirectoryClassVisitor, visitMethod(android/app/Activity): '
-                   + className + ' | ' + name + ' | ' + desc)
+                    + className + ' | ' + name + ' | ' + desc)
 
             if ('onCreate' == name && '(Landroid/os/Bundle;)V' == desc) {
-                activityEmthodMv = new HellActivityMethodVisitor(mv,
-                        className, 'onCreate', '(Landroid/os/Bundle;)V')
-                // todo 这里设置状态，表示有了类中已经ovveride这个方法
+                activityEmthodMv = new HellActivityMethodVisitor(mv, className, 'onCreate', '(Landroid/os/Bundle;)V')
+                // 这里设置状态，表示有了类中已经ovveride这个方法
+                HellPageMethodConstant.setMethodState(className, 'onCreate', '(Landroid/os/Bundle;)V', true)
             } else if ('onResume' == name && '()V' == desc) {
                 activityEmthodMv = new HellActivityMethodVisitor(mv, className, 'onResume', '()V')
-                // todo 这里设置状态，表示有了类中已经ovveride这个方法
+                // 这里设置状态，表示有了类中已经ovveride这个方法
+                HellPageMethodConstant.setMethodState(className, 'onResume', '()V', true)
             } else if ('onPause' == name && '()V' == desc) {
                 activityEmthodMv = new HellActivityMethodVisitor(mv, className, 'onPause', '()V')
-                // todo 这里设置状态，表示有了类中已经ovveride这个方法
-            } // todo 这里继续
-
+                // 这里设置状态，表示有了类中已经ovveride这个方法
+                HellPageMethodConstant.setMethodState(className, 'onPause', '()V', true)
+            } else if ('onStop' == name && '()V' == desc) {
+                activityEmthodMv = new HellActivityMethodVisitor(mv, className, 'onStop', '()V')
+                // 这里设置状态，表示有了类中已经ovveride这个方法
+                HellPageMethodConstant.setMethodState(className, 'onStop', '()V', true)
+            } else if ('onDestroy' == name && '()V' == desc) {
+                activityEmthodMv = new HellActivityMethodVisitor(mv, className, 'onDestroy', '()V')
+                // 这里设置状态，表示有了类中已经ovveride这个方法
+                HellPageMethodConstant.setMethodState(className, 'onDestroy', '()V', true)
+            }
             // todo 剩余的，没有override的目标方法，则需要在class文件的末尾注入在当前类中，之后再注入插桩
         }
 
@@ -127,34 +144,29 @@ class HellDirectoryClassVisitor extends ClassVisitor {
         // todo ~~~~~~~~~~~~~~~~~~~~~~~ 这是方案1：类文件尾部插入方法 ~~~~~~~~~~~~~~~~~~~~~~~
         //  在一个class文件的结尾插入方法，完整方案应该是：输入若干需要监控的方法name+desc+class名，
         //  然后查看当前合法类中是否存在该方法，不存在则在class末尾最后插入该方法，存在的话，直接注入插桩。
-        injectOnStopMethod()
+        if ('android/app/Activity' == superClassName) {
+            println('HellDirectoryClassVisitor, visitEnd: ' + className)
+            boolean existOnCreate = HellPageMethodConstant.getMethodState( // todo 这里继续 ！！！！！！！
+                    className, 'onCreate', '(Landroid/os/Bundle;)V')
+            if (!existOnCreate) {
+                HellActivityStubMethod.doInjectMethod(cv, 'onCreate', '(Landroid/os/Bundle;)V')
+                HellPageMethodConstant.setMethodState(className, 'onCreate', '(Landroid/os/Bundle;)V', true)
+            }
+
+            boolean existOnResume = HellPageMethodConstant.getMethodState(className, 'onResume', '()V')
+            if (!existOnResume) {
+                HellActivityStubMethod.doInjectMethod(cv, 'onResume', '()V')
+                HellPageMethodConstant.setMethodState(className, 'onResume', '()V', true)
+            }
+
+            // todo 这里继续 !!!!
+            boolean existOnPause = HellPageMethodConstant.getMethodState(className, 'onPause', '()V')
+            if (!existOnPause) {
+                HellActivityStubMethod.doInjectMethod(cv, 'onPause', '()V')
+                HellPageMethodConstant.setMethodState(className, 'onPause', '()V', true)
+            }
+        }
 
         super.visitEnd()
-    }
-
-    /**
-     * 在这个class中，注入一个onStop()方法
-     */
-    private void injectOnStopMethod() {
-        if ('android/support/v7/app/AppCompatActivity' == superClassName) {
-            println('injectOnStopMethod start')
-
-            MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC, 'onStop', '()V', null, null)
-            mv.visitCode()
-
-            // 调用父类onStop ()V方法
-            // ALOAD 0
-            // INVOKESPECIAL android/support/v7/app/AppCompatActivity.onResume ()V
-            mv.visitVarInsn(Opcodes.ALOAD, 0) // 当前指针对象引用
-            mv.visitMethodInsn(Opcodes.INVOKESPECIAL, // 调用父类方法，使用invokespecial指令
-                    'android/support/v7/app/AppCompatActivity',
-                    'onStop', '()V', false)
-
-            mv.visitMaxs(1, 1)
-            mv.visitInsn(Opcodes.RETURN)
-            mv.visitEnd()
-
-            println('injectOnStopMethod End')
-        }
     }
 }

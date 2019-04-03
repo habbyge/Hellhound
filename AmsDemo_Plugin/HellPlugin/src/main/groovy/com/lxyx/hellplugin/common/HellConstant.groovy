@@ -45,23 +45,17 @@ final class HellConstant {
 //            this.methodDesc = methodDesc
 //        }
 //    }
-//    public static final Map<HellPageMethodConstant, Boolean> gPageMethodState = new HashMap<>()
-//    static {
-//        gPageMethodState.add(new HellPageMethodConstant(
-//                'android/app/Activity', 'onCreate', '(Landroid/os/Bundle;)V'),
-//                false)
 //
-//        gPageMethodState.add(
-//                new HellPageMethodConstant('android/app/Activity', 'onResume', '()V'),
-//                false)
-//        gPageMethodState.add(
-//                new HellPageMethodConstant('android/app/Activity', 'onPause', '()V'),
-//                false)
-//        gPageMethodState.add(
-//                new HellPageMethodConstant('android/app/Activity', 'onStop', '()V'),
-//                false)
-//        gPageMethodState.add(
-//                new HellPageMethodConstant('android/app/Activity', 'onDestroy', '()V'),
-//                false)
+//    private static final List<HellPageMethodConstant> gPageMethodState = new ArrayList<>()
+//
+////    static void initActivityInjectMethod() {
+//    static {
+//        println('HellConstant.initActivityInjectMethod()')
+//
+//        gPageMethodState.add(new HellPageMethodConstant('android/app/Activity', 'onCreate', '(Landroid/os/Bundle;)V'))
+//        gPageMethodState.add(new HellPageMethodConstant('android/app/Activity', 'onResume', '()V'))
+//        gPageMethodState.add(new HellPageMethodConstant('android/app/Activity', 'onPause', '()V'))
+//        gPageMethodState.add(new HellPageMethodConstant('android/app/Activity', 'onStop', '()V'))
+//        gPageMethodState.add(new HellPageMethodConstant('android/app/Activity', 'onDestroy', '()V'))
 //    }
 }

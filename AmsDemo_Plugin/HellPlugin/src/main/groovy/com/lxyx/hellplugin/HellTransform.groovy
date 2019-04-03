@@ -2,6 +2,7 @@ package com.lxyx.hellplugin
 
 import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
+import com.lxyx.hellplugin.common.HellPageMethodConstant
 import com.lxyx.hellplugin.dir.DirectoryStub
 import com.lxyx.hellplugin.jar.JarStub
 import groovy.transform.PackageScope
@@ -62,7 +63,6 @@ class HellTransform extends Transform {
         }
 
         for (TransformInput input : inputs) {
-
             // 普通文件夹
             for (DirectoryInput directoryInput : input.getDirectoryInputs()) {
                 DirectoryStub.startStub(directoryInput, outputProvider, isIncremental)

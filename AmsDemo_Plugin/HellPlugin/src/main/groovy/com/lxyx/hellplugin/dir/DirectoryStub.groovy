@@ -132,7 +132,6 @@ class DirectoryStub {
 
         ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS)
         HellDirectoryClassVisitor hellCV = new HellDirectoryClassVisitor(cw)
-
         cr.accept(hellCV, 0)
 
         byte[] data = cw.toByteArray()

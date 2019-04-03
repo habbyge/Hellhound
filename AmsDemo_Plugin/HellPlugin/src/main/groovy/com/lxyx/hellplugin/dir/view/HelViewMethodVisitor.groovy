@@ -69,7 +69,6 @@ class HelViewMethodVisitor extends MethodVisitor {
      * @param View the view on clicked
      */
     private injectCallback(int clickType, boolean beforeOrAfter) {
-
         mv.visitMethodInsn(Opcodes.INVOKESTATIC,
                 "com/lxyx/helllib/HellMonitor",
                 "getInstance",
