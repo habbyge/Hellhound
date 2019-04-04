@@ -3,6 +3,7 @@ package com.lxyx.hellplugin
 import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
 import com.lxyx.hellplugin.dir.DirectoryStub
+import com.lxyx.hellplugin.dir.HellBaseActivityGenerator
 import com.lxyx.hellplugin.jar.JarStub
 import groovy.transform.PackageScope
 import org.gradle.api.Project
@@ -17,6 +18,8 @@ class HellTransform extends Transform {
     HellTransform(Project project) {
         super()
         this.project = project
+
+        /*HellBaseActivityGenerator.create("com/lxyx/helllib/HellBaseActivity")*/
     }
 
     @Override

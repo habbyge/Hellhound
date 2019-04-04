@@ -52,7 +52,7 @@ class HellDirClassVisitor extends ClassVisitor {
         superClassName = superName
         interfaceArray = interfaces
 
-        super.visit(version, access, name, signature, superClassName, interfaces)
+        super.visit(version, access, name, signature, superName, interfaces)
     }
 
     @Override

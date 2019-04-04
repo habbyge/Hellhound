@@ -112,7 +112,6 @@ class JarStub {
                 byte[] codeBytes = cw.toByteArray()
                 jos.putNextEntry(zipEntry)
                 jos.write(codeBytes)
-//            } else if () { // todo 这里增加类似start/finish fragment方法的劫持，直接获取fragment调用链
             } else {
                 jos.putNextEntry(zipEntry)
                 jos.write(IOUtils.toByteArray(zipEntryIs))
