@@ -29,3 +29,9 @@
 - 方案1、扫描当前业务Activity，父类是直接继承android.app.Activity，遍历是否存在需要注入的方法(例如：onNewIntent、onPause...)，如果已经存在，则直接在目标方法中注入插桩；反之，在ClassVistor.visitEnd()中，也就是整个class文件的末尾插入缺失的目标方法，同时注入插桩，选取在class文件结尾注入的原因是，不改变原代码代码行号。
 - 方案2：自己实现一个BaseActivity，继承android.app.Activity，override目标方法，然后扫描Project的目录，替换系统Activity为自己生成的BaseActivity即可。
 ### 4.2、继承v4包中的activity和fragment，无需1中方案，直接扫描jar中class文件：FragmentActivity和Fragment，在对应的目标方法中注入插桩即可。
+
+## 5、gradle plugin debug方法
+- 【run】->【Edit configures】，针对自己的需要调试的plugin，新建remote调试选项，起个名字+选择对应需要调试的plugin
+- 在Terminal中输入命令：./gradlew assembleDebug -Dorg.gradle.daemon=false -Dorg.gradle.debug=true, 然后会等待attach对应的plugin，选择【run】->【Edit configures】中对应需要debug的remote选项中的plugin，ok即可。
+- 再次进入【Run】->【Debug "选择要debug的插件名"】，即可breakpoint debug。
+- 注意: debug之前，最好./gradlew clean一次工程，因为增量编译的话，可能会跳过一些编译过程，导致brakpoint不能执行到.
