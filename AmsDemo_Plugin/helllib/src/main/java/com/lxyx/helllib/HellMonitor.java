@@ -13,7 +13,7 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 
 /**
- * Created by habbyge 2019/3/6.
+ * Created by habbyge on 2019/3/6.
  */
 public final class HellMonitor {
     private static final String TAG = "HellMonitor";
@@ -172,19 +172,19 @@ public final class HellMonitor {
      */
     public void callActivityListener(Activity activity, int eventType) {
         switch (eventType) {
-        case HellConstant.ACTIVITY_EVENT_OnCreate:
+        case HellConstant.Page_Event_OnCreate:
             mActivityListener.onCreate(activity);
             break;
-        case HellConstant.ACTIVITY_EVENT_OnResume:
+        case HellConstant.Page_Event_OnResume:
             mActivityListener.onResume(activity);
             break;
-        case HellConstant.ACTIVITY_EVENT_OnPause:
+        case HellConstant.Page_Event_OnPause:
             mActivityListener.onPause(activity);
             break;
-        case HellConstant.ACTIVITY_EVENT_OnStop:
+        case HellConstant.Page_Event_OnStop:
             mActivityListener.onStop(activity);
             break;
-        case HellConstant.ACTIVITY_EVENT_OnDestroy:
+        case HellConstant.Page_Event_OnDestroy:
             mActivityListener.onDestroy(activity);
             break;
         }
@@ -269,12 +269,22 @@ public final class HellMonitor {
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Fragment相关 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    public void callbackFragment(Fragment fragment, int eventType, Bundle savedInstanceState) {
+    public void callbackV4Fragment(Fragment fragment, int eventType, Bundle savedInstanceState) {
+        System.out.println("HABBYGE-MALI, callbackV4Fragment: " +
+                fragment.getClass().getName() + " | " + HellConstant.getFragmentEventName(eventType));
+    }
+
+    public void callbackV4Fragment(Fragment fragment, int eventType) {
+        System.out.println("HABBYGE-MALI, callbackV4Fragment: " +
+                fragment.getClass().getName() + " | " + HellConstant.getFragmentEventName(eventType));
+    }
+
+    public void callbackFragment(android.app.Fragment fragment, int eventType, Bundle savedInstanceState) {
         System.out.println("HABBYGE-MALI, callbackFragment: " +
                 fragment.getClass().getName() + " | " + HellConstant.getFragmentEventName(eventType));
     }
 
-    public void callbackFragment(Fragment fragment, int eventType) {
+    public void callbackFragment(android.app.Fragment fragment, int eventType) {
         System.out.println("HABBYGE-MALI, callbackFragment: " +
                 fragment.getClass().getName() + " | " + HellConstant.getFragmentEventName(eventType));
     }

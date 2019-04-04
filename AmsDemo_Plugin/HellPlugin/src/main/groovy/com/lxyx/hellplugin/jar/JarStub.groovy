@@ -5,7 +5,7 @@ import com.android.build.api.transform.JarInput
 import com.android.build.api.transform.Status
 import com.android.build.api.transform.TransformOutputProvider
 import com.lxyx.hellplugin.jar.activity.HellActivityClassVisitor
-import com.lxyx.hellplugin.jar.fragment.HellFragmentClassVisitor
+import com.lxyx.hellplugin.jar.fragment.HellV4FragmentClassVisitor
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
@@ -19,7 +19,7 @@ import java.util.jar.JarOutputStream
 import java.util.zip.ZipEntry
 
 /**
- * Created by habbyge 2019/03/15.
+ * Created by habbyge on 2019/03/15.
  */
 class JarStub {
 
@@ -106,13 +106,13 @@ class JarStub {
 
                 ClassReader cr = new ClassReader(IOUtils.toByteArray(zipEntryIs))
                 ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS)
-                ClassVisitor fragmentClassVisitor = new HellFragmentClassVisitor(cw)
+                ClassVisitor fragmentClassVisitor = new HellV4FragmentClassVisitor(cw)
                 cr.accept(fragmentClassVisitor, 0)
 
                 byte[] codeBytes = cw.toByteArray()
                 jos.putNextEntry(zipEntry)
                 jos.write(codeBytes)
-//            } else if () { // todo 这里增加类似start/finish fragment方法的劫持
+//            } else if () { // todo 这里增加类似start/finish fragment方法的劫持，直接获取fragment调用链
             } else {
                 jos.putNextEntry(zipEntry)
                 jos.write(IOUtils.toByteArray(zipEntryIs))

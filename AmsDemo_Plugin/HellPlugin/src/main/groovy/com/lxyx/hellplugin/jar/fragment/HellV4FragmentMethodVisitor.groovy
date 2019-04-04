@@ -8,15 +8,15 @@ import org.objectweb.asm.Opcodes
  * Created by habbyge on 2019/3/31.
  * 这里注入的是v4包中的Fragment生命周期方法.
  */
-final class HellFragmentMethodVisitor extends MethodVisitor {
+final class HellV4FragmentMethodVisitor extends MethodVisitor {
     private String mClassName
     private final int mEventType
 
-    HellFragmentMethodVisitor(MethodVisitor mv, String className, int eventType) {
+    HellV4FragmentMethodVisitor(MethodVisitor mv, String className, int eventType) {
         super(Opcodes.ASM5, mv)
         mClassName = className
         mEventType = eventType
-        println('HellFragmentMethodVisitor <init>: ' + mClassName + ' | ' + eventType)
+        println('HellV4FragmentMethodVisitor <init>: ' + mClassName + ' | ' + eventType)
     }
 
     @Override
@@ -54,26 +54,26 @@ final class HellFragmentMethodVisitor extends MethodVisitor {
         mv.visitLdcInsn(mEventType)
 
         switch (mEventType) {
-        case HellConstant.FRAGMENT_EVENT_OnCreate: // 0
-            // void callbackFragment(Fragment fragment, int eventType, Bundle savedInstanceState)
+        case HellConstant.Page_Event_OnCreate: // 0
+            // void callbackV4Fragment(Fragment fragment, int eventType, Bundle savedInstanceState)
             mv.visitVarInsn(Opcodes.ALOAD, 1) // 从局部变量表slot-1位置，加载onCreate形参Bundle到栈顶
 
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
                     "com/lxyx/helllib/HellMonitor",
-                    "callbackFragment",
+                    "callbackV4Fragment",
                     "(Landroid/support/v4/app/Fragment;ILandroid/os/Bundle;)V",
                     false)
-            println('HellFragmentMethodVisitor, OnCreate')
+            println('HellV4FragmentMethodVisitor, OnCreate')
             break
 
-        case HellConstant.FRAGMENT_EVENT_OnResume:      // 1
-        case HellConstant.FRAGMENT_EVENT_OnPause:       // 2
-        case HellConstant.FRAGMENT_EVENT_OnStop:        // 3
-        case HellConstant.FRAGMENT_EVENT_OnDestroy:     // 4
-            // void callbackFragment(Fragment fragment, int eventType)
+        case HellConstant.Page_Event_OnResume:      // 1
+        case HellConstant.Page_Event_OnPause:       // 2
+        case HellConstant.Page_Event_OnStop:        // 3
+        case HellConstant.Page_Event_OnDestroy:     // 4
+            // void callbackV4Fragment(Fragment fragment, int eventType)
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
                     "com/lxyx/helllib/HellMonitor",
-                    "callbackFragment",
+                    "callbackV4Fragment",
                     "(Landroid/support/v4/app/Fragment;I)V",
                     false)
             break

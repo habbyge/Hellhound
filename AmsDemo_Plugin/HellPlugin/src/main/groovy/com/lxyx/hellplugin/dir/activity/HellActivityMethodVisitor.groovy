@@ -5,7 +5,7 @@ import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 
 /**
- * Created by habbyge 2019/4/2.
+ * Created by habbyge on 2019/4/2.
  *
  * 这里实现方案1
  * 扫描当前业务Activity，父类是直接继承android.app.Activity，遍历是否存在需要注入的方法，如果已经存在，
@@ -31,26 +31,29 @@ class HellActivityMethodVisitor extends MethodVisitor {
         super.visitCode()
 
         // 在需目标方法中注入callback方法，实现监控
-        mv.visitMethodInsn(Opcodes.INVOKESTATIC, 'com/lxyx/helllib/HellMonitor',
-                'getInstance', '()Lcom/lxyx/helllib/HellMonitor;', false)
+        mv.visitMethodInsn(Opcodes.INVOKESTATIC,
+                'com/lxyx/helllib/HellMonitor',
+                'getInstance',
+                '()Lcom/lxyx/helllib/HellMonitor;',
+                false)
         mv.visitVarInsn(Opcodes.ALOAD, 0) // 当前Activity引用入栈
 
-        int eventType = HellConstant.ACTIVITY_EVENT_INVALIDATE
+        int eventType = HellConstant.Page_Event_Invalidate
         if ('onCreate' == mMethodName && '(Landroid/os/Bundle;)V' == mMethodDesc) {
-            eventType = HellConstant.ACTIVITY_EVENT_OnCreate
+            eventType = HellConstant.Page_Event_OnCreate
         } else if ('onNewIntent' == mMethodName && '(Landroid/content/Intent;)V' == mMethodDesc) {
-            eventType = HellConstant.ACTIVITY_EVENT_OnNewIntent
+            eventType = HellConstant.Page_Event_OnNewIntent
         } else if ('onResume' == mMethodName && '()V' == mMethodDesc) {
-            eventType = HellConstant.ACTIVITY_EVENT_OnResume
+            eventType = HellConstant.Page_Event_OnResume
         } else if ('onPause' == mMethodName && '()V' == mMethodDesc) {
-            eventType = HellConstant.ACTIVITY_EVENT_OnPause
+            eventType = HellConstant.Page_Event_OnPause
         } else if ('onStop' == mMethodName && '()V' == mMethodDesc) {
-            eventType = HellConstant.ACTIVITY_EVENT_OnStop
+            eventType = HellConstant.Page_Event_OnStop
         } else if ('onDestroy' == mMethodName && '()V' == mMethodDesc) {
-            eventType = HellConstant.ACTIVITY_EVENT_OnDestroy
+            eventType = HellConstant.Page_Event_OnDestroy
         }
 
-        if (eventType == HellConstant.ACTIVITY_EVENT_OnNewIntent) {
+        if (eventType == HellConstant.Page_Event_OnNewIntent) {
             mv.visitVarInsn(Opcodes.ALOAD, 1) // 从局部变量表中slot-1位置加载Intent参数到栈顶
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
                     "com/lxyx/helllib/HellMonitor",

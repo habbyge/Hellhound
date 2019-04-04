@@ -9,19 +9,17 @@ import org.objectweb.asm.Opcodes
 /**
  * Created by habbyge on 2019/3/31.
  */
-final class HellFragmentClassVisitor extends ClassVisitor {
+final class HellV4FragmentClassVisitor extends ClassVisitor {
     private String mClassName
     private String mSuperName
     private String[] mInterfaces
 
-    HellFragmentClassVisitor(ClassVisitor cv) {
+    HellV4FragmentClassVisitor(ClassVisitor cv) {
         super(Opcodes.ASM5, cv)
     }
 
     @Override
-    void visit(int version, int access, String name,
-            String signature, String superName, String[] interfaces) {
-
+    void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         mClassName = name
         mSuperName = superName
         mInterfaces = interfaces
@@ -30,25 +28,23 @@ final class HellFragmentClassVisitor extends ClassVisitor {
     }
 
     @Override
-    MethodVisitor visitMethod(int access, String name,
-            String desc, String signature, String[] exceptions) {
-
-        int eventType = HellConstant.FRAGMENT_EVENT_INVALIDATE
+    MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+        int eventType = HellConstant.Page_Event_Invalidate
         if ("onCreate" == name && "(Landroid/os/Bundle;)V" == desc) {
-            eventType = HellConstant.FRAGMENT_EVENT_OnCreate
+            eventType = HellConstant.Page_Event_OnCreate
         } else if ("onResume" == name && "()V" == desc) {
-            eventType = HellConstant.FRAGMENT_EVENT_OnResume
+            eventType = HellConstant.Page_Event_OnResume
         } else if ("onPause" == name && "()V" == desc) {
-            eventType = HellConstant.FRAGMENT_EVENT_OnPause
+            eventType = HellConstant.Page_Event_OnPause
         } else if ("onStop" == name && "()V" == desc) {
-            eventType = HellConstant.FRAGMENT_EVENT_OnStop
+            eventType = HellConstant.Page_Event_OnStop
         } else if ("onDestroy" == name && "()V" == desc) {
-            eventType = HellConstant.FRAGMENT_EVENT_OnDestroy
+            eventType = HellConstant.Page_Event_OnDestroy
         }
 
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions)
-        if (eventType != HellConstant.FRAGMENT_EVENT_INVALIDATE) {
-            return new HellFragmentMethodVisitor(mv, mClassName, eventType)
+        if (eventType != HellConstant.Page_Event_Invalidate) {
+            return new HellV4FragmentMethodVisitor(mv, mClassName, eventType)
         } else {
             return mv
         }

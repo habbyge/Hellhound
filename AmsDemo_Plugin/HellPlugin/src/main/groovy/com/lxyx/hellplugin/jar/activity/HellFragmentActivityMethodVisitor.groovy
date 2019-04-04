@@ -5,10 +5,9 @@ import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 
 /**
- * Created by habbyge 2019/03/24.
+ * Created by habbyge on 2019/03/24.
  */
 class HellFragmentActivityMethodVisitor extends MethodVisitor {
-
     private String mMethodName
     private String mMethodDesc
 
@@ -27,19 +26,19 @@ class HellFragmentActivityMethodVisitor extends MethodVisitor {
     @Override
     void visitInsn(int opcode) {
         if (Opcodes.RETURN == opcode) {
-            int eventType = HellConstant.ACTIVITY_EVENT_INVALIDATE
+            int eventType = HellConstant.Page_Event_Invalidate
             if ("onCreate" == mMethodName && "(Landroid/os/Bundle;)V" == mMethodDesc) {
-                eventType = HellConstant.ACTIVITY_EVENT_OnCreate
+                eventType = HellConstant.Page_Event_OnCreate
             } else if ('onNewIntent' == mMethodName && '(Landroid/os/Bundle;)V' == mMethodDesc) {
-                eventType = HellConstant.ACTIVITY_EVENT_OnNewIntent
+                eventType = HellConstant.Page_Event_OnNewIntent
             } else if ("onResume" == mMethodName && "()V" == mMethodDesc) {
-                eventType = HellConstant.ACTIVITY_EVENT_OnResume
+                eventType = HellConstant.Page_Event_OnResume
             } else if ("onPause" == mMethodName && "()V" == mMethodDesc) {
-                eventType = HellConstant.ACTIVITY_EVENT_OnPause
+                eventType = HellConstant.Page_Event_OnPause
             } else if ("onStop" == mMethodName && "()V" == mMethodDesc) {
-                eventType = HellConstant.ACTIVITY_EVENT_OnStop
+                eventType = HellConstant.Page_Event_OnStop
             } else if ("onDestroy" == mMethodName && "()V" == mMethodDesc) {
-                eventType = HellConstant.ACTIVITY_EVENT_OnDestroy
+                eventType = HellConstant.Page_Event_OnDestroy
             }
 
             injectCallback(eventType)
@@ -73,7 +72,7 @@ class HellFragmentActivityMethodVisitor extends MethodVisitor {
                 false) // 调用者入栈
         mv.visitVarInsn(Opcodes.ALOAD, 0) // 从局部变量表slot-0位置，加载this指针，即当前Activity引用 入栈
 
-        if (eventType == HellConstant.ACTIVITY_EVENT_OnNewIntent) { // onNewIntent
+        if (eventType == HellConstant.Page_Event_OnNewIntent) { // onNewIntent
             // void callbackActivityOnNewIntentListener(Activity activity, Intent intent)
             mv.visitVarInsn(Opcodes.ALOAD, 1) // 从局部变量表中slot-1位置加载Intent参数到栈顶
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,

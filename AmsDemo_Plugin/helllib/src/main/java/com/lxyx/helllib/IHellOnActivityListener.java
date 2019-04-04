@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 
 /**
- * Created by habbyge 2019/03/24.
+ * Created by habbyge on 2019/03/24.
  */
 public interface IHellOnActivityListener {
     void startActivity(Object srcActivity, String srcActivityName, Intent targetIntent);

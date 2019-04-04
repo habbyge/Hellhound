@@ -5,7 +5,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 /**
- * Created by habbyge 2019/03/15.
+ * Created by habbyge on 2019/03/15.
  */
 class HellPlugin implements Plugin<Project> {
 

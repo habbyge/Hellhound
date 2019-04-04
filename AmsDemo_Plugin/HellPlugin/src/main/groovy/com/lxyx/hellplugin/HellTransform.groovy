@@ -2,14 +2,13 @@ package com.lxyx.hellplugin
 
 import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
-import com.lxyx.hellplugin.common.HellPageMethodConstant
 import com.lxyx.hellplugin.dir.DirectoryStub
 import com.lxyx.hellplugin.jar.JarStub
 import groovy.transform.PackageScope
 import org.gradle.api.Project
 
 /**
- * Created by habbyge 2019/03/15.
+ * Created by habbyge on 2019/03/15.
  */
 @PackageScope
 class HellTransform extends Transform {

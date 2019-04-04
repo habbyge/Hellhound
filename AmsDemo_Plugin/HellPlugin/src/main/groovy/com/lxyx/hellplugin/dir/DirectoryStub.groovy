@@ -9,7 +9,7 @@ import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 
 /**
- * Created by habbyge 2019/03/15.
+ * Created by habbyge on 2019/03/15.
  */
 class DirectoryStub {
 
@@ -131,7 +131,7 @@ class DirectoryStub {
         }
 
         ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS)
-        HellDirectoryClassVisitor hellCV = new HellDirectoryClassVisitor(cw)
+        HellDirClassVisitor hellCV = new HellDirClassVisitor(cw)
         cr.accept(hellCV, 0)
 
         byte[] data = cw.toByteArray()

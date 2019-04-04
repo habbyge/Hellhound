@@ -20,11 +20,11 @@ class HellActivityStubMethod {
         MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC, name, desc, null, null)
         mv.visitCode()
 
-        // 调用父类方法: super.name/desc
+        // 调用父类方法: super.name/desc，用于调用父类方法
         mv.visitVarInsn(Opcodes.ALOAD, 0) // 当前指针对象引用this
 
         // 注入callback
-        if (eventType == HellConstant.ACTIVITY_EVENT_OnNewIntent) { // public void onNewIntent(Intent var1)
+        if (eventType == HellConstant.Page_Event_OnNewIntent) { // public void onNewIntent(Intent var1)
             mv.visitVarInsn(Opcodes.ALOAD, 1) // 参数Intent从局部变量表slot-1中取出入栈
             // 调用父类方法，使用invokespecial指令
             mv.visitMethodInsn(Opcodes.INVOKESPECIAL, 'android/app/Activity', name, desc, false)
