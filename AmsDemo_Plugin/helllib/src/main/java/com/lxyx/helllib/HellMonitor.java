@@ -34,7 +34,6 @@ public final class HellMonitor {
     private HellMonitor() {
     }
 
-
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ View操作相关 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     public void callClickListenerBefore(int clickType, View view) {

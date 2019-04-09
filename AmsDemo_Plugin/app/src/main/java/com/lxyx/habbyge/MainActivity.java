@@ -97,6 +97,10 @@ public class MainActivity extends AppCompatActivity {
                         "onItemClick: " + position,
                         Toast.LENGTH_SHORT)
                         .show();
+
+                if (position == 0) { // 测试Main2Activity中注入的callback
+                    MainActivity.this.startActivity(new Intent(MainActivity.this, Main2Activity.class));
+                }
             }
         });
     }

@@ -4,20 +4,21 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
  * Created by habbyge on 2019/4/5.
- * todo 目前仅用于测试用途
+ *s 目前仅用于测试用途，字节码注入替换base类.
  */
 public class HellBaseActivityGenerator extends ClassLoader {
 
     private HellBaseActivityGenerator() {
     }
 
-    public static void create(String className) {
+    public static void create(String className, String dstDir) {
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
         cw.visit(Opcodes.ASM5, Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL, className, null, "android/app/Activity", null);
 
@@ -34,10 +35,13 @@ public class HellBaseActivityGenerator extends ClassLoader {
         mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "android/app/Activity", "onResume", "()V", false);
         mv.visitEnd();
 
+        System.out.println("HellBaseActivityGenerator, create End ~~~");
+
         byte[] classBytes = cw.toByteArray();
         FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream("../helllib/src/main/java/com/lxyx/helllib/HellBaseActivity.class");
+            // 2019-04-09 当前目录是当前工程目录。。。。。。
+            fos = new FileOutputStream(dstDir + File.separator + "HellBaseActivity.class");
             fos.write(classBytes);
             fos.flush();
         } catch (FileNotFoundException e) {

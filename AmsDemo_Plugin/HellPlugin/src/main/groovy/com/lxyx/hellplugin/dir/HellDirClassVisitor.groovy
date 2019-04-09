@@ -26,7 +26,7 @@ import org.objectweb.asm.Opcodes
  * 则直接在目标方法中注入插桩；反之，在ClassVistor.visitEnd()中，也就是整个class文件中插入缺失的目标方法，同
  * 时注入插桩，选取在class文件结尾注入的原因是，不改变原先代码行号。--------> 方案1已经实现
  * 【方案2】：自己实现一个BaseActivity，继承android.app.Activity，override目标方法，然后扫描Project的目录，
- * 替换系统Activity为自己生成的BaseActivity即可。 --------> todo：方案2暂未实现
+ * 替换系统Activity为自己生成的BaseActivity即可。
  * 2、继承v4包中的activity和fragment，无需1中方案，直接扫描jar中class文件：FragmentActivity和Fragment，在
  * 对应的目标方法中注入插桩即可。
  *
@@ -52,16 +52,28 @@ class HellDirClassVisitor extends ClassVisitor {
         superClassName = superName
         interfaceArray = interfaces
 
-        super.visit(version, access, name, signature, superName, interfaces)
+        // 这里是方案2s: 方案2会更好，因为完全不影响原先代码，替换注入方式.
+        if (HellConstant.ANDROID_APP_ACTIVITY_MODE == HellConstant.ANDROID_APP_ACTIVITY_MODE_BaseActivity) {
+            if ("android/app/Activity" == superName) {
+                String newSuperName = "com/lxyx/helllib/HellBaseActivity"
+                super.visit(version, access, name, signature, newSuperName, interfaces)
+            } else {
+                super.visit(version, access, name, signature, superName, interfaces)
+            }
+        } else {
+            super.visit(version, access, name, signature, superName, interfaces)
+        }
     }
 
     @Override
     MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions)
         MethodVisitor activityEmthodMv = null
-        if ('android/app/Activity' == superClassName) {
+        if ('android/app/Activity' == superClassName && 'com/lxyx/helllib/HellBaseActivity' != className) {
             println('HellDirClassVisitor, visitMethod: ' + className + ' | ' + name + ' | ' + desc)
-            activityEmthodMv = injectActivityMethod(mv, name, desc)
+            if (HellConstant.ANDROID_APP_ACTIVITY_MODE == HellConstant.ANDROID_APP_ACTIVITY_MODE_Inject_Method) {
+                activityEmthodMv = injectActivityMethod(mv, name, desc) // 这里是方案1
+            }
             // 剩余的，没有override的目标方法，则需要在class文件的末尾注入在当前类中，之后再注入插桩，具体位置在visitEnd()中注入
         } else if ('android/app/Fragment' == superClassName) {
             println('HellDirClassVisitor, android/app/Fragment: ' + name + " | " + desc)
@@ -111,9 +123,11 @@ class HellDirClassVisitor extends ClassVisitor {
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~ 这是方案1：类文件尾部插入方法(不改变原代码行号) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //  在一个class文件的结尾插入方法，完整方案应该是：输入若干需要监控的方法name+desc+class名，
         //  然后查看当前合法类中是否存在该方法，不存在则在class末尾最后插入该方法，存在的话，直接注入插桩。
-        if ('android/app/Activity' == superClassName) {
+        if ('android/app/Activity' == superClassName && 'com/lxyx/helllib/HellBaseActivity' != className) {
             println('HellDirClassVisitor, visitEnd: ' + className)
-            injectActivityMethodClassTail()
+            if (HellConstant.ANDROID_APP_ACTIVITY_MODE == HellConstant.ANDROID_APP_ACTIVITY_MODE_Inject_Method) {
+                injectActivityMethodClassTail() // 这里是方案1
+            }
         } else if ('android/app/Fragment' == superClassName) {
             injectFragmentMethodClassTail()
         }

@@ -16,9 +16,7 @@ class DirectoryStub {
     private DirectoryStub() {
     }
 
-    static void startStub(DirectoryInput directoryInput,
-            TransformOutputProvider output, boolean isIncremental) {
-
+    static void startStub(DirectoryInput directoryInput, TransformOutputProvider output, boolean isIncremental) {
         String inputDirPath = directoryInput.file.getAbsolutePath() // 一般是目录
         println('DirectoryStub, startStub, inputDirPath: ' + inputDirPath)
 

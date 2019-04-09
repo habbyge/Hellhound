@@ -3,7 +3,6 @@ package com.lxyx.hellplugin
 import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
 import com.lxyx.hellplugin.dir.DirectoryStub
-import com.lxyx.hellplugin.dir.HellBaseActivityGenerator
 import com.lxyx.hellplugin.jar.JarStub
 import groovy.transform.PackageScope
 import org.gradle.api.Project
@@ -18,8 +17,6 @@ class HellTransform extends Transform {
     HellTransform(Project project) {
         super()
         this.project = project
-
-        /*HellBaseActivityGenerator.create("com/lxyx/helllib/HellBaseActivity")*/
     }
 
     @Override
@@ -57,6 +54,10 @@ class HellTransform extends Transform {
         // OutputProvider是当前Transfrom的输出，亦是下一个Transform的输入：
         // 负责把当前Transform输出给下一个Transform的输入，
         TransformOutputProvider outputProvider = transformInvocation.getOutputProvider()
+
+        /*String baseDir = project.project(':helllib')
+        println('baseDir: ' + baseDir)
+        HellBaseActivityGenerator.create('com/lxyx/habbyge/HellBaseActivity', baseDir)*/
 
         // 支持增量编译
         boolean isIncremental = transformInvocation.isIncremental()
