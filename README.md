@@ -25,7 +25,7 @@
 
 ## 4、部分技术细节
 注入页面行为函数的策略：
-### 4.1、继承android.app.Activity的页面，下同fragment，无法字节码注入，可以从另外一个角度解决：扫描当前Project的工程目录文件(注意不是jar文件)，然后有两个具体方案：
+### 4.1、继承android.app.Activity的页面，下同fragment，无法字节码注入，可以从另外一个角度解决：扫描当前Project的工程目录文件(注意不是jar文件)，然后有两个具体方案(这也是比其他方案优秀的其中一个原因)：
 - 方案1、扫描当前业务Activity，父类是直接继承android.app.Activity，遍历是否存在需要注入的方法(例如：onNewIntent、onPause...)，如果已经存在，则直接在目标方法中注入插桩；反之，在ClassVistor.visitEnd()中，也就是整个class文件的末尾插入缺失的目标方法，同时注入插桩，选取在class文件结尾注入的原因是，不改变原代码代码行号。
 - 方案2：自己实现一个BaseActivity，继承android.app.Activity，override目标方法，然后扫描Project的目录，替换系统Activity为自己生成的BaseActivity即可。
 ### 4.2、继承v4包中的activity和fragment，无需1中方案，直接扫描jar中class文件：FragmentActivity和Fragment，在对应的目标方法中注入插桩即可。
