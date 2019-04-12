@@ -1,6 +1,7 @@
 package com.lxyx.hellplugin.dir.activity
 
 import com.lxyx.hellplugin.common.HellConstant
+import org.objectweb.asm.Label
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 
@@ -68,6 +69,8 @@ class HellActivityMethodVisitor extends MethodVisitor {
                     '(Landroid/app/Activity;I)V',
                     false)
         }
+
+        println('HellActivityMethodVisitor, visitCode: ' + mClassName + " | " + mMethodName)
     }
 
     @Override
@@ -75,8 +78,19 @@ class HellActivityMethodVisitor extends MethodVisitor {
         super.visitInsn(opcode)
     }
 
+    // 这里是验证代码(注释勿删除)：
+    // (1) 验证注入的jvm汇编指令是否对原有的源文件行号有影响：没有影响
+    // (2) 验证时再打开，发布时关闭。
+    /*@Override
+    void visitLineNumber(int line, Label start) {
+        super.visitLineNumber(line, start)
+        println('HellActivityMethodVisitor, visitLineNumber: ' + mClassName + " | " + mMethodName + " | " + line)
+    }*/
+
     @Override
     void visitEnd() {
         super.visitEnd()
+
+        println('HellActivityMethodVisitor, visitEnd: ' + mClassName + " | " + mMethodName)
     }
 }

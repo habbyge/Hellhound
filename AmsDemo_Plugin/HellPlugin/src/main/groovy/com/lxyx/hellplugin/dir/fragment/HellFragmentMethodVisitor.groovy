@@ -6,19 +6,23 @@ import org.objectweb.asm.Opcodes
 
 class HellFragmentMethodVisitor extends MethodVisitor {
     private String mClassName
+    private String mMethodName
     private final int mEventType
 
-    HellFragmentMethodVisitor(MethodVisitor mv, String className, int eventType) {
+    HellFragmentMethodVisitor(MethodVisitor mv, String className, String methodName, int eventType) {
         super(Opcodes.ASM5, mv)
         mClassName = className
+        mMethodName = methodName
         mEventType = eventType
 
-        println('HellFragmentMethodVisitor <init>: ' + mClassName + ' | ' + eventType)
+        println('HellFragmentMethodVisitor, <init>: ' + mClassName + ' | ' + mMethodName + ' | ' + eventType)
     }
 
     @Override
     void visitCode() {
         super.visitCode()
+        println('HellFragmentMethodVisitor, visitCode: ' + mClassName +  ' | ' + mMethodName)
+
         injectCallback() // 这里可以在方法执行最后注入callback
     }
 
@@ -27,13 +31,22 @@ class HellFragmentMethodVisitor extends MethodVisitor {
         if (opcode == Opcodes.RETURN) {
             // 这里注入方法执行结束之前的插桩
         }
-
         super.visitInsn(opcode)
     }
+
+    // 这里是验证代码(注释勿删除)：
+    // (1) 验证注入的jvm汇编指令是否对原有的源文件行号有影响：没有影响
+    // (2) 验证时再打开，发布时关闭。
+    /*@Override
+    void visitLineNumber(int line, Label start) {
+        super.visitLineNumber(line, start)
+        println('HellFragmentMethodVisitor, visitLineNumber: ' + mClassName +  ' | ' + mMethodName + ' | ' + line)
+    }*/
 
     @Override
     void visitEnd() {
         super.visitEnd()
+        println('HellFragmentMethodVisitor, visitEnd: ' + mClassName +  ' | ' + mMethodName)
     }
 
     private void injectCallback() {

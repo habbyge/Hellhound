@@ -26,6 +26,7 @@ final class HellConstant {
     // 配置采用哪种注入方式，注入android/app/Activity子类
     public static final int ANDROID_APP_ACTIVITY_MODE_Inject_Method = 0 // 方案1
     public static final int ANDROID_APP_ACTIVITY_MODE_BaseActivity = 1  // 方案2
-    public static final int ANDROID_APP_ACTIVITY_MODE = ANDROID_APP_ACTIVITY_MODE_BaseActivity  // 方案2
-                /*ANDROID_APP_ACTIVITY_MODE_Inject_Method*/
+    public static final int ANDROID_APP_ACTIVITY_MODE =
+            ANDROID_APP_ACTIVITY_MODE_Inject_Method   // 方案1
+//            ANDROID_APP_ACTIVITY_MODE_BaseActivity  // 方案2
 }
