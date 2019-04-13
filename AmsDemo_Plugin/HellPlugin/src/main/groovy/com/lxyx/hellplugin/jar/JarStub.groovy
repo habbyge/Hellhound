@@ -70,6 +70,10 @@ class JarStub {
     }
 
     private static void doStub(File srcFile, File jarDest) {
+        if (srcFile == null || !srcFile.exists() || !srcFile.canWrite()) {
+            println("JarStub doStub: exception, srcFile: ${srcFile.absolutePath}")
+            return
+        }
         File tmpJarFile = new File(srcFile.getParent() + File.separator + "classes_tmp.jar")
         if (tmpJarFile.exists()) {
             tmpJarFile.delete()

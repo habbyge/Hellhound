@@ -15,6 +15,7 @@ import android.widget.Toast;
 /**
  * Created by habbyge on 2019/3/6.
  */
+// TODO: 2019-04-13 这里添加消息队列组件 !!!
 public final class HellMonitor {
     private static final String TAG = "HellMonitor";
 

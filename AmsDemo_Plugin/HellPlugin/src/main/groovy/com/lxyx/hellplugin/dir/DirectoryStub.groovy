@@ -31,16 +31,16 @@ class DirectoryStub {
         if (isIncremental) { // 如果是增量编译
             println('DirectoryStub, isIncremental TRUE') // 增量编译
 
-            Map<File, Status> fileStatusMap = directoryInput.getChangedFiles()
+            def fileStatusMap = directoryInput.getChangedFiles()
             if (fileStatusMap == null) {
                 return
             }
-            File inputFile
-            Status status
-            String destFilePath
-            for (Map.Entry<File, Status> entry : fileStatusMap.entrySet()) {
-                inputFile = entry.getKey()
-                status = entry.getValue()
+            def inputFile
+            def status
+            def destFilePath
+            fileStatusMap.each {
+                inputFile = it.key
+                status = it.value
 
                 destFilePath = inputFile.getAbsolutePath().replace(inputDirPath, destDirPath)
                 File destFile = new File(destFilePath)
@@ -102,8 +102,8 @@ class DirectoryStub {
             List<File> fileList = new ArrayList<>()
             getAllFiles(inputDir, fileList)
             println('fileList.size = ' + fileList.size())
-            for (File file : fileList) {
-                doStub(file.bytes, file.getAbsolutePath())
+            fileList.each {
+                doStub(it.bytes, it.getAbsolutePath())
             }
         } else if (inputDir.isFile()) {
             doStub(inputDir.bytes, inputDir.getAbsolutePath())
@@ -155,11 +155,11 @@ class DirectoryStub {
         if (subDirArray == null) {
             return
         }
-        for (File subDir : subDirArray) {
-            if (subDir.isFile()) {
-                results.add(subDir)
-            } else if (subDir.isDirectory()) {
-                getAllFiles(subDir, results)
+        subDirArray.each {
+            if (it.isFile()) {
+                results.add(it)
+            } else if (it.isDirectory()) {
+                getAllFiles(it, results)
             }
         }
     }

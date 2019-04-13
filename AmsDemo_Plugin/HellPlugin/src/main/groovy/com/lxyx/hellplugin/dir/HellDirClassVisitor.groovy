@@ -79,7 +79,8 @@ class HellDirClassVisitor extends ClassVisitor {
             if (HellConstant.ANDROID_APP_ACTIVITY_MODE == HellConstant.ANDROID_APP_ACTIVITY_MODE_Inject_Method) {
                 activityEmthodMv = injectActivityMethod(mv, name, desc) // 这里是方案1
             }
-            // 剩余的，没有override的目标方法，则需要在class文件的末尾注入在当前类中，之后再注入插桩，具体位置在visitEnd()中注入
+            // 剩余的，没有override的目标方法，则需要在class文件的末尾注入在当前类中，
+            // 之后再注入插桩，具体位置在visitEnd()中注入
         } else if ('android/app/Fragment' == superClassName && 'com/lxyx/helllib/HellBaseFragment' != className) {
             println('HellDirClassVisitor, android/app/Fragment: ' + name + " | " + desc)
             if (HellConstant.ANDROID_APP_ACTIVITY_MODE == HellConstant.ANDROID_APP_ACTIVITY_MODE_Inject_Method) {
@@ -98,7 +99,7 @@ class HellDirClassVisitor extends ClassVisitor {
             if (interfaceArray.contains('android/view/View$OnClickListener')) {
                 if ('onClick' == name && '(Landroid/view/View;)V' == desc) {
                     println('HellDirClassVisitor OnClickListener: inject ok: ' + className)
-                    return new HelViewMethodVisitor(activityExecMv, HellConstant.CLICK)
+                    return new HelViewMethodVisitor(activityExecMv, className, name, HellConstant.CLICK)
                 }
             }
 
@@ -106,7 +107,7 @@ class HellDirClassVisitor extends ClassVisitor {
             if (interfaceArray.contains('android/view/View$OnLongClickListener')) {
                 if ('onLongClick' == name && '(Landroid/view/View;)Z' == desc) {
                     println('HellDirClassVisitor OnLongClickListener: inject ok: ' + className)
-                    return new HelViewMethodVisitor(activityExecMv, HellConstant.LONG_CLICK)
+                    return new HelViewMethodVisitor(activityExecMv, className, name, HellConstant.LONG_CLICK)
                 }
             }
 
@@ -115,7 +116,8 @@ class HellDirClassVisitor extends ClassVisitor {
                 // void onItemClick(AdapterView<?> parent, View view, int position, long id);
                 if ('onItemClick' == name && '(Landroid/widget/AdapterView;Landroid/view/View;IJ)V' == desc) {
                     println('HellDirClassVisitor onItemClick: inject ok: ' + className)
-                    return new HelViewMethodVisitor(activityExecMv, HellConstant.LISTVIEW_ITEM_CLICK)
+                    return new HelViewMethodVisitor(activityExecMv, className,
+                            name, HellConstant.LISTVIEW_ITEM_CLICK)
                 }
             }
         }
@@ -198,7 +200,9 @@ class HellDirClassVisitor extends ClassVisitor {
     }
 
     private void injectActivityMethodClassTail() {
-        boolean existOnCreate = HellPageMethodConstant.getMethodState(className, 'onCreate', '(Landroid/os/Bundle;)V')
+        boolean existOnCreate = HellPageMethodConstant.getMethodState(
+                className, 'onCreate', '(Landroid/os/Bundle;)V')
+
         if (!existOnCreate) {
             HellActivityStubMethod.injectMethod(cv,
                     'onCreate', '(Landroid/os/Bundle;)V',
@@ -242,7 +246,9 @@ class HellDirClassVisitor extends ClassVisitor {
     }
 
     private void injectFragmentMethodClassTail() {
-        boolean existOnCreate = HellPageMethodConstant.getMethodState(className, 'onCreate', '(Landroid/os/Bundle;)V')
+        boolean existOnCreate = HellPageMethodConstant.getMethodState(
+                className, 'onCreate', '(Landroid/os/Bundle;)V')
+
         if (!existOnCreate) {
             HellActivityStubMethod.injectMethod(cv,
                     'onCreate', '(Landroid/os/Bundle;)V',

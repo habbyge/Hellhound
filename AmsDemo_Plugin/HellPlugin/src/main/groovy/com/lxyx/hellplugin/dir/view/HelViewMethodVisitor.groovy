@@ -1,6 +1,7 @@
 package com.lxyx.hellplugin.dir.view
 
 import com.lxyx.hellplugin.common.HellConstant
+import org.objectweb.asm.Label
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 
@@ -8,11 +9,15 @@ import org.objectweb.asm.Opcodes
  * Created by habbyge on 2019/3/5.
  */
 class HelViewMethodVisitor extends MethodVisitor {
-    private int type = HellConstant.CLICK
+    private int mType = HellConstant.CLICK
+    private String mClassName
+    private String mMethodName
 
-    HelViewMethodVisitor(MethodVisitor mv, int type) {
+    HelViewMethodVisitor(MethodVisitor mv, String className, String methodName, int type) {
         super(Opcodes.ASM5, mv)
-        this.type = type
+        mClassName = className
+        mMethodName = methodName
+        mType = type
     }
 
     @Override
@@ -20,14 +25,9 @@ class HelViewMethodVisitor extends MethodVisitor {
         // 开始访问该method的Code属性
         super.visitCode()
 
-//        println('HelViewMethodVisitor visitCode: START')
-
         // method运行之前插桩: 注入一个日志
-        log("HABBYGE-MALI, stub before click: $type")
-
-        injectCallback(type, true) // 方法执行前，callback
-
-//        println('HelViewMethodVisitor visitCode: END')
+        log("HABBYGE-MALI, stub before click: $mType")
+        injectCallback(mType, true) // 方法执行前，callback
     }
 
     @Override
@@ -35,8 +35,8 @@ class HelViewMethodVisitor extends MethodVisitor {
         // 这个函数return之前注入jvm指令
         if (opcode == Opcodes.RETURN || opcode == Opcodes.IRETURN) {
             // void onClick() return || boolean onLongClick() return || void onItemClick()
-            log("HABBYGE-MALI, stub after click: $type")
-            injectCallback(type, false) // 方法执行后，callback
+            log("HABBYGE-MALI, stub after click: $mType")
+            injectCallback(mType, false) // 方法执行后，callback
         }
 
         mv.visitInsn(opcode)
@@ -47,9 +47,17 @@ class HelViewMethodVisitor extends MethodVisitor {
         mv.visitMethodInsn(opcode, owner, name, desc, itf)
     }
 
+    // 这里是验证代码(注释勿删除)：
+    // (1) 验证注入的jvm汇编指令是否对原有的源文件行号有影响：没有影响
+    // (2) 验证时再打开，发布时关闭。
+    /*@Override
+    void visitLineNumber(int line, Label start) {
+        super.visitLineNumber(line, start)
+        println("HellViewMethodVisitor, visitLineNumber: $mClassName | $mMethodName | $line")
+    }*/
+
     @Override
     void visitEnd() {
-//        println('HelViewMethodVisitor, visitEnd')
         mv.visitEnd()
     }
 

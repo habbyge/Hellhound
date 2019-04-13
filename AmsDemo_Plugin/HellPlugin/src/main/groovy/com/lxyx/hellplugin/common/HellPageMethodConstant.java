@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HellPageMethodConstant {
-    String className = null;
-    String methodName = null;
-    String methodDesc = null;
+    private String className = null;
+    private String methodName = null;
+    private String methodDesc = null;
 
     public HellPageMethodConstant() {
     }

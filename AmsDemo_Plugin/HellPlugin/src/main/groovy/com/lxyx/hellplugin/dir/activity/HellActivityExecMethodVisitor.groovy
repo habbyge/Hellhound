@@ -60,7 +60,8 @@ class HellActivityExecMethodVisitor extends MethodVisitor {
     /*@Override
     void visitLineNumber(int line, Label start) {
         super.visitLineNumber(line, start)
-        println('HellActivityExecMethodVisitor, visitLineNumber: ' + mClassName + " | " + mMethodName + " | " + line)
+        println('HellActivityExecMethodVisitor, visitLineNumber: '
+                + mClassName + " | " + mMethodName + " | " + line)
     }*/
 
     @Override

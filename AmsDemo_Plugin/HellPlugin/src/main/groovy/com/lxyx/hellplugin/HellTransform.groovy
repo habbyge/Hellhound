@@ -34,7 +34,6 @@ class HellTransform extends Transform {
         this.project = project
         this.androidJar = androidJar
         println('HellTransform, project: ' + project.rootDir.absolutePath)
-        println('HellTransform, androidJar: ' + androidJar.absolutePath)
     }
 
     @Override
@@ -64,8 +63,11 @@ class HellTransform extends Transform {
         super.transform(transformInvocation)
 
         println('HellTransform, transform: Begin !!')
-        // todo 任务1：这里对 androidJar 这个android sdk的jar来文件解析，注入 ？？？？
-        // todo 任务2：写一个组件，独立子线程用于接收callback事件和参数，注意这里一定要保证时序
+
+        // 任务1：这里对 androidJar 这个android sdk的jar来文件解析，注入 ？？？？
+        /*handleAndroidDotJar()*/ // 不能，文件获取不到，不存在or不可写权限
+
+        // 任务2：写一个组件，独立子线程用于接收callback事件和参数，注意这里一定要保证时序 --done
         // 任务3：验证注入前后，java源代码行号没有改变. --done
 
         // 消费型输入： 获取jar、class路径。需要输出给下一个Transform
@@ -90,27 +92,37 @@ class HellTransform extends Transform {
 
         inputs.each {
             // 工程中的普通文件夹
-            it.getDirectoryInputs().each {
+            it.getDirectoryInputs().each { // 这写文件都是可写的
+                /*if (!it.file.canWrite()) {
+                    println("getDirectoryInputs, it.file: ${it.file.absolutePath}")
+                }*/
                 DirectoryStub.startStub(it, outputProvider, isIncremental)
             }
 
             // 第三方jar包
-            it.getJarInputs().each {
+            it.getJarInputs().each { // 这些第三方jar包，都是可写的
+                /*if (!it.file.canWrite()) {
+                    println("getJarInputs, it.file: ${it.file.absolutePath}")
+                }*/
                 JarStub.startStub(it, outputProvider, isIncremental)
             }
         }
-        /*for (TransformInput input : inputs) {
-            // 工程中的普通文件夹
-            for (DirectoryInput directoryInput : input.getDirectoryInputs()) {
-                DirectoryStub.startStub(directoryInput, outputProvider, isIncremental)
-            }
-
-            // 第三方jar包
-            Collection<JarInput> jarInputs = input.getJarInputs()
-            println('jarInput: ' + jarInputs.size())
-            for (JarInput jarInput : jarInputs) {
-                JarStub.startStub(jarInput, outputProvider, isIncremental)
-            }
-        }*/
     }
+
+    /*private void handleAndroidDotJar() {
+        if (androidJar == null) {
+            println("HellTransform, handleAndroidDotJar: NULL !!")
+            return
+        }
+        if (!androidJar.exists()) {
+            println("HellTransform, handleAndroidDotJar: NOT EXISTS !!")
+            return
+        }
+        if (!androidJar.canWrite()) {
+            println("HellTransform, handleAndroidDotJar: NOT canWrite !!")
+            return
+        }
+
+        println("HellTransform, handleAndroidDotJar BEGIN !!")
+    }*/
 }
