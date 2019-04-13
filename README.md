@@ -21,7 +21,7 @@
 
 ## 3、进度
 目前进度在version1.2中。
-- 最新进度：Activity生命周期监控、startActivity/finish/moveTaskToBack方法监控，并抓取调用者、目标对象，以及Intent等传递的参数数据，回调出来，从而可以形成页面链路；View监控点击的部分已完成，View点击、长按已完成、监控android.jar中的android/app/Activity、android/app/Fragment的生命周期，已完成.
+- 最新进度：Activity生命周期监控、startActivity/finish/moveTaskToBack方法监控，并抓取调用者、目标对象，以及Intent等传递的参数数据，回调出来，从而可以形成页面链路；View监控点击的部分已完成，View点击、长按已完成、监控android.jar中的android/app/Activity、android/app/Fragment的生命周期，注入前后校验行号不变、已完成.
 
 ## 4、部分技术细节
 注入页面行为函数的策略：
