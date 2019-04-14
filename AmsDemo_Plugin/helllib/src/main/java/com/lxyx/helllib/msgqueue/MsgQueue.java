@@ -5,8 +5,8 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by habbhyge on 2019/4/10.
@@ -14,50 +14,74 @@ import java.util.concurrent.LinkedBlockingQueue;
 // TODO: 2019-04-11 支持多进程共享 ？？？？？？？？？？？？？？？？？？暂时不支持
 final class MsgQueue {
 
-    // TODO: 2019-04-10 核心是一个阻塞式队列：有序、阻塞、生产者消费者模型。
-    private BlockingQueue<HellMsg> mMsgQueue;
-    private Handler mHandler;
+    // 核心是一个阻塞式队列：有序、阻塞、生产者消费者模型。
+    private BlockingQueue<HellMessage> mMsgQueue;
+    private Handler mMsgHandler;
 
     private static final int HELL_MSG_SEND = 0;
-    private static final int HELL_MSG_FETCH = 1;
 
     MsgQueue() {
-        mMsgQueue = new LinkedBlockingQueue<>(16);
-        HandlerThread productorHandlerThread = new HandlerThread("hell_msgqueue_send_thread");
-        productorHandlerThread.start();
-        mHandler = new HellHandler(productorHandlerThread.getLooper());
+        mMsgQueue = new ArrayBlockingQueue<>(5);
+        HandlerThread handlerThread = new HandlerThread("hell_msgq_thread");
+        handlerThread.start();
+        mMsgHandler = new MsgHandler(handlerThread.getLooper());
+
+        readyToReceiveMsg(); // 准备好开始接收消息
     }
 
-    void sendMsg(HellMsg msg) {
-        Message sendMsg = new Message();
-        sendMsg.what = HELL_MSG_SEND;
-        sendMsg.obj = msg;
-        mHandler.sendMessage(sendMsg);
+    void sendMessage(HellMessage hellMessage) {
+        if (hellMessage == null) {
+            return;
+        }
+
+        Message message = new Message();
+        message.what = HELL_MSG_SEND;
+        message.obj = hellMessage;
+        mMsgHandler.sendMessage(message);
     }
 
-    private final class HellHandler extends Handler {
-        HellHandler(Looper looper) {
+    private void readyToReceiveMsg() {
+        new Thread(new ReceiverRunnable()).start();
+    }
+
+    private final class MsgHandler extends Handler {
+        MsgHandler(Looper looper) {
             super(looper);
         }
 
         @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-            case HELL_MSG_SEND:
-                try {
-                    mMsgQueue.put((HellMsg) msg.obj);
-                } catch (InterruptedException ie) {
-                    ie.printStackTrace();
-                }
-                break;
+        public void handleMessage(Message message) {
+            if (message.what != HELL_MSG_SEND) {
+                return;
+            }
+            if (!(message.obj instanceof HellMessage)) {
+                return;
+            }
+            HellMessage hellMessage = (HellMessage) message.obj;
+            try {
+                mMsgQueue.put((HellMessage) message.obj);
+                System.out.println("HABBYGE-MALI, HELL_MSG_SEND: " +
+                        hellMessage.eventType + " | " + hellMessage.arg);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-            case HELL_MSG_FETCH:
+    private final class ReceiverRunnable implements Runnable {
+        @Override
+        public void run() {
+            while (true) {
                 try {
-                    HellMsg hellMsg = mMsgQueue.take();
-                } catch (Exception e) {
+                    HellMessage hellMessage = mMsgQueue.take();
+                    System.out.println("HABBYGE-MALI, ReceiverHandler: " +
+                            hellMessage.eventType + " | " + hellMessage.arg);
+
+                    // TODO: 2019-04-13 这里callback回消息到业务层
+                } catch (InterruptedException e) {
                     e.printStackTrace();
+                    return;
                 }
-                break;
             }
         }
     }

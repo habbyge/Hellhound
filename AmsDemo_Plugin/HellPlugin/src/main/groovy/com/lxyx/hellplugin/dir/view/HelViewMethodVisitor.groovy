@@ -1,7 +1,6 @@
 package com.lxyx.hellplugin.dir.view
 
 import com.lxyx.hellplugin.common.HellConstant
-import org.objectweb.asm.Label
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 
@@ -89,17 +88,17 @@ class HelViewMethodVisitor extends MethodVisitor {
             mv.visitVarInsn(Opcodes.ALOAD, 1) // 从局部变量表slot-1中取出View引用，入栈
 
             if (beforeOrAfter) { // 之前
-                // void callClickListenerBefore(int clickType, View view)
+                // void callbackClickListenerBefore(int clickType, View view)
                 mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
                         "com/lxyx/helllib/HellMonitor",
-                        "callClickListenerBefore",
+                        "callbackClickListenerBefore",
                         "(ILandroid/view/View;)V",
                         false)
             } else { // 之后
-                // void callClickListenerAfter(int clickType, View view)
+                // void callbackClickListenerAfter(int clickType, View view)
                 mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
                         "com/lxyx/helllib/HellMonitor",
-                        "callClickListenerAfter",
+                        "callbackClickListenerAfter",
                         '(ILandroid/view/View;)V',
                         false)
             }

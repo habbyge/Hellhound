@@ -16,14 +16,14 @@ class DirectoryStub {
     private DirectoryStub() {
     }
 
-    static void startStub(DirectoryInput directoryInput, TransformOutputProvider output, boolean isIncremental) {
-        String inputDirPath = directoryInput.file.getAbsolutePath() // 一般是目录
+    static void startStub(DirectoryInput dirInput, TransformOutputProvider output, boolean isIncremental) {
+        String inputDirPath = dirInput.file.getAbsolutePath() // 一般是目录
         println('DirectoryStub, startStub, inputDirPath: ' + inputDirPath)
 
         File destDir = output.getContentLocation(
-                directoryInput.getName(),
-                directoryInput.getContentTypes(),
-                directoryInput.getScopes(),
+                dirInput.getName(),
+                dirInput.getContentTypes(),
+                dirInput.getScopes(),
                 Format.DIRECTORY)
         String destDirPath = destDir.getAbsolutePath()
         println('DirectoryStub, startStub, destDirPath: ' + destDirPath)
@@ -31,7 +31,7 @@ class DirectoryStub {
         if (isIncremental) { // 如果是增量编译
             println('DirectoryStub, isIncremental TRUE') // 增量编译
 
-            def fileStatusMap = directoryInput.getChangedFiles()
+            def fileStatusMap = dirInput.getChangedFiles()
             if (fileStatusMap == null) {
                 return
             }
@@ -68,7 +68,7 @@ class DirectoryStub {
             }
         } else { // 全量编译
             println('DirectoryStub, isIncremental FALSE')
-            doStubForDir(directoryInput.file, destDir)
+            doStubForDir(dirInput.file, destDir)
         }
     }
 

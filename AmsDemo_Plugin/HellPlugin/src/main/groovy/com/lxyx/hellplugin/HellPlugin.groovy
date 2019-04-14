@@ -22,7 +22,7 @@ class HellPlugin implements Plugin<Project> {
         def androidJar = new File(sdkDirectory, androidJarPath)
         println('HellPlugin, androidJar: ' + androidJar.absolutePath)
 
-        AppExtension appExtension = project.getExtensions().findByType(AppExtension.class)
+        def appExtension = project.getExtensions().findByType(AppExtension.class)
         appExtension.registerTransform(new HellTransform(project, androidJar))
 
         System.out.println("Hello, HellPlugin, End!")

@@ -1,7 +1,6 @@
 package com.lxyx.hellplugin.dir.activity
 
 import com.lxyx.hellplugin.common.HellConstant
-import org.objectweb.asm.Label
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 
@@ -65,7 +64,7 @@ class HellActivityMethodVisitor extends MethodVisitor {
             mv.visitLdcInsn(eventType) // 事件类型: onCreate/onResume/onPause...
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
                     "com/lxyx/helllib/HellMonitor",
-                    'callActivityListener',
+                    'callbackActivityListener',
                     '(Landroid/app/Activity;I)V',
                     false)
         }
@@ -84,7 +83,8 @@ class HellActivityMethodVisitor extends MethodVisitor {
     /*@Override
     void visitLineNumber(int line, Label start) {
         super.visitLineNumber(line, start)
-        println('HellActivityMethodVisitor, visitLineNumber: ' + mClassName + " | " + mMethodName + " | " + line)
+        println('HellActivityMethodVisitor, visitLineNumber: ' +
+                mClassName + " | " + mMethodName + " | " + line)
     }*/
 
     @Override

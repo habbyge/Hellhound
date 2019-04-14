@@ -84,7 +84,7 @@ class HellFragmentActivityMethodVisitor extends MethodVisitor {
             mv.visitLdcInsn(eventType) // 事件类型入栈
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, // 调用callback方法
                     "com/lxyx/helllib/HellMonitor",
-                    "callActivityListener",
+                    "callbackActivityListener",
                     "(Landroid/app/Activity;I)V",
                     false)
         }

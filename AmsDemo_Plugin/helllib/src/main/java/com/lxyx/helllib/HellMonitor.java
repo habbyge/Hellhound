@@ -12,6 +12,9 @@ import android.view.ViewParent;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import com.lxyx.helllib.msgqueue.HellMessage;
+import com.lxyx.helllib.msgqueue.MsgQueueManager;
+
 /**
  * Created by habbyge on 2019/3/6.
  */
@@ -35,23 +38,25 @@ public final class HellMonitor {
     private HellMonitor() {
     }
 
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ View操作相关 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    public void callClickListenerBefore(int clickType, View view) {
-        mListener.onClickBefore(clickType, view);
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ View操作相关callback ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public void callbackClickListenerBefore(int clickType, View view) {
+        onClickListener.onClickBefore(clickType, view);
     }
 
-    public void callClickListenerAfter(int clickType, View view) {
-        mListener.onClickAfter(clickType, view);
+    public void callbackClickListenerAfter(int clickType, View view) {
+        onClickListener.onClickAfter(clickType, view);
     }
 
-    private final IHellOnClickListener mListener = new IHellOnClickListener() {
+    private final IHellOnClickListener onClickListener = new IHellOnClickListener() {
         @Override
         public void onClickBefore(int clickType, View view) {
             if (view == null) {
                 return;
             }
 
+            // 测试代码
             StringBuilder showTextSb = new StringBuilder("点击之前，注入：");
 
             String viewName = view.getClass().getName();
@@ -60,10 +65,9 @@ public final class HellMonitor {
 
             System.out.println(TAG + ", clickType = " + clickType);
             showTextSb.append("|").append(clickType);
+            System.out.println("HABBYGE-MALI, onClickBefore: " + showTextSb.toString());
 
             view.setBackgroundResource(android.R.color.holo_green_dark);
-
-            System.out.println("HABBYGE-MALI, onClickBefore: " + showTextSb.toString());
 
             // 这里从当前View开始，向上遍历，获取View树
             String viewId = getViewId(view);
@@ -79,6 +83,7 @@ public final class HellMonitor {
                 return;
             }
 
+            // 测试代码
             StringBuilder showTextSb = new StringBuilder("点击之后，注入：");
 
             String viewName = view.getClass().getName();
@@ -92,20 +97,23 @@ public final class HellMonitor {
             toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_VERTICAL, 0, 0);
             toast.show();
 
-//            view.setBackgroundResource(android.R.color.holo_blue_bright);
-
             System.out.println("HABBYGE-MALI, onClickAfter: " + showTextSb.toString());
         }
     };
 
+    /**
+     * ListView的item点击事件回调
+     */
     public void callbackItemClickBefore(AdapterView<?> parent, View view, int position, long id) {
         itemListener.onItemClickBefore(parent, view, position, id);
     }
+
     public void callbackItemClickAfter(AdapterView<?> parent, View view, int position, long id) {
         itemListener.onItemClickAfter(parent, view, position, id);
     }
 
     private final IHellOnItemClickListener itemListener = new IHellOnItemClickListener() {
+
         @Override
         public void onItemClickBefore(AdapterView<?> parent, View view, int position, long id) {
             // 这里从当前View开始，向上遍历，获取View树
@@ -129,8 +137,8 @@ public final class HellMonitor {
 
     /**
      * @return 返回的数据格式是：
-     *      所属于的Activity:viewPaths(以|分割，每个控件包括控件类名和在其父类的位置，
-     *      格式是: viewPath[n]):resourceid
+     * 所属于的Activity:viewPaths(以|分割，每个控件包括控件类名和在其父类的位置，
+     * 格式是: viewPath[n]):resourceid
      */
     @SuppressLint("PrivateApi")
     private static String getViewId(View view) {
@@ -165,12 +173,12 @@ public final class HellMonitor {
     }
 
 
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Activity相关 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Activity相关callback ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /**
      * @param eventType 这里太懒，事件编号分别对应：create-0,resume-1,pause-2,stop-3,destroy-4
      */
-    public void callActivityListener(Activity activity, int eventType) {
+    public void callbackActivityListener(Activity activity, int eventType) {
         switch (eventType) {
         case HellConstant.Page_Event_OnCreate:
             mActivityListener.onCreate(activity);
@@ -262,30 +270,34 @@ public final class HellMonitor {
 
         @Override
         public void onDestroy(Activity activity) {
-            System.out.println("HABBYGE-MALI, Activity, onDestroy: " + activity.getClass().getName()) ;
+            System.out.println("HABBYGE-MALI, Activity, onDestroy: " + activity.getClass().getName());
         }
     };
 
 
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Fragment相关 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Fragment相关callback ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     public void callbackV4Fragment(Fragment fragment, int eventType, Bundle savedInstanceState) {
         System.out.println("HABBYGE-MALI, callbackV4Fragment: " +
-                fragment.getClass().getName() + " | " + HellConstant.getFragmentEventName(eventType));
+                fragment.getClass().getName() + " | " +
+                HellConstant.getFragmentEventName(eventType));
     }
 
     public void callbackV4Fragment(Fragment fragment, int eventType) {
         System.out.println("HABBYGE-MALI, callbackV4Fragment: " +
-                fragment.getClass().getName() + " | " + HellConstant.getFragmentEventName(eventType));
+                fragment.getClass().getName() + " | " +
+                HellConstant.getFragmentEventName(eventType));
     }
 
     public void callbackFragment(android.app.Fragment fragment, int eventType, Bundle savedInstanceState) {
         System.out.println("HABBYGE-MALI, callbackFragment: " +
-                fragment.getClass().getName() + " | " + HellConstant.getFragmentEventName(eventType));
+                fragment.getClass().getName() + " | " +
+                HellConstant.getFragmentEventName(eventType));
     }
 
     public void callbackFragment(android.app.Fragment fragment, int eventType) {
         System.out.println("HABBYGE-MALI, callbackFragment: " +
-                fragment.getClass().getName() + " | " + HellConstant.getFragmentEventName(eventType));
+                fragment.getClass().getName() + " | " +
+                HellConstant.getFragmentEventName(eventType));
     }
 }
