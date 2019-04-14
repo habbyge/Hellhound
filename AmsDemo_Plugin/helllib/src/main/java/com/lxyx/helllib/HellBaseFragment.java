@@ -13,7 +13,7 @@ public class HellBaseFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         System.out.println("HABBYGE-MALI, HellBaseFragment: onCreate");
-        HellMonitor.getInstance().callbackFragment(this, HellConstant.Page_Event_OnCreate, savedInstanceState);
+        HellMonitor.getInstance().callbackFragment(this, HellConstant.Page_Event_OnCreate);
     }
 
     @Override

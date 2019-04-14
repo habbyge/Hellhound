@@ -21,7 +21,7 @@ import java.util.zip.ZipEntry
 /**
  * Created by habbyge on 2019/03/15.
  */
-class JarStub {
+final class JarStub {
 
     private JarStub() {
     }

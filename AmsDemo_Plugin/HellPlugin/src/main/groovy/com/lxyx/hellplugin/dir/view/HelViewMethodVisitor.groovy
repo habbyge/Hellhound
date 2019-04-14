@@ -25,7 +25,7 @@ class HelViewMethodVisitor extends MethodVisitor {
         super.visitCode()
 
         // method运行之前插桩: 注入一个日志
-        log("HABBYGE-MALI, stub before click: $mType")
+        /*log("HABBYGE-MALI, stub before click: $mType")*/
         injectCallback(mType, true) // 方法执行前，callback
     }
 
@@ -34,7 +34,7 @@ class HelViewMethodVisitor extends MethodVisitor {
         // 这个函数return之前注入jvm指令
         if (opcode == Opcodes.RETURN || opcode == Opcodes.IRETURN) {
             // void onClick() return || boolean onLongClick() return || void onItemClick()
-            log("HABBYGE-MALI, stub after click: $mType")
+            /*log("HABBYGE-MALI, stub after click: $mType")*/
             injectCallback(mType, false) // 方法执行后，callback
         }
 
@@ -60,7 +60,7 @@ class HelViewMethodVisitor extends MethodVisitor {
         mv.visitEnd()
     }
 
-    private log(String message) {
+    /*private log(String message) {
         mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;")
         mv.visitLdcInsn(message)
         mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
@@ -68,7 +68,7 @@ class HelViewMethodVisitor extends MethodVisitor {
                 "println",
                 "(Ljava/lang/String;)V",
                 false)
-    }
+    }*/
 
     /**
      * @param clickType click or long click

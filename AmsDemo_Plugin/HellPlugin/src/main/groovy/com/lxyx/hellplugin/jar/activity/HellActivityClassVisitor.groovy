@@ -37,9 +37,7 @@ class HellActivityClassVisitor extends ClassVisitor {
     }
 
     @Override
-    void visit(int version, int access, String name, String signature,
-            String superName, String[] interfaces) {
-
+    void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         this.className = name
         this.superName = superName
         this.interfaceArray = interfaces
@@ -50,9 +48,7 @@ class HellActivityClassVisitor extends ClassVisitor {
     }
 
     @Override
-    MethodVisitor visitMethod(int access, String name, String desc,
-            String signature, String[] exceptions) {
-
+    MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions)
 
         // 在页面的生命周期方法中注入callback方法，用于监控页面生命周期，与startActivity、finish、

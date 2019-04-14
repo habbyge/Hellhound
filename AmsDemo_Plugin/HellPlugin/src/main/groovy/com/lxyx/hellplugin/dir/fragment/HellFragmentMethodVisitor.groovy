@@ -65,7 +65,7 @@ class HellFragmentMethodVisitor extends MethodVisitor {
 
         switch (mEventType) {
         case HellConstant.Page_Event_OnCreate: // 0
-            // void callbackFragment(Fragment fragment, int eventType, Bundle savedInstanceState)
+            /*// void callbackFragment(Fragment fragment, int eventType, Bundle savedInstanceState)
             mv.visitVarInsn(Opcodes.ALOAD, 1) // 从局部变量表slot-1位置，加载onCreate形参Bundle到栈顶
 
             mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
@@ -74,8 +74,7 @@ class HellFragmentMethodVisitor extends MethodVisitor {
                     "(Landroid/app/Fragment;ILandroid/os/Bundle;)V",
                     false)
             println('HellFragmentMethodVisitor, OnCreate')
-            break
-
+            break*/
         case HellConstant.Page_Event_OnResume:      // 1
         case HellConstant.Page_Event_OnPause:       // 2
         case HellConstant.Page_Event_OnStop:        // 3

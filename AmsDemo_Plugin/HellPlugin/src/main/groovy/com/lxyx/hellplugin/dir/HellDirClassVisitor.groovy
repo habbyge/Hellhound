@@ -44,9 +44,7 @@ class HellDirClassVisitor extends ClassVisitor {
     }
 
     @Override
-    void visit(int version, int access, String name, String signature,
-            String superName, String[] interfaces) {
-
+    void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         className = name
         superClassName = superName
         interfaceArray = interfaces
@@ -75,19 +73,14 @@ class HellDirClassVisitor extends ClassVisitor {
         MethodVisitor activityEmthodMv = null
         if ('android/app/Activity' == superClassName && 'com/lxyx/helllib/HellBaseActivity' != className) {
             println('HellDirClassVisitor, visitMethod: ' + className + ' | ' + name + ' | ' + desc)
-            if (HellConstant.ANDROID_APP_ACTIVITY_MODE ==
-                    HellConstant.ANDROID_APP_ACTIVITY_MODE_Inject_Method) {
+            if (HellConstant.ANDROID_APP_ACTIVITY_MODE == HellConstant.ANDROID_APP_ACTIVITY_MODE_Inject_Method) {
                 activityEmthodMv = injectActivityMethod(mv, name, desc) // 这里是方案1
             }
             // 剩余的，没有override的目标方法，则需要在class文件的末尾注入在当前类中，
             // 之后再注入插桩，具体位置在visitEnd()中注入
-        } else if ('android/app/Fragment' == superClassName &&
-                'com/lxyx/helllib/HellBaseFragment' != className) {
-
+        } else if ('android/app/Fragment' == superClassName && 'com/lxyx/helllib/HellBaseFragment' != className) {
             println('HellDirClassVisitor, android/app/Fragment: ' + name + " | " + desc)
-            if (HellConstant.ANDROID_APP_ACTIVITY_MODE ==
-                    HellConstant.ANDROID_APP_ACTIVITY_MODE_Inject_Method) {
-
+            if (HellConstant.ANDROID_APP_ACTIVITY_MODE == HellConstant.ANDROID_APP_ACTIVITY_MODE_Inject_Method) {
                 activityEmthodMv = injectFragmentMethod(mv, name, desc)
             }
         }
@@ -120,8 +113,7 @@ class HellDirClassVisitor extends ClassVisitor {
                 // void onItemClick(AdapterView<?> parent, View view, int position, long id);
                 if ('onItemClick' == name && '(Landroid/widget/AdapterView;Landroid/view/View;IJ)V' == desc) {
                     println('HellDirClassVisitor onItemClick: inject ok: ' + className)
-                    return new HelViewMethodVisitor(activityExecMv, className,
-                            name, HellConstant.LISTVIEW_ITEM_CLICK)
+                    return new HelViewMethodVisitor(activityExecMv, className, name, HellConstant.LISTVIEW_ITEM_CLICK)
                 }
             }
         }
@@ -138,14 +130,11 @@ class HellDirClassVisitor extends ClassVisitor {
         //  然后查看当前合法类中是否存在该方法，不存在则在class末尾最后插入该方法，存在的话，直接注入插桩。
         if ('android/app/Activity' == superClassName && 'com/lxyx/helllib/HellBaseActivity' != className) {
             println('HellDirClassVisitor, visitEnd: ' + className)
-            if (HellConstant.ANDROID_APP_ACTIVITY_MODE ==
-                    HellConstant.ANDROID_APP_ACTIVITY_MODE_Inject_Method) {
+            if (HellConstant.ANDROID_APP_ACTIVITY_MODE == HellConstant.ANDROID_APP_ACTIVITY_MODE_Inject_Method) {
                 injectActivityMethodClassTail() // 这里是方案1
             }
-        } else if ('android/app/Fragment' == superClassName &&
-                'com/lxyx/helllib/HellBaseFragment' != className) {
-            if (HellConstant.ANDROID_APP_ACTIVITY_MODE ==
-                    HellConstant.ANDROID_APP_ACTIVITY_MODE_Inject_Method) {
+        } else if ('android/app/Fragment' == superClassName && 'com/lxyx/helllib/HellBaseFragment' != className) {
+            if (HellConstant.ANDROID_APP_ACTIVITY_MODE == HellConstant.ANDROID_APP_ACTIVITY_MODE_Inject_Method) {
                 injectFragmentMethodClassTail()
             }
         }
@@ -156,17 +145,14 @@ class HellDirClassVisitor extends ClassVisitor {
     private MethodVisitor injectActivityMethod(MethodVisitor mv, String name, String desc) {
         MethodVisitor activityEmthodMv = null
         if ('onCreate' == name && '(Landroid/os/Bundle;)V' == desc) {
-            activityEmthodMv = new HellActivityMethodVisitor(
-                    mv, className, 'onCreate', '(Landroid/os/Bundle;)V')
-
+            activityEmthodMv = new HellActivityMethodVisitor(mv, className, 'onCreate', '(Landroid/os/Bundle;)V')
             // 这里设置状态，表示有了类中已经ovveride这个方法
             HellPageMethodConstant.setMethodState(className, 'onCreate', '(Landroid/os/Bundle;)V', true)
         } else if ('onNewIntent' == name && '(Landroid/content/Intent;)V' == desc) {
             activityEmthodMv = new HellActivityMethodVisitor(mv, className,
                     'onNewIntent', '(Landroid/content/Intent;)V')
             // 这里设置状态，表示有了类中已经ovveride这个方法
-            HellPageMethodConstant.setMethodState(className,
-                    'onNewIntent', '(Landroid/content/Intent;)V', true)
+            HellPageMethodConstant.setMethodState(className, 'onNewIntent', '(Landroid/content/Intent;)V', true)
         } else if ('onResume' == name && '()V' == desc) {
             activityEmthodMv = new HellActivityMethodVisitor(mv, className, 'onResume', '()V')
             // 这里设置状态，表示有了类中已经ovveride这个方法
@@ -190,24 +176,19 @@ class HellDirClassVisitor extends ClassVisitor {
     private MethodVisitor injectFragmentMethod(MethodVisitor mv, String name, String desc) {
         MethodVisitor activityEmthodMv = null
         if ('onCreate' == name && '(Landroid/os/Bundle;)V' == desc) { // void onCreate(android/os/Bundle)
-            activityEmthodMv = new HellFragmentMethodVisitor(mv,
-                    className, name, HellConstant.Page_Event_OnCreate)
+            activityEmthodMv = new HellFragmentMethodVisitor(mv, className, name, HellConstant.Page_Event_OnCreate)
             HellPageMethodConstant.setMethodState(className, 'onCreate', '(Landroid/os/Bundle;)V', true)
         } else if ('onResume' == name && '()V' == desc) {
-            activityEmthodMv = new HellFragmentMethodVisitor(mv,
-                    className, name, HellConstant.Page_Event_OnResume)
+            activityEmthodMv = new HellFragmentMethodVisitor(mv, className, name, HellConstant.Page_Event_OnResume)
             HellPageMethodConstant.setMethodState(className, 'onResume', '()V', true)
         } else if ('onPause' == name && '()V' == desc) {
-            activityEmthodMv = new HellFragmentMethodVisitor(mv,
-                    className, name, HellConstant.Page_Event_OnPause)
+            activityEmthodMv = new HellFragmentMethodVisitor(mv, className, name, HellConstant.Page_Event_OnPause)
             HellPageMethodConstant.setMethodState(className, 'onPause', '()V', true)
         } else if ('onStop' == name && '()V' == desc) {
-            activityEmthodMv = new HellFragmentMethodVisitor(mv,
-                    className, name, HellConstant.Page_Event_OnStop)
+            activityEmthodMv = new HellFragmentMethodVisitor(mv, className, name, HellConstant.Page_Event_OnStop)
             HellPageMethodConstant.setMethodState(className, 'onStop', '()V', true)
         } else if ('onDestroy' == name && '()V' == desc) {
-            activityEmthodMv = new HellFragmentMethodVisitor(mv,
-                    className, name, HellConstant.Page_Event_OnDestroy)
+            activityEmthodMv = new HellFragmentMethodVisitor(mv, className, name, HellConstant.Page_Event_OnDestroy)
             HellPageMethodConstant.setMethodState(className, 'onDestroy', '()V', true)
         }
 
@@ -215,9 +196,7 @@ class HellDirClassVisitor extends ClassVisitor {
     }
 
     private void injectActivityMethodClassTail() {
-        boolean existOnCreate = HellPageMethodConstant.getMethodState(
-                className, 'onCreate', '(Landroid/os/Bundle;)V')
-
+        boolean existOnCreate = HellPageMethodConstant.getMethodState(className, 'onCreate', '(Landroid/os/Bundle;)V')
         if (!existOnCreate) {
             HellPageStubMethod.injectActivityMethod(cv,
                     'onCreate', '(Landroid/os/Bundle;)V',
@@ -227,7 +206,6 @@ class HellDirClassVisitor extends ClassVisitor {
 
         boolean existOnNewIntent = HellPageMethodConstant.getMethodState(
                 className, 'onNewIntent', '(Landroid/content/Intent;)V')
-
         if (!existOnNewIntent) {
             HellPageStubMethod.injectActivityMethod(cv,
                     'onNewIntent', '(Landroid/content/Intent;)V',
@@ -263,8 +241,7 @@ class HellDirClassVisitor extends ClassVisitor {
     }
 
     private void injectFragmentMethodClassTail() {
-        boolean existOnCreate = HellPageMethodConstant.getMethodState(
-                className, 'onCreate', '(Landroid/os/Bundle;)V')
+        boolean existOnCreate = HellPageMethodConstant.getMethodState(className, 'onCreate', '(Landroid/os/Bundle;)V')
         if (!existOnCreate) {
             HellPageStubMethod.injectFragmentMethod(cv,
                     'onCreate', '(Landroid/os/Bundle;)V',

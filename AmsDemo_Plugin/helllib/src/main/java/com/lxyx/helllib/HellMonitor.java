@@ -289,12 +289,6 @@ public final class HellMonitor {
                 HellConstant.getFragmentEventName(eventType));
     }
 
-    public void callbackFragment(android.app.Fragment fragment, int eventType, Bundle savedInstanceState) {
-        System.out.println("HABBYGE-MALI, callbackFragment: " +
-                fragment.getClass().getName() + " | " +
-                HellConstant.getFragmentEventName(eventType));
-    }
-
     public void callbackFragment(android.app.Fragment fragment, int eventType) {
         System.out.println("HABBYGE-MALI, callbackFragment: " +
                 fragment.getClass().getName() + " | " +

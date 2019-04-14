@@ -60,8 +60,7 @@ final class MsgQueue {
             HellMessage hellMessage = (HellMessage) message.obj;
             try {
                 mMsgQueue.put((HellMessage) message.obj);
-                System.out.println("HABBYGE-MALI, HELL_MSG_SEND: " +
-                        hellMessage.eventType + " | " + hellMessage.arg);
+                System.out.println("HABBYGE-MALI, HELL_MSG_SEND: " + hellMessage.eventType + " | " + hellMessage.arg);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -11,7 +11,7 @@ import org.objectweb.asm.ClassWriter
 /**
  * Created by habbyge on 2019/03/15.
  */
-class DirectoryStub {
+final class DirectoryStub {
 
     private DirectoryStub() {
     }
