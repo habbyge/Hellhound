@@ -37,7 +37,7 @@ public class HellBaseActivity extends Activity {
     protected void onPostResume() {
         super.onPostResume();
         System.out.println("HABBYGE-MALI, HellBaseActivity: onPostResume");
-//        HellMonitor.getInstance().callbackActivityListener(this, HellConstant.Page_Event_On);
+        HellMonitor.getInstance().callbackActivityListener(this, HellConstant.Page_Event_OnPostResume);
     }
 
     @Override

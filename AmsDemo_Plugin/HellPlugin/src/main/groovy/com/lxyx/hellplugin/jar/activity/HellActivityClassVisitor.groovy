@@ -22,6 +22,9 @@ class HellActivityClassVisitor extends ClassVisitor {
     private static final String METHOD_onResume_NAME = 'onResume'
     private static final String METHOD_onResume_DESC = '()V'
 
+    private static final String METHOD_onPostResume_NAME = 'onPostResume'
+    private static final String METHOD_onPostResume_DESC = '()V'
+
     private static final String METHOD_onPause_NAME = 'onPause'
     private static final String METHOD_onPause_DESC = '()V'
 
@@ -64,6 +67,10 @@ class HellActivityClassVisitor extends ClassVisitor {
         }
         if (METHOD_onResume_NAME == name && METHOD_onResume_DESC == desc) {
             println('HellActivityClassVisitor: visitMethod: onResume')
+            return new HellFragmentActivityMethodVisitor(mv, name, desc)
+        }
+        if (METHOD_onPostResume_NAME == name && METHOD_onPostResume_DESC == desc) {
+            println('HellActivityClassVisitor: visitMethod: onPostResume')
             return new HellFragmentActivityMethodVisitor(mv, name, desc)
         }
         if (METHOD_onPause_NAME == name && METHOD_onPause_DESC == desc) {

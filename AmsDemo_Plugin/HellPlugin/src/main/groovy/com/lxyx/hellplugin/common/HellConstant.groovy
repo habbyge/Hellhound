@@ -17,6 +17,7 @@ final class HellConstant {
     public static final int Page_Event_OnPause = 3
     public static final int Page_Event_OnStop = 4
     public static final int Page_Event_OnDestroy = 5
+    public static final int Page_Event_OnPostResume = 6
 
     // View的操作事件：以单击、长按为例，其他的手势，以及自定义手势都可以按照这个思路，进行劫持并插桩
     public static final int CLICK = 0

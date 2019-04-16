@@ -18,6 +18,7 @@ final class HellConstant {
     public static final int Page_Event_OnPause = 3;
     public static final int Page_Event_OnStop = 4;
     public static final int Page_Event_OnDestroy = 5;
+    public static final int Page_Event_OnPostResume = 6;
 
     public static String getFragmentEventName(int eventType) {
         switch (eventType) {
@@ -25,6 +26,8 @@ final class HellConstant {
             return "onCreate" + " | " + "(Landroid/os/Bundle;)V";
         case Page_Event_OnResume:
             return "onResume" + " | " + "()V";
+        case Page_Event_OnPostResume:
+            return "onPostResume" + " | " + "()V";
         case Page_Event_OnPause:
             return "onPause" + " | " + "()V";
         case Page_Event_OnStop:

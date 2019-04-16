@@ -12,9 +12,6 @@ import android.view.ViewParent;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
-import com.lxyx.helllib.msgqueue.HellMessage;
-import com.lxyx.helllib.msgqueue.MsgQueueManager;
-
 /**
  * Created by habbyge on 2019/3/6.
  */
@@ -186,6 +183,9 @@ public final class HellMonitor {
         case HellConstant.Page_Event_OnResume:
             mActivityListener.onResume(activity);
             break;
+        case HellConstant.Page_Event_OnPostResume:
+            mActivityListener.onPostResume(activity);
+            break;
         case HellConstant.Page_Event_OnPause:
             mActivityListener.onPause(activity);
             break;
@@ -256,6 +256,16 @@ public final class HellMonitor {
         @Override
         public void onResume(Activity activity) {
             System.out.println("HABBYGE-MALI, Activity, onResume: " + activity.getClass().getName());
+        }
+
+        @Override
+        public void onPostResume(Activity activity) {
+            // 为何要劫持Activity的onPostResume()方法？
+            // 因为：需要监控Fragment生命周期的话，Fragment.onResume()方法，在Activity.onResume()之后、
+            // Activity.onPostResume()之前执行，所以这个时机，来配合监控Fragment生命周期的resume事件，不会出现重复：
+            // Activity.onResume事件与Fragment.onResume的冲突，在这个时机，在Activity中判断是否已经有了Fragment来
+            // 判定这个Activity是否使用页面resume事件，毕竟Activity与Fragment作为页面是要互斥的。
+            System.out.println("HABBYGE-MALI, Activity, onPostResume: " + activity.getClass().getName());
         }
 
         @Override

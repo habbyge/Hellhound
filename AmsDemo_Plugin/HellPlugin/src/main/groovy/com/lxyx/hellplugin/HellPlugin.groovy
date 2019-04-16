@@ -12,6 +12,16 @@ class HellPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
+
+        project.task("hellplugin-task", dependsOn: ["compileJava"]) {
+            // 这里需要注意gradle task中执行时机的区别，除了dependsOn这个依赖数组之外，还有个需要注意的：
+            // 在task的时候有doFirst{}/doLast{}执行时机，这两个与不写有啥区别呐？
+            // 不写的话，是在构建的配置阶段就执行；doFirst/doLast表示实在该task执行时的前/后才执行；
+            doApply(project)
+        }
+    }
+
+    private static void doApply(Project project) {
         System.out.println("Hello, HellPlugin, Start!")
 
         // 获取android.jar(即：Android sdk)的路径，以及文件对象

@@ -1,7 +1,5 @@
 apply plugin: 'com.android.library'
 
-//apply plugin: 'com.lxyx.hellplugin'
-
 android {
     compileSdkVersion 27
 
@@ -21,6 +19,14 @@ android {
 }
 
 dependencies {
+//    // 使用HellPlugin插件
+//    repositories {
+//        maven {
+//            url 'file:repo/'
+//        }
+//    }
+//    implementation "com.lxyx.plugins:HellPlugin:1.0.0"
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'com.android.support:appcompat-v7:27.1.1'

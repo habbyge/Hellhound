@@ -20,7 +20,7 @@ public class HellPageMethodConstant {
     // 记录系统的android.jar中的需要注入的目标方法的状态，标识是否已经注入过插桩，避免遗漏和重复
     private static final Map<HellPageMethodConstant, Boolean> gPageMethodStateMap = new HashMap<>();
 
-    public static void setMethodState(String className, String name, String desc, boolean exist) {
+    public static void setMethodState(String className, String name, String desc) {
         gPageMethodStateMap.put(new HellPageMethodConstant(className, name, desc), true);
     }
 
@@ -33,5 +33,9 @@ public class HellPageMethodConstant {
             }
         }
         return false;
+    }
+
+    public static void reset() {
+        gPageMethodStateMap.clear();
     }
 }

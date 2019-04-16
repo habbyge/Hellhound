@@ -2,7 +2,6 @@
 //apply plugin: 'com.android.library'
 
 apply plugin: 'groovy'
-apply plugin: 'maven'
 
 dependencies {
     // gradle sdk
@@ -22,43 +21,16 @@ dependencies {
     implementation 'org.ow2.asm:asm-commons:6.0'
 }
 
+ext {
+    HELLHOUND_GROUPID = "com.lxyx.plugins"
+    HELLHOUND_ARTIFACTID = "HellPlugin"
+    HELLHOUND_VERSION = "1.0.0"
+}
+
 repositories {
     mavenCentral()
     google()
 }
 
-// 发布到本地maven库
-uploadArchives { // 上传插件
-    repositories { // 仓库
-        mavenDeployer { // maven发布者
-            repository(url: uri('../repo')) // 仓库目录
-            pom.groupId = 'com.lxyx.plugins'
-            pom.artifactId = 'HellPlugin'
-            pom.version = '1.0.0'
-        }
-    }
-}
-
-//apply plugin: 'maven-publish'
-//
-//publishing {
-//    publications {
-//        mavenJava(MavenPublication) {
-//            groupId 'com.lxyx.plugins'
-//            artifactId 'HellPlugin'
-//            version '1.0.0'
-//
-//            from components.java
-//
-//        }
-//    }
-//}
-//
-//publishing {
-//    repositories {
-//        maven {
-//            // change to point to your repo, e.g. http://my.org/repo
-//            url uri('~/AndroidStudio/AmsDemo_Plugin/repos')
-//        }
-//    }
-//}
+// ------------------------------------ maven发布 ----------------------------------------
+apply from: rootProject.file('gradle/hellhound_publish.gradle')

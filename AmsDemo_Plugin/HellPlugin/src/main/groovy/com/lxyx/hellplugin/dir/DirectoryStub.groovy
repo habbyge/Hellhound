@@ -52,7 +52,7 @@ final class DirectoryStub {
                 case Status.ADDED:
                 case Status.CHANGED:
                     println('DirectoryStub, isIncremental: ADDED || CHANGED')
-                    doStubForFile(inputFile, destFile)
+                    doStubForFile(inputFile, destFile, false)
                     break
 
                 case Status.REMOVED:
@@ -68,22 +68,22 @@ final class DirectoryStub {
             }
         } else { // 全量编译
             println('DirectoryStub, isIncremental FALSE')
-            doStubForDir(dirInput.file, destDir)
+            doStubForDir(dirInput.file, destDir, true)
         }
     }
 
-    private static void doStubForDir(File inputDir, File destDir) {
+    private static void doStubForDir(File inputDir, File destDir, boolean fullCompile) {
         println('doStubForDir, inputDir: ' + inputDir.path)
         println('doStubForDir, destDir: ' + destDir.path)
 
-        hookDir(inputDir)
+        hookDir(inputDir, fullCompile)
 
         // 将修改过的字节码copy到dest，作为下一个Transform的输入
         FileUtils.copyDirectory(inputDir, destDir)
     }
 
-    private static void doStubForFile(File srcFile, File destFile) {
-        hookFile(srcFile)
+    private static void doStubForFile(File srcFile, File destFile, boolean fullCompile) {
+        hookFile(srcFile, fullCompile)
 
         // 将修改过的字节码copy到dest，作为下一个Transform的输入
         FileUtils.copyFile(srcFile, destFile)
@@ -94,7 +94,7 @@ final class DirectoryStub {
     /**
      * @param inputDir 这是一个目录，把该目录中符合hook的类修改，并重写到这个文件中
      */
-    private static boolean hookDir(File inputDir) {
+    private static boolean hookDir(File inputDir, boolean fullCompile) {
         if (inputDir == null || !inputDir.exists() || !inputDir.canWrite()) {
             return false
         }
@@ -103,23 +103,23 @@ final class DirectoryStub {
             getAllFiles(inputDir, fileList)
             println('fileList.size = ' + fileList.size())
             fileList.each {
-                doStub(it.bytes, it.getAbsolutePath())
+                doStub(it.bytes, it.getAbsolutePath(), fullCompile)
             }
         } else if (inputDir.isFile()) {
-            doStub(inputDir.bytes, inputDir.getAbsolutePath())
+            doStub(inputDir.bytes, inputDir.getAbsolutePath(), fullCompile)
         }
 
         return true
     }
 
-    private static boolean hookFile(File inputFile) {
+    private static boolean hookFile(File inputFile, boolean fullCompile) {
         if (inputFile == null || !inputFile.exists() || !inputFile.canWrite()) {
             return false
         }
-        doStub(inputFile.bytes, inputFile.getAbsolutePath())
+        doStub(inputFile.bytes, inputFile.getAbsolutePath(), fullCompile)
     }
 
-    private static boolean doStub(byte[] bytes, String filePath) {
+    private static boolean doStub(byte[] bytes, String filePath, boolean fullCompile) {
         ClassReader cr
         try {
             cr = new ClassReader(bytes)
@@ -129,7 +129,7 @@ final class DirectoryStub {
         }
 
         ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS)
-        HellDirClassVisitor hellCV = new HellDirClassVisitor(cw)
+        HellDirClassVisitor hellCV = new HellDirClassVisitor(cw, fullCompile)
         cr.accept(hellCV, 0)
 
         byte[] data = cw.toByteArray()

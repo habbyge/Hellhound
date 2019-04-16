@@ -19,6 +19,8 @@ public interface IHellOnActivityListener {
 
     void onResume(Activity activity);
 
+    void onPostResume(Activity activity);
+
     void onPause(Activity activity);
 
     void onStop(Activity activity);

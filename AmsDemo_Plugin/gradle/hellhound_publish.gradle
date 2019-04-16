@@ -1,0 +1,41 @@
+apply plugin: "maven-publish"
+//apply plugin: 'com.jfrog.bintray' // 暂时没用到，只是发布到本地
+
+publishing { // 正在发布
+    publications { // 发布物
+        maven (MavenPublication) { // Maven发布物 配置
+            groupId HELLHOUND_GROUPID
+            artifactId HELLHOUND_ARTIFACTID
+            version HELLHOUND_VERSION
+
+            from components.java
+        }
+    }
+}
+
+publishing.repositories { // 仓库
+    maven {
+        url uri('../repo')
+
+        /*credentials { // file:协议(本地仓库)不支持这个属性
+            username "habbyge@tencent.com"
+            password "Habby_0903"
+        }*/
+    }
+}
+
+//// 发布
+//apply plugin: 'maven'
+//
+//// 发布到本地maven库
+//uploadArchives { // 上传插件
+//    repositories { // 仓库
+//        mavenDeployer { // maven部署
+//            pom.groupId = HELLHOUND_GROUPID
+//            pom.artifactId = HELLHOUND_ARTIFACTID
+//            pom.version = HELLHOUND_VERSION
+//
+//            repository(url: uri('../repo')) // 仓库目录
+//        }
+//    }
+//}

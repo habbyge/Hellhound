@@ -33,6 +33,8 @@ class HellFragmentActivityMethodVisitor extends MethodVisitor {
                 eventType = HellConstant.Page_Event_OnNewIntent
             } else if ("onResume" == mMethodName && "()V" == mMethodDesc) {
                 eventType = HellConstant.Page_Event_OnResume
+            } else if ("onPostResume" == mMethodName && "()V" == mMethodDesc) {
+                eventType = HellConstant.Page_Event_OnPostResume
             } else if ("onPause" == mMethodName && "()V" == mMethodDesc) {
                 eventType = HellConstant.Page_Event_OnPause
             } else if ("onStop" == mMethodName && "()V" == mMethodDesc) {
