@@ -39,7 +39,7 @@ class HellDirClassVisitor extends ClassVisitor {
     private String superClassName
     private String[] interfaceArray
 
-    /*private boolean mFullCompile*/
+    private boolean mFullCompile
 
     HellDirClassVisitor(final ClassVisitor cv, boolean fullCompile) {
         super(Opcodes.ASM5, cv)
