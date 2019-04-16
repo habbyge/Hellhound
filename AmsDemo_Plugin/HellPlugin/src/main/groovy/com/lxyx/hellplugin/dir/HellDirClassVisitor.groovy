@@ -39,7 +39,7 @@ class HellDirClassVisitor extends ClassVisitor {
     private String superClassName
     private String[] interfaceArray
 
-    private boolean mFullCompile
+    /*private boolean mFullCompile*/
 
     HellDirClassVisitor(final ClassVisitor cv, boolean fullCompile) {
         super(Opcodes.ASM5, cv)
@@ -52,9 +52,9 @@ class HellDirClassVisitor extends ClassVisitor {
         superClassName = superName
         interfaceArray = interfaces
 
-        if (mFullCompile) { // 全量编译(非增量编译)需要重置之前的方法状态
+        /*if (mFullCompile) { // 全量编译(非增量编译)需要重置之前的方法状态*/
             HellPageMethodConstant.reset()
-        }
+        /*}*/
 
         // 这里是方案2s: 方案2会更好，因为完全不影响原先代码，替换注入方式.
         if (HellConstant.ANDROID_APP_ACTIVITY_MODE == HellConstant.ANDROID_APP_ACTIVITY_MODE_BaseActivity) {
