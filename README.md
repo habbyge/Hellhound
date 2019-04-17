@@ -35,3 +35,6 @@
 - 在Terminal中输入命令：./gradlew assembleDebug -Dorg.gradle.daemon=false -Dorg.gradle.debug=true, 然后会等待attach对应的plugin，选择【run】->【Edit configures】中对应需要debug的remote选项中的plugin，ok即可。
 - 再次进入【Run】->【Debug "选择要debug的插件名"】，即可breakpoint debug。
 - 注意: debug之前，最好./gradlew clean一次工程，因为增量编译的话，可能会跳过一些编译过程，导致brakpoint不能执行到.
+
+## 6、License
+Hellhound is under the Appach2.0 license. See the LICENSE file for details
