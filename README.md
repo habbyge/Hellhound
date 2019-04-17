@@ -37,4 +37,4 @@
 - 注意: debug之前，最好./gradlew clean一次工程，因为增量编译的话，可能会跳过一些编译过程，导致brakpoint不能执行到.
 
 ## 6、License
-Hellhound is under the Appach2.0 license. See the LICENSE file for details
+Hellhound is under the Apache-2.0 license. See the [LICENSE](https://github.com/habbyge/Hellhound/blob/master/LICENSE) file for details
