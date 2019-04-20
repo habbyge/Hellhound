@@ -73,12 +73,6 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        System.out.println("MainActivity onResume-1");
-    }
-
     private void initListView() {
         final ListView listView = findViewById(R.id.listview);
         List<String> srcList = new ArrayList<>();

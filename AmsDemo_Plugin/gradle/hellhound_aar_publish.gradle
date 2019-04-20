@@ -1,0 +1,25 @@
+apply plugin: 'maven'
+
+ext {
+    HELLHOUND_LIB_GROUPID = "com.lxyx.libs"
+    HELLHOUND_LIB_ARTIFACTID = "helllib"
+    HELLHOUND_LIB_VERSION = "1.0.1"
+    HELLHOUND_LIB_TYPE = 'aar'
+}
+
+// 发布
+apply plugin: 'maven'
+
+// 发布到本地maven库
+uploadArchives { // 上传插件
+    repositories { // 仓库
+        mavenDeployer { // maven部署
+            pom.groupId = HELLHOUND_LIB_GROUPID
+            pom.artifactId = HELLHOUND_LIB_ARTIFACTID
+            pom.version = HELLHOUND_LIB_VERSION
+            pom.packaging = HELLHOUND_LIB_TYPE
+
+            repository(url: uri('../repo')) // 仓库目录
+        }
+    }
+}

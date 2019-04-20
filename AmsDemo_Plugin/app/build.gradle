@@ -19,6 +19,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+}
+
+repositories {
+    maven {
+        url 'file:../repo/' // 当前目录下，再索引repo目录
+//        url 'file:/Users/habbyge/Hellhound/AmsDemo_Plugin/repo/'
+    }
 }
 
 dependencies {
@@ -26,8 +38,10 @@ dependencies {
 
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:appcompat-v7:28.0.0'
-
-    implementation project(':helllib')
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:design:28.0.0'
+
+    /*implementation project(":helllib")*/
+    implementation("com.lxyx.libs:helllib:1.0.1") { changing = true }
+//    implementation 'com.lxyx.libs:helllib:1.0.1'
 }

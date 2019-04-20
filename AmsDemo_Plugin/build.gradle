@@ -3,27 +3,35 @@
 buildscript {
     repositories { // 仓库
         maven {
-            // 当前目录下，再索引repo目录
-//            url uri('file:repo/')
-            url 'file:repo/'
+            url 'file:repo/' // 当前目录下，再索引repo目录
+//            url 'file:/Users/habbyge/Hellhound/AmsDemo_Plugin/repo/'
         }
 
+//        mavenLocal()
         google()
+        mavenCentral()
         jcenter()
     }
 
     dependencies {
-        classpath ("com.android.tools.build:gradle:3.3.2")
-        classpath ("com.lxyx.plugins:HellPlugin:1.0.0") {changing = true}
-        
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath("com.android.tools.build:gradle:3.3.2")
+
+        // hellhound
+        classpath("com.lxyx.plugins:hellplugin:1.0.1") { changing = true }
+        classpath("com.lxyx.libs:helllib:1.0.1") { changing = true }
     }
 }
 
 allprojects {
     repositories {
+        maven {
+            url 'file:repo/' // 当前目录下，再索引repo目录
+//            url 'file:/Users/habbyge/Hellhound/AmsDemo_Plugin/repo/'
+        }
+
+//        mavenLocal()
         google()
+        mavenCentral()
         jcenter()
     }
 }
