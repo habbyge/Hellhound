@@ -1,5 +1,6 @@
 package com.lxyx.hellplugin.dir.activity
 
+import org.objectweb.asm.Label
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 
@@ -25,6 +26,14 @@ class HellActivityExecMethodVisitor extends MethodVisitor {
 
     /**
      * 劫持调用方法指令，注入callback函数
+     * /*
+     * todo: Activity.startActivity()相关注入: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     * public void startActivityForResult(Intent intent, int requestCode)
+     * public void startActivityForResult(Intent intent, int requestCode, Bundle options)
+     * public void startActivity(Intent intent, Bundle options)
+     * public void startActivity(Intent intent)
+     * public boolean startActivityIfNeeded(Intent intent, int requestCode)
+     * public boolean startActivityIfNeeded(Intent intent, int requestCode, Bundle options)
      */
     @Override
     void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
@@ -35,18 +44,27 @@ class HellActivityExecMethodVisitor extends MethodVisitor {
         if (opcode == Opcodes.INVOKEVIRTUAL) {
             if ('startActivity' == name && '(Landroid/content/Intent;)V' == desc) {
                 // src: owner; dest: intent
-                println('HABBYGE-MALI, exec: startActivity, ' + owner)
+                println('LXYX_ HellActivityExecMethodVisitor, startActivity, ' + owner)
                 injectCallbackStartActivity(owner)
+            } else if ('startActivity' == name && '(Landroid/content/Intent;Landroid/os/Bundle;)V' == desc) {
+                injectCallbackStartActivity2(owner)
             } else if ('finish' == name && '()V' == desc) {
                 // src: owner
-                println('HABBYGE-MALI, exec: finish, ' + owner)
+                println('LXYX_ HellActivityExecMethodVisitor, exec: finish, ' + owner)
                 injectCallbackFinish(owner)
+
+                // todo finish相关：~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                // public void finish()
+                // public void finishActivity(int requestCode)
             } else if ('moveTaskToBack' == name && '(Z)Z' == desc) {
-                println('HABBYGE-MALI, exec: moveTaskToBack, ' + owner)
+                println('LXYX_ HellActivityExecMethodVisitor, moveTaskToBack, ' + owner)
                 injectCallbackMoveTaskToBack(owner)
             }
         }
         super.visitMethodInsn(opcode, owner, name, desc, itf)
+
+        // todo 这里还需要优化的点是：这里的方法调用，必须加上"调用者对象"的类型的识别，才能确认是否是我们想要的方法调用：
+        // todo 目前主要的调用者对象是：Context(ContextWrapper)/Activity及其子类
     }
 
     @Override
@@ -81,6 +99,22 @@ class HellActivityExecMethodVisitor extends MethodVisitor {
 
         mv.visitInsn(Opcodes.DUP2) // 复制栈顶两个元素：调用者(Activity/Context)引用->Intent参数
 
+        // 取次栈顶，调用者对象，判定是否是Context/Activity及其子类，避免注入有误
+        mv.visitInsn(Opcodes.SWAP) // 调用者对象次栈顶->栈顶: Intent参数->Activity/Context
+
+        Label LABEL_ILGAL = new Label() // 非法路径标签
+
+        mv.visitMethodInsn(Opcodes.INVOKESTATIC,
+                'com/lxyx/helllib/HellMonitorUtil',
+                'isActivityOrContentType', '(Ljava/lang/Object;)Z',
+                false) // 返回的结果：是否是Activity及其子类？？ Intent参数 -> bool结果
+        // 栈：Intent参数
+        mv.visitJumpInsn(Opcodes.IFEQ, LABEL_ILGAL) // 如果是false，则跳转到 LABEL_ILGAL
+
+        println("__LXYX__ HellActivityExecMethodVisitor inject: $mClassName, $mMethodName")
+        // 下面是true情况：
+        mv.visitInsn(Opcodes.POP) // 弹出自己复制的栈顶Intent
+        mv.visitInsn(Opcodes.DUP2) // 复制栈顶两个元素：调用者(Activity/Context)引用->Intent参数
 //        mv.visitMethodInsn(Opcodes.INVOKESTATIC,
 //                'com/lxyx/helllib/HellMonitor',
 //                'callbackStartActivity',
@@ -90,8 +124,7 @@ class HellActivityExecMethodVisitor extends MethodVisitor {
 
         mv.visitMethodInsn(Opcodes.INVOKESTATIC,
                 'com/lxyx/helllib/HellMonitor',
-                'getInstance',
-                '()Lcom/lxyx/helllib/HellMonitor;',
+                'getInstance', '()Lcom/lxyx/helllib/HellMonitor;',
                 false) // 此时栈中情况是: Activity->Intent->HellMonitor单例
 
         // 复制栈顶(HellMonitor单例)，然后向下塞3个位置
@@ -109,7 +142,6 @@ class HellActivityExecMethodVisitor extends MethodVisitor {
                 'callbackStartActivity',
                 '(Ljava/lang/Object;Ljava/lang/String;Landroid/content/Intent;)V',
                 false)
-
         // 总结一下:
         // 其实方法调用，就是构造操作数栈中的调用顺序，调用者先入栈，再按照形参顺序入栈，之后invoke方法即可。
         // 需要小心的是，控制栈的dup指令系列、pop、swap指令等，实时脑补或写出来现场操作数栈情况，有助于写
@@ -119,6 +151,69 @@ class HellActivityExecMethodVisitor extends MethodVisitor {
         // 错误，浪费了点时间；后来我去读oracle的官网doc的Chapter-6，才知道，正确的意思，例如：
         // dup_x2: Duplicate the top operand stack value and insert two or three values down.
         // 赋值栈顶元素，并将其向操作数栈下方插到2个或3个位置处。
+        Label LABEL_RETURN = new Label()
+        mv.visitJumpInsn(Opcodes.GOTO, LABEL_RETURN) // 直接到退出标签
+
+        // 开始这个非法Lable分支:
+        mv.visitLabel(LABEL_ILGAL)
+        println("__LXYX__ HellActivityExecMethodVisitor NOT inject: $mClassName, $mMethodName")
+        mv.visitInsn(Opcodes.POP) // 弹出栈顶Intent，保证对原始栈无影响
+
+        mv.visitLabel(LABEL_RETURN)
+
+        //  what the fuck, 本质就是使用jvm汇编指令来玩操作数栈......
+    }
+
+    // public void startActivity(Intent intent, Bundle options)
+    private void injectCallbackStartActivity2(String owner) {
+        // 此时栈：调用者->Intent->Bundle
+
+        // 获取 "调用者"，判断其是否是Activity/Content子类，否者不合法，拒绝注入
+        mv.visitInsn(Opcodes.DUP2_X1) // Intent->Bundle->调用者->Intent->Bundle
+        mv.visitInsn(Opcodes.POP2) // Intent->Bundle->调用者
+        mv.visitInsn(Opcodes.DUP_X2) // 调用者->Intent->Bundle->调用者
+        // what the fuck, 终于还原了以前的栈，并成功把调用者引用的复制，搞到栈顶了
+
+        Label LABEL_ILGAL = new Label() // 非法路径标签
+
+        mv.visitMethodInsn(Opcodes.INVOKESTATIC,
+                'com/lxyx/helllib/HellMonitorUtil',
+                'isActivityOrContentType', '(Ljava/lang/Object;)Z',
+                false) // 返回的结果：是否是Activity及其子类？？ Intent参数 -> bool结果
+        // 栈：Intent参数
+        mv.visitJumpInsn(Opcodes.IFEQ, LABEL_ILGAL) // 如果是false，则跳转到 LABEL_ILGAL
+
+        // 该路径是合法路径，而且与之前栈情况一样: 调用者->Intent->Bundle
+        mv.visitInsn(Opcodes.DUP2_X1) // Intent->Bundle->调用者->Intent->Bundle
+        mv.visitInsn(Opcodes.POP) // Intent->Bundle->调用者->Intent
+        mv.visitInsn(Opcodes.DUP2_X2) // 调用者->Intent->Intent->Bundle->调用者->Intent
+        mv.visitMethodInsn(Opcodes.INVOKESTATIC,
+                'com/lxyx/helllib/HellMonitor',
+                'getInstance', '()Lcom/lxyx/helllib/HellMonitor;',
+                false) // // 此时栈：调用者->Intent->Intent->Bundle->调用者->Intent->HellMonitor单例
+        mv.visitInsn(Opcodes.DUP_X2) // 调用者->Intent->Intent->Bundle->HellMonitor单例->调用者->Intent->HellMonitor单例
+        mv.visitInsn(Opcodes.POP) // 调用者->Intent->Intent->Bundle->HellMonitor单例->调用者->Intent
+        mv.visitLdcInsn(owner) // 调用者名称常量
+        mv.visitInsn(Opcodes.SWAP) // 调用者->Intent->Intent->Bundle->HellMonitor单例->调用者->owner->Intent
+        // 测试栈顶四元素已经满足了callback函数
+        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                'com/lxyx/helllib/HellMonitor',
+                'callbackStartActivity',
+                '(Ljava/lang/Object;Ljava/lang/String;Landroid/content/Intent;)V',
+                false)
+        // 此时栈：调用者->Intent->Intent->Bundle
+        mv.visitInsn(Opcodes.SWAP)
+        mv.visitInsn(Opcodes.POP) // ok: 调用者->Intent->Bundle
+
+        Label LABEL_RETURN = new Label()
+        mv.visitJumpInsn(Opcodes.GOTO, LABEL_RETURN) // 直接到退出标签，搞定收工！！！
+
+        // 开始这个非法Lable分支:
+        mv.visitLabel(LABEL_ILGAL)
+        println("__LXYX__ injectCallbackStartActivity2 NOT inject: $mClassName, $mMethodName")
+        // 此时栈情况，与之前没有改变，无需有啥操作了
+
+        mv.visitLabel(LABEL_RETURN)
     }
 
     // void callbackFinish(Activity srcActivity, String srcActivityName)
