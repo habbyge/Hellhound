@@ -42,12 +42,13 @@ class HellActivityExecMethodVisitor extends MethodVisitor {
         // 方法name/desc，来定位自己想要注入到的方法执行的前、后时机，这样就来劫持和注入成功了。
         // eg: 这里以劫持调用startActivity/finish方法为例，获取Bundle参数，并注入callback。
         if (opcode == Opcodes.INVOKEVIRTUAL) {
-            if ('startActivity' == name && '(Landroid/content/Intent;)V' == desc) {
-                // src: owner; dest: intent
-                println('LXYX_ HellActivityExecMethodVisitor, startActivity, ' + owner)
-                injectCallbackStartActivity(owner)
-            } else if ('startActivity' == name && '(Landroid/content/Intent;Landroid/os/Bundle;)V' == desc) {
-                injectCallbackStartActivity2(owner)
+            if ('startActivity' == name) {
+                if ('(Landroid/content/Intent;)V' == desc) {
+                    println('LXYX_ HellActivityExecMethodVisitor, startActivity, ' + owner)
+                    injectCallbackStartActivity(owner)
+                } else if ('(Landroid/content/Intent;Landroid/os/Bundle;)V' == desc) {
+                    injectCallbackStartActivity2(owner)
+                }
             } else if ('finish' == name && '()V' == desc) {
                 // src: owner
                 println('LXYX_ HellActivityExecMethodVisitor, exec: finish, ' + owner)
